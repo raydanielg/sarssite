@@ -1,0 +1,106 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.auth-bg {
+    min-height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.auth-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    padding: 28px 28px 24px;
+}
+
+.auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.auth-logo {
+    width: 82px;
+    height: 82px;
+    object-fit: contain;
+}
+
+.auth-title {
+    margin-top: 10px;
+    font-weight: 700;
+    color: #2f2f2f;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.auth-btn {
+    background: #1f7a35;
+    border-color: #1f7a35;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 14px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover,
+.auth-btn:focus {
+    background: #145524 !important; /* Darker green for hover */
+    border-color: #145524 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.auth-btn.loading {
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.auth-btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-top: -10px;
+    margin-left: -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: auth-spin 0.8s linear infinite;
+}
+
+@keyframes auth-spin {
+    to { transform: rotate(360deg); }
+}
+
+.auth-link {
+    color: #1f7a35;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link:hover {
+    color: #17612a;
+    text-decoration: underline;
+}
