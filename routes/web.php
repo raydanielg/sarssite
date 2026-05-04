@@ -21,3 +21,8 @@ Route::get('/', function () {
 Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('years', App\Http\Controllers\Admin\YearController::class);
+    Route::resource('levels', App\Http\Controllers\Admin\LevelController::class);
+});

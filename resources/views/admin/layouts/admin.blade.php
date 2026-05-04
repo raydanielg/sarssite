@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/adminlte.min.css') }}">
   <!-- Toastr -->
   <link rel="stylesheet" href="{{ asset('vendor/toastr/toastr.min.css') }}">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}">
   @stack('css')
 </head>
 <body class="hold-transition sidebar-mini">
@@ -24,19 +26,28 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{ route('home') }}" class="nav-link">Dashboard</a>
+      </li>
     </ul>
 
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('logout') }}"
-           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-          <i class="fas fa-sign-out-alt"></i> Logout
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-user"></i>
+          <span class="ml-1">{{ optional(auth()->user())->name ?? 'Admin' }}</span>
         </a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+          </a>
+        </div>
       </li>
     </ul>
+
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        @csrf
+    </form>
   </nav>
 
   <!-- Main Sidebar Container -->
@@ -69,13 +80,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.years.index') }}" class="nav-link {{ request()->is('admin/years') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Years</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.years.create') }}" class="nav-link {{ request()->is('admin/years/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Year</p>
                 </a>
@@ -94,13 +105,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.levels.index') }}" class="nav-link {{ request()->is('admin/levels') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Levels</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.levels.create') }}" class="nav-link {{ request()->is('admin/levels/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Level</p>
                 </a>
@@ -319,6 +330,7 @@
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('vendor/adminlte/js/adminlte.min.js') }}"></script>
 <script src="{{ asset('vendor/toastr/toastr.min.js') }}"></script>
+<script src="{{ asset('vendor/sweetalert2/sweetalert2.min.js') }}"></script>
 
 <script>
     $(function() {
@@ -328,12 +340,73 @@
             "positionClass": "toast-top-right",
             "timeOut": "5000"
         };
+
         @if(session('success'))
             toastr.success("{{ session('success') }}");
         @endif
         @if(session('status'))
             toastr.success("{{ session('status') }}");
         @endif
+        @if(session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+        @if(session('warning'))
+            toastr.warning("{{ session('warning') }}");
+        @endif
+        @if(session('info'))
+            toastr.info("{{ session('info') }}");
+        @endif
+
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                toastr.error("{{ $error }}");
+            @endforeach
+        @endif
+
+        // Global Form Loading State
+        $(document).on('submit', 'form', function() {
+            var $btn = $(this).find('button[type="submit"]');
+            if ($btn.length && !$btn.hasClass('no-loading')) {
+                // Check if the button is within a SweetAlert (don't disable those here)
+                if (!$btn.closest('.swal2-container').length) {
+                    $btn.attr('data-original-text', $btn.html());
+                    $btn.prop('disabled', true);
+                    $btn.html('<i class="fas fa-spinner fa-spin"></i> Please wait...');
+                }
+            }
+        });
+
+        $(document).on('click', '[data-confirm-delete]', function(e) {
+            e.preventDefault();
+            const form = $(this).closest('form');
+            const title = $(this).data('confirm-title') || 'Are you sure?';
+            const text = $(this).data('confirm-text') || 'This action cannot be undone.';
+            const confirmText = $(this).data('confirm-button') || 'Yes, delete it';
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed && form.length) {
+                    // Show a loading state on the swal button
+                    Swal.fire({
+                        title: 'Deleting...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    form.submit();
+                }
+            });
+        });
     });
 </script>
 @stack('js')
