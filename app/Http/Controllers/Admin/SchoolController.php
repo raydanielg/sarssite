@@ -16,9 +16,24 @@ class SchoolController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $schools = School::with(['region', 'levels'])->latest()->paginate(10);
+        $query = School::with(['region', 'levels'])->latest();
+
+        if ($request->ajax()) {
+            if ($request->has('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('code', 'like', "%{$search}%");
+                });
+            }
+            
+            $schools = $query->paginate(10);
+            return view('admin.schools.partials.table', compact('schools'))->render();
+        }
+
+        $schools = $query->paginate(10);
         return view('admin.schools.index', compact('schools'));
     }
 
@@ -42,6 +57,7 @@ class SchoolController extends Controller
         $school = School::create([
             'code' => $request->code,
             'name' => $request->name,
+            'is_pc' => $request->has('is_pc'),
             'region_id' => $request->region_id,
             'slug' => Str::slug($request->name . '-' . $request->code),
         ]);
@@ -74,6 +90,7 @@ class SchoolController extends Controller
         $school->update([
             'code' => $request->code,
             'name' => $request->name,
+            'is_pc' => $request->has('is_pc'),
             'region_id' => $request->region_id,
             'slug' => Str::slug($request->name . '-' . $request->code),
         ]);

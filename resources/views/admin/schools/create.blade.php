@@ -27,13 +27,21 @@
                         @enderror
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="name">School Name</label>
                         <input type="text" id="name" name="name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror" placeholder="e.g. AZANIA SECONDARY SCHOOL" required>
                         @error('name')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group pt-md-4 mt-md-2">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" name="is_pc" class="custom-control-input" id="is_pc" {{ old('is_pc') ? 'checked' : '' }} value="1">
+                            <label class="custom-control-label" for="is_pc">Is PC?</label>
+                        </div>
                     </div>
                 </div>
             </div>

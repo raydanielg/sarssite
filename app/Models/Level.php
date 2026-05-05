@@ -10,4 +10,9 @@ class Level extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'slug'];
+
+    public function resultTypes()
+    {
+        return $this->belongsToMany(ResultType::class, 'result_type_levels');
+    }
 }

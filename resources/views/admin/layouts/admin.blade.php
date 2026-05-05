@@ -94,6 +94,31 @@
             </ul>
           </li>
 
+          <!-- Result Types -->
+          <li class="nav-item {{ request()->is('admin/result-types*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('admin/result-types*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-list-alt"></i>
+              <p>
+                Result Types
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.result-types.index') }}" class="nav-link {{ request()->is('admin/result-types') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Types</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.result-types.create') }}" class="nav-link {{ request()->is('admin/result-types/create') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Type</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
           <!-- Levels -->
           <li class="nav-item {{ request()->is('admin/levels*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is('admin/levels*') ? 'active' : '' }}">

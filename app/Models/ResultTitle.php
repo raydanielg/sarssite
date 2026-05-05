@@ -9,7 +9,12 @@ class ResultTitle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'year_id', 'level_id', 'region_id', 'slug'];
+    protected $fillable = ['name', 'year_id', 'level_id', 'region_id', 'result_type_id', 'slug'];
+
+    public function resultType()
+    {
+        return $this->belongsTo(ResultType::class);
+    }
 
     public function year()
     {

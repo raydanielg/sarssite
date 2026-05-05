@@ -5,62 +5,90 @@
 
 @section('content')
 <div class="card card-outline card-success">
-    <div class="card-header">
+    <div class="card-header border-0">
         <h3 class="card-title">All Schools</h3>
-        <div class="card-tools">
+        <div class="card-tools flex items-center gap-2">
+            <div class="input-group input-group-sm" style="width: 250px;">
+                <input type="text" id="schoolSearch" class="form-control" placeholder="Search school name or code...">
+                <div class="input-group-append">
+                    <button class="btn btn-default">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
             <a href="{{ route('admin.schools.create') }}" class="btn btn-sm btn-success">
                 <i class="fas fa-plus"></i> Add School
             </a>
         </div>
     </div>
     <div class="card-body p-0">
-        <table class="table table-striped mb-0">
-            <thead>
-                <tr>
-                    <th style="width: 80px">Code</th>
-                    <th>Name</th>
-                    <th>Region</th>
-                    <th>Levels</th>
-                    <th style="width: 180px">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($schools as $school)
+        <div id="schoolsTableContainer">
+            <table class="table table-striped mb-0">
+                <thead>
                     <tr>
-                        <td><code>{{ $school->code }}</code></td>
-                        <td>{{ $school->name }}</td>
-                        <td>{{ $school->region->name }}</td>
-                        <td>
-                            @foreach($school->levels as $level)
-                                <span class="badge badge-info">{{ $level->name }}</span>
-                            @endforeach
-                        </td>
-                        <td class="text-right">
-                            <a href="{{ route('admin.schools.edit', $school) }}" class="btn btn-xs btn-primary">
-                                <i class="fas fa-edit"></i>
-                            </a>
-
-                            <form action="{{ route('admin.schools.destroy', $school) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-xs btn-danger" data-confirm-delete data-confirm-title="Delete School?" data-confirm-text="Unataka kufuta shule ya '{{ $school->name }}'?" data-confirm-button="Yes, Delete it!">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                        </td>
+                        <th style="width: 80px">Code</th>
+                        <th>Name</th>
+                        <th>Region</th>
+                        <th>Levels</th>
+                        <th style="width: 180px">Actions</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center text-muted p-4">No schools found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    @if($schools->hasPages())
-        <div class="card-footer clearfix">
-            {{ $schools->links() }}
+                </thead>
+                <tbody id="schoolsTableBody">
+                    @include('admin.schools.partials.table')
+                </tbody>
+            </table>
         </div>
-    @endif
+    </div>
+    <div class="card-footer clearfix" id="paginationContainer">
+        {{ $schools->links() }}
+    </div>
 </div>
+
+@push('js')
+<script>
+$(document).ready(function() {
+    let searchTimer;
+    const searchInput = $('#schoolSearch');
+    const tableBody = $('#schoolsTableBody');
+    const paginationContainer = $('#paginationContainer');
+
+    searchInput.on('keyup', function() {
+        clearTimeout(searchTimer);
+        const query = $(this).val();
+        
+        searchTimer = setTimeout(function() {
+            fetchSchools(query);
+        }, 500);
+    });
+
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        const url = $(this).attr('href');
+        const query = searchInput.val();
+        fetchSchools(query, url);
+    });
+
+    function fetchSchools(query, url = null) {
+        const fetchUrl = url || "{{ route('admin.schools.index') }}";
+        const data = url ? {} : { search: query };
+
+        tableBody.css('opacity', '0.5');
+
+        $.ajax({
+            url: fetchUrl,
+            data: data,
+            success: function(html) {
+                tableBody.html(html);
+                tableBody.css('opacity', '1');
+                
+                // Update pagination if needed (this depends on how the controller returns data)
+                // For simplicity, we are just updating the table body via partial.
+                // To update pagination too, we'd need to return both in a JSON or full partial.
+            }
+        });
+    }
+});
+</script>
+@endpush
+
 @endsection

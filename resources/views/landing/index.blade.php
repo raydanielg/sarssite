@@ -3,183 +3,128 @@
 @section('title', 'Karibu')
 
 @section('content')
-<!-- Hero Section (Based on Image) -->
-<div class="hero-wrap bg-white py-5">
-    <div class="container py-5">
-        <div class="text-center mb-5">
-            <!-- New Badge -->
-            <div class="mb-4">
-                <span class="badge badge-pill badge-light border px-3 py-2" style="font-size: 13px; color: #555;">
-                    <span class="badge badge-success badge-pill mr-2 px-2 py-1">New</span> 
-                    EMaS v2.0 is out! See what's new <i class="fas fa-chevron-right ml-1 small"></i>
-                </span>
-            </div>
-            
-            <!-- Main Title -->
-            <h1 class="display-3 font-weight-bold text-dark mb-4">
-                We digitize the <span style="color: #28a745;">education</span> potential
-            </h1>
-            
-            <!-- Subtitle -->
-            <div class="row justify-content-center mb-5">
-                <div class="col-md-8">
-                    <p class="lead text-secondary" style="font-size: 18px; line-height: 1.6;">
-                        Electronic Marking System (EMaS) focus on markets where technology and innovation can 
-                        unlock long-term value and drive school performance growth.
-                    </p>
+<!-- Hero Section -->
+<section class="bg-white dark:bg-gray-900">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
+        @if($announcements->count() > 0)
+            @php
+                $latest = $announcements->first();
+                $typeColors = [
+                    'New' => 'bg-green-600',
+                    'Update' => 'bg-blue-600',
+                    'Alert' => 'bg-red-600',
+                    'Info' => 'bg-primary-600'
+                ];
+                $bgColor = $typeColors[$latest->type] ?? 'bg-primary-600';
+            @endphp
+            <button onclick="showAnnouncement('{{ addslashes($latest->title) }}', '{{ addslashes($latest->content) }}', '{{ $latest->type }}')" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 transform hover:scale-105" role="alert">
+                <span class="text-[10px] font-bold uppercase {{ $bgColor }} rounded-full text-white px-3 py-1 mr-3 tracking-wider">{{ $latest->type }}</span> 
+                <span class="text-sm font-medium tracking-tight truncate max-w-[200px] sm:max-w-md">{{ $latest->title }}</span> 
+                <i class="ri-arrow-right-s-line ml-2 text-lg opacity-50"></i>
+            </button>
+        @else
+            <a href="#" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
+                <span class="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3 tracking-tight">New</span> 
+                <span class="text-sm font-medium tracking-tight">SARS v1.0 is now live! Explore the features</span> 
+                <i class="ri-arrow-right-s-line ml-2 text-lg"></i>
+            </a>
+        @endif
+        <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+            Welcome to <span class="text-primary-600">SARS</span> Portal
+        </h1>
+        <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
+            Student Academic Results System (SARS) is a modern marking and results management system designed to unlock long-term value and drive school performance growth.
+        </p>
+        <div class="flex flex-row items-center justify-center mb-8 lg:mb-16 space-x-3 sm:space-x-4">
+            <a href="#" class="inline-flex justify-center items-center py-2.5 px-4 sm:py-3 sm:px-5 text-xs sm:text-base font-bold text-center text-white rounded-lg bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 transition-all uppercase tracking-tight group whitespace-nowrap">
+                Get started
+                <i class="ri-arrow-right-line ml-1 sm:ml-2 text-sm sm:text-xl group-hover:translate-x-1 transition-transform"></i>
+            </a>
+            <a href="#" class="inline-flex justify-center items-center py-2.5 px-4 sm:py-3 sm:px-5 text-xs sm:text-base font-bold text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all uppercase tracking-tight group whitespace-nowrap">
+                <i class="ri-play-circle-fill mr-1 sm:mr-2 text-sm sm:text-xl group-hover:scale-110 transition-transform text-primary-600"></i>
+                Watch demo
+            </a>  
+        </div>
+        <div class="px-4 mx-auto text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">
+            <span class="font-bold text-gray-400 uppercase tracking-widest text-xs">OFFICIALLY RECOGNIZED BY</span>
+            <div class="flex flex-wrap justify-center items-center mt-8 text-gray-400 sm:justify-between gap-8 opacity-60">
+                <div class="flex items-center gap-2 hover:text-primary-600 transition-colors cursor-default">
+                    <i class="fas fa-university text-2xl"></i>
+                    <span class="font-black text-sm uppercase">TAMISEMI</span>
+                </div>
+                <div class="flex items-center gap-2 hover:text-primary-600 transition-colors cursor-default">
+                    <i class="fas fa-landmark text-2xl"></i>
+                    <span class="font-black text-sm uppercase">NECTA</span>
+                </div>
+                <div class="flex items-center gap-2 hover:text-primary-600 transition-colors cursor-default">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                    <span class="font-black text-sm uppercase">MOEST</span>
                 </div>
             </div>
-            
-            <!-- Action Buttons -->
-            <div class="d-flex justify-content-center align-items-center mb-5">
-                <a href="#" class="btn btn-success btn-lg px-4 py-3 mr-3" style="background-color: #0d3c14; border: none; font-size: 16px; border-radius: 8px;">
-                    Get started <i class="fas fa-arrow-right ml-2"></i>
-                </a>
-                <a href="#" class="btn btn-light btn-lg px-4 py-3 border" style="font-size: 16px; border-radius: 8px; background: white;">
-                    <i class="fas fa-video mr-2"></i> Watch demo
-                </a>
+        </div> 
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 bg-white overflow-hidden">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl lg:text-4xl font-black text-gray-900 mb-4 tracking-tight">Vipengele vya Mfumo</h2>
+            <div class="h-1.5 w-20 bg-primary-600 mx-auto rounded-full"></div>
+            <p class="mt-4 text-gray-600 font-medium max-w-2xl mx-auto italic">Mfumo umejengwa kwa ajili ya kurahisisha usimamizi na utoaji wa matokeo ya kitaaluma kwa ufanisi zaidi.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
+            <!-- Feature 1: Joint Exams -->
+            <div class="group p-4 sm:p-8 bg-gray-50 rounded-2xl sm:rounded-3xl border border-gray-100 hover:bg-white hover:border-primary-100 hover:shadow-2xl hover:shadow-primary-100/50 transition-all duration-500 transform hover:-translate-y-2 text-center">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 relative">
+                    <div class="absolute inset-0 bg-primary-100 rounded-xl sm:rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
+                    <div class="absolute inset-0 bg-white rounded-xl sm:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-4 z-10">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3589/3589030.png" alt="Joint Exams" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
+                    </div>
+                </div>
+                <h3 class="text-sm sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary-600 transition-colors">Joint Exams</h3>
+                <p class="text-[10px] sm:text-sm text-gray-600 leading-tight sm:leading-relaxed">Usimamizi wa mitihani ya pamoja.</p>
             </div>
 
-            <!-- Recognized By Section -->
-            <div class="mt-5 pt-5">
-                <p class="text-uppercase small font-weight-bold text-muted mb-4" style="letter-spacing: 2px;">Officially Recognized By</p>
-                <div class="row justify-content-center align-items-center opacity-7">
-                    <div class="col-md-2 col-4 mb-4">
-                        <div class="d-flex align-items-center justify-content-center text-muted">
-                            <i class="fas fa-university fa-2x mr-2"></i>
-                            <span class="font-weight-bold h6 mb-0">TAMISEMI</span>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-4 mb-4">
-                        <div class="d-flex align-items-center justify-content-center text-muted">
-                            <i class="fas fa-landmark fa-2x mr-2"></i>
-                            <span class="font-weight-bold h6 mb-0">NECTA</span>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-4 mb-4">
-                        <div class="d-flex align-items-center justify-content-center text-muted">
-                            <i class="fas fa-graduation-cap fa-2x mr-2"></i>
-                            <span class="font-weight-bold h6 mb-0">MOEST</span>
-                        </div>
+            <!-- Feature 2: Marking System -->
+            <div class="group p-4 sm:p-8 bg-gray-50 rounded-2xl sm:rounded-3xl border border-gray-100 hover:bg-white hover:border-primary-100 hover:shadow-2xl hover:shadow-primary-100/50 transition-all duration-500 transform hover:-translate-y-2 text-center">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 relative">
+                    <div class="absolute inset-0 bg-primary-100 rounded-xl sm:rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
+                    <div class="absolute inset-0 bg-white rounded-xl sm:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-4 z-10">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" alt="Marking" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
                     </div>
                 </div>
+                <h3 class="text-sm sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary-600 transition-colors">E-Marking</h3>
+                <p class="text-[10px] sm:text-sm text-gray-600 leading-tight sm:leading-relaxed">Usahihishaji wa kielektroniki.</p>
+            </div>
+
+            <!-- Feature 3: Statistics -->
+            <div class="group p-4 sm:p-8 bg-gray-50 rounded-2xl sm:rounded-3xl border border-gray-100 hover:bg-white hover:border-primary-100 hover:shadow-2xl hover:shadow-primary-100/50 transition-all duration-500 transform hover:-translate-y-2 text-center">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 relative">
+                    <div class="absolute inset-0 bg-primary-100 rounded-xl sm:rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
+                    <div class="absolute inset-0 bg-white rounded-xl sm:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-4 z-10">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" alt="Statistics" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
+                    </div>
+                </div>
+                <h3 class="text-sm sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary-600 transition-colors">Takwimu</h3>
+                <p class="text-[10px] sm:text-sm text-gray-600 leading-tight sm:leading-relaxed">Uchambuzi wa kina wa matokeo.</p>
+            </div>
+
+            <!-- Feature 4: E-Mrejesho -->
+            <div class="group p-4 sm:p-8 bg-gray-50 rounded-2xl sm:rounded-3xl border border-gray-100 hover:bg-white hover:border-primary-100 hover:shadow-2xl hover:shadow-primary-100/50 transition-all duration-500 transform hover:-translate-y-2 text-center">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 relative">
+                    <div class="absolute inset-0 bg-primary-100 rounded-xl sm:rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
+                    <div class="absolute inset-0 bg-white rounded-xl sm:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-4 z-10">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2190/2190552.png" alt="Feedback" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
+                    </div>
+                </div>
+                <h3 class="text-sm sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary-600 transition-colors">E-Mrejesho</h3>
+                <p class="text-[10px] sm:text-sm text-gray-600 leading-tight sm:leading-relaxed">Mrejesho wa papo hapo.</p>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Search Section (Previously Hero, now a section below Hero) -->
-<div class="search-section py-5" style="background: #f8f9fa; border-top: 1px solid #eee;">
-    <div class="container py-4">
-        <div class="text-center mb-4">
-            <h3 class="font-weight-bold">Tafuta Matokeo Hapa</h3>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <form action="#" method="GET">
-                            <div class="row align-items-end">
-                                <div class="col-md-3 mb-3 mb-md-0">
-                                    <label class="font-weight-bold small text-uppercase">Mwaka</label>
-                                    <select class="form-control select2">
-                                        <option value="">-- Mwaka --</option>
-                                        @foreach($years as $year)
-                                            <option value="{{ $year->id }}">{{ $year->year }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3 mb-3 mb-md-0">
-                                    <label class="font-weight-bold small text-uppercase">Level</label>
-                                    <select class="form-control select2">
-                                        <option value="">-- Level --</option>
-                                        @foreach($levels as $level)
-                                            <option value="{{ $level->id }}">{{ $level->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3 mb-3 mb-md-0">
-                                    <label class="font-weight-bold small text-uppercase">Mkoa</label>
-                                    <select class="form-control select2">
-                                        <option value="">-- Mkoa --</option>
-                                        @foreach($regions as $region)
-                                            <option value="{{ $region->id }}">{{ $region->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <button type="submit" class="btn btn-success btn-block font-weight-bold py-2">
-                                        <i class="fas fa-search mr-2"></i> TAFUTA
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Announcements -->
-<div class="bg-dark text-white py-3 overflow-hidden">
-    <div class="container d-flex align-items-center">
-        <span class="badge badge-success mr-3 px-3">BREAKING</span>
-        <marquee behavior="scroll" direction="left">
-            @forelse($announcements as $announcement)
-                <span class="mx-4 font-weight-bold"><i class="fas fa-bullhorn text-warning mr-2"></i> {{ $announcement->title }}</span>
-            @empty
-                <span>Hakuna matangazo mapya kwa sasa.</span>
-            @endforelse
-        </marquee>
-    </div>
-</div>
-
-<!-- Featured Results -->
-<div class="container py-5 mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h2 class="font-weight-bold mb-0">Matokeo Mapya</h2>
-        <a href="#" class="text-success font-weight-bold">See all results <i class="fas fa-arrow-right ml-1"></i></a>
-    </div>
-
-    <div class="row">
-        @forelse($latestResults as $result)
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100 shadow-sm border-0 result-card p-2" style="border-radius: 12px;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <span class="badge badge-light border text-success px-2 py-1">{{ $result->resultTitle->level->name }}</span>
-                            <span class="text-muted small"><i class="far fa-calendar-alt"></i> {{ $result->resultTitle->year->year }}</span>
-                        </div>
-                        <h5 class="card-title font-weight-bold mb-2">{{ $result->school->name }}</h5>
-                        <p class="text-muted small mb-0"><i class="fas fa-map-marker-alt mr-1"></i> {{ $result->resultTitle->region->name }}</p>
-                    </div>
-                    <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
-                        <a href="{{ asset('storage/' . $result->file_path) }}" target="_blank" class="btn btn-outline-success btn-block btn-sm font-weight-bold">
-                            View PDF Result
-                        </a>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="col-12 text-center py-5">
-                <p class="text-muted">No results found.</p>
-            </div>
-        @endforelse
-    </div>
-</div>
-
-<style>
-    .hero-wrap {
-        background: radial-gradient(circle at 50% 50%, #fefefe 0%, #f5f5f5 100%);
-    }
-    .result-card:hover {
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-        transform: translateY(-5px);
-        transition: all 0.3s ease;
-    }
-    .opacity-7 { opacity: 0.7; }
-</style>
+</section>
 @endsection
 
 @push('css')
@@ -195,5 +140,40 @@ $(function () {
       theme: 'bootstrap4'
   });
 });
+
+function showAnnouncement(title, content, type) {
+    let icon = 'info';
+    let confirmBtnClass = 'bg-primary-600';
+    
+    if (type === 'Alert') {
+        icon = 'error';
+        confirmBtnClass = 'bg-red-600';
+    } else if (type === 'New') {
+        icon = 'success';
+        confirmBtnClass = 'bg-green-600';
+    } else if (type === 'Update') {
+        icon = 'info';
+        confirmBtnClass = 'bg-blue-600';
+    }
+
+    Swal.fire({
+        title: `<h3 class="text-xl font-bold text-gray-900">${title}</h3>`,
+        html: `<div class="text-left text-gray-600 leading-relaxed">${content}</div>`,
+        icon: icon,
+        confirmButtonText: 'Sawa, nimeelewa',
+        customClass: {
+            confirmButton: `px-6 py-2.5 rounded-lg text-white font-bold transition-all ${confirmBtnClass}`,
+            popup: 'rounded-2xl shadow-2xl border-0'
+        },
+        buttonsStyling: false,
+        showCloseButton: true,
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+        }
+    });
+}
 </script>
 @endpush
