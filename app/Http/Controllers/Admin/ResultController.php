@@ -192,10 +192,27 @@ class ResultController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kuna hitilafu imetokea: ' . $e->getMessage(),
+                ], 500);
+            }
+
             return back()->with('error', 'Kuna hitilafu imetokea: ' . $e->getMessage());
         }
 
         $message = "Mafaili $count yamepakiwa kikamilifu.";
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'count' => $count,
+                'errors' => $errors,
+            ]);
+        }
+
         if (!empty($errors)) {
             return redirect()->route('admin.results.index')->with('success', $message)->with('warning_list', $errors);
         }
