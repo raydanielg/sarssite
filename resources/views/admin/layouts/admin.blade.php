@@ -130,13 +130,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.regions.index') }}" class="nav-link {{ request()->is('admin/regions') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Regions</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.regions.create') }}" class="nav-link {{ request()->is('admin/regions/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Region</p>
                 </a>
@@ -155,13 +155,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.schools.index') }}" class="nav-link {{ request()->is('admin/schools') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Schools</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.schools.create') }}" class="nav-link {{ request()->is('admin/schools/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add School</p>
                 </a>
@@ -170,6 +170,31 @@
           </li>
 
           <li class="nav-header">RESULTS</li>
+
+          <!-- Result Categories (Titles) -->
+          <li class="nav-item {{ request()->is('admin/result-titles*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('admin/result-titles*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-tags"></i>
+              <p>
+                Result Titles
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.result-titles.index') }}" class="nav-link {{ request()->is('admin/result-titles') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Titles</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.result-titles.create') }}" class="nav-link {{ request()->is('admin/result-titles/create') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Title</p>
+                </a>
+              </li>
+            </ul>
+          </li>
 
           <!-- Results -->
           <li class="nav-item {{ request()->is('admin/results*') ? 'menu-open' : '' }}">
@@ -182,21 +207,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.results.index') }}" class="nav-link {{ request()->is('admin/results') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Results</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.results.create') }}" class="nav-link {{ request()->is('admin/results/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Upload Result</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Bulk Upload</p>
                 </a>
               </li>
             </ul>
@@ -222,13 +241,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->is('admin/announcements') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Announcements</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.announcements.create') }}" class="nav-link {{ request()->is('admin/announcements/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Announcement</p>
                 </a>
@@ -239,8 +258,8 @@
           <li class="nav-header">SYSTEM</li>
 
           <!-- Admins -->
-          <li class="nav-item {{ request()->is('admin/users*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is('admin/users*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is('admin/admins*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('admin/admins*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Admins
@@ -249,13 +268,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.admins.index') }}" class="nav-link {{ request()->is('admin/admins') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Admins</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.admins.create') }}" class="nav-link {{ request()->is('admin/admins/create') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Admin</p>
                 </a>
