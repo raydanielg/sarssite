@@ -9,73 +9,73 @@
     <div class="col-lg-2 col-6">
         <div class="small-box bg-info elevation-2">
             <div class="inner">
-                <h3>5</h3>
+                <h3>{{ number_format($yearsCount ?? 0) }}</h3>
                 <p>Years</p>
             </div>
             <div class="icon">
                 <i class="fas fa-calendar-alt"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('admin.years.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-2 col-6">
         <div class="small-box bg-success elevation-2">
             <div class="inner">
-                <h3>2</h3>
+                <h3>{{ number_format($levelsCount ?? 0) }}</h3>
                 <p>Levels</p>
             </div>
             <div class="icon">
                 <i class="fas fa-graduation-cap"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('admin.levels.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-2 col-6">
         <div class="small-box bg-warning elevation-2">
             <div class="inner">
-                <h3>26</h3>
+                <h3>{{ number_format($regionsCount ?? 0) }}</h3>
                 <p>Regions</p>
             </div>
             <div class="icon">
                 <i class="fas fa-globe-africa"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('admin.regions.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-2 col-6">
         <div class="small-box bg-danger elevation-2">
             <div class="inner">
-                <h3>150</h3>
+                <h3>{{ number_format($schoolsCount ?? 0) }}</h3>
                 <p>Schools</p>
             </div>
             <div class="icon">
                 <i class="fas fa-school"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('admin.schools.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-2 col-6">
         <div class="small-box bg-primary elevation-2">
             <div class="inner">
-                <h3>1,240</h3>
+                <h3>{{ number_format($resultsCount ?? 0) }}</h3>
                 <p>Results</p>
             </div>
             <div class="icon">
                 <i class="fas fa-file-pdf"></i>
             </div>
-            <a href="#" class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('admin.results.index') }}" class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-2 col-6">
         <div class="small-box bg-secondary elevation-2">
             <div class="inner">
-                <h3>12</h3>
+                <h3>{{ number_format($draftsCount ?? 0) }}</h3>
                 <p>Pending</p>
             </div>
             <div class="icon">
                 <i class="fas fa-clock"></i>
             </div>
-            <a href="#" class="small-box-footer">Drafts <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('admin.results.index', ['status' => 'Draft']) }}" class="small-box-footer">Drafts <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 </div>
@@ -124,24 +124,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>St. Mary Secondary</td>
-                            <td>2026</td>
-                            <td>O-Level</td>
-                            <td><span class="badge badge-success">Published</span></td>
-                        </tr>
-                        <tr>
-                            <td>Mwanza High School</td>
-                            <td>2025</td>
-                            <td>A-Level</td>
-                            <td><span class="badge badge-success">Published</span></td>
-                        </tr>
-                        <tr>
-                            <td>Dodge Memorial</td>
-                            <td>2026</td>
-                            <td>O-Level</td>
-                            <td><span class="badge badge-warning">Draft</span></td>
-                        </tr>
+                        @forelse($recentResults ?? [] as $r)
+                            <tr>
+                                <td>{{ optional($r->school)->name ?? '-' }}</td>
+                                <td>{{ optional(optional($r->resultTitle)->year)->year ?? '-' }}</td>
+                                <td>{{ optional(optional($r->resultTitle)->level)->name ?? '-' }}</td>
+                                <td>
+                                    @if(($r->status ?? '') === 'Published')
+                                        <span class="badge badge-success">Published</span>
+                                    @else
+                                        <span class="badge badge-warning">Draft</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No recent activity</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -154,10 +154,12 @@
                 <h3 class="card-title">System Alerts & Status</h3>
             </div>
             <div class="card-body">
-                <div class="alert alert-warning alert-dismissible">
-                    <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
-                    No results uploaded for 2026 A-Level yet.
-                </div>
+                @if(!empty($latestYearLevelMissing))
+                    <div class="alert alert-warning alert-dismissible">
+                        <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
+                        No results uploaded for {{ $latestYearLevelMissing }} yet.
+                    </div>
+                @endif
                 
                 <div class="progress-group">
                     Storage Usage
@@ -169,7 +171,7 @@
 
                 <div class="mt-4">
                     <p class="mb-1 text-sm text-muted">Server Status: <span class="text-success">Online</span></p>
-                    <p class="mb-1 text-sm text-muted">Database: <span class="text-info">SQLite</span></p>
+                    <p class="mb-1 text-sm text-muted">Database: <span class="text-info">{{ strtoupper($dbDriver ?? '-') }}</span></p>
                 </div>
             </div>
         </div>
@@ -184,7 +186,7 @@
         // Line Chart
         var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
         var lineChartData = {
-            labels: ['2023', '2024', '2025', '2026'],
+            labels: @json(($yearLabels ?? [])),
             datasets: [
                 {
                     label: 'Results Uploaded',
@@ -195,7 +197,7 @@
                     pointStrokeColor: 'rgba(60,141,188,1)',
                     pointHighlightFill: '#fff',
                     pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data: [450, 680, 920, 1240]
+                    data: @json(($yearData ?? []))
                 }
             ]
         }
@@ -217,10 +219,10 @@
         // Pie Chart
         var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
         var pieData = {
-            labels: ['O-Level', 'A-Level'],
+            labels: @json(($levelLabels ?? [])),
             datasets: [
                 {
-                    data: [700, 540],
+                    data: @json(($levelData ?? [])),
                     backgroundColor: ['#28a745', '#007bff'],
                 }
             ]
