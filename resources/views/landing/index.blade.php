@@ -33,7 +33,7 @@
             Your Academic <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-green-500">Success</span> Starts Here
         </h1>
         <p class="mb-8 text-lg font-medium text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400 animate__animated animate__fadeInUp animate__delay-1s">
-            Access your results quickly, securely, and easily. Student Academic Results System (SARS) brings transparency and efficiency to school performance management.
+            Access your results quickly, securely, and easily. THE REGIONAL EXAMINATION SYSTEM brings transparency and efficiency to school performance management.
         </p>
         <div class="flex flex-row items-center justify-center mb-8 lg:mb-16 space-x-2 sm:space-x-4 animate__animated animate__zoomIn animate__delay-2s px-2">
             <a href="{{ route('results.index') }}" class="flex-1 sm:flex-none inline-flex justify-center items-center py-3 px-4 sm:px-8 text-xs sm:text-base font-black text-center text-white rounded-xl bg-primary-600 hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-200 focus:ring-4 focus:ring-primary-300 transition-all uppercase tracking-wider group relative overflow-hidden whitespace-nowrap">
