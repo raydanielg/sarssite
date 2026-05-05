@@ -89,4 +89,19 @@ class ResultTitleController extends Controller
 
         return redirect()->route('admin.result-titles.index')->with('success', 'Result Category deleted successfully.');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'Tafadhali chagua angalau item moja.'], 400);
+        }
+
+        try {
+            ResultTitle::whereIn('id', $ids)->delete();
+            return response()->json(['success' => true, 'message' => 'Items zilizochaguliwa zimefutwa kikamilifu.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
 }

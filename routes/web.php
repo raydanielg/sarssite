@@ -36,6 +36,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('regions', App\Http\Controllers\Admin\RegionController::class);
     Route::resource('schools', App\Http\Controllers\Admin\SchoolController::class);
     Route::resource('result-summaries', App\Http\Controllers\Admin\ResultSummaryController::class);
+    Route::post('result-titles/bulk-delete', [App\Http\Controllers\Admin\ResultTitleController::class, 'bulkDelete'])->name('result-titles.bulk-delete');
     Route::get('bulk-summaries', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkUploadForm'])->name('result-summaries.bulk-upload-form');
     Route::post('bulk-summaries', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkUpload'])->name('result-summaries.bulk-upload');
     Route::resource('result-titles', App\Http\Controllers\Admin\ResultTitleController::class);

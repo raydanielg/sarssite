@@ -11,7 +11,7 @@
             <!-- Middle: NECTA Title -->
             <div class="text-center flex-1 px-4">
                 <h1 class="text-yellow-400 text-lg lg:text-3xl font-bold uppercase tracking-tight leading-tight">
-                    THE NATIONAL EXAMINATIONS COUNCIL OF TANZANIA
+                    THE REGIONAL EXAMINATION SYSTEM
                 </h1>
             </div>
 
