@@ -421,26 +421,35 @@
 
             if (failedCount > 0) {
                 Swal.fire({
-                    title: 'Upload completed with errors',
-                    text: `${doneCount} uploaded, ${failedCount} failed.`,
-                    icon: 'warning'
+                    title: 'Upload Imekamilika na Hitilafu',
+                    text: `Mafaili ${doneCount} yamepakiwa, ${failedCount} yamefeli.`,
+                    icon: 'warning',
+                    confirmButtonText: 'Sawa'
+                }).then(() => {
+                    window.location.href = "{{ route('admin.results.index') }}";
                 });
                 return;
             }
 
             if (warningList.length > 0) {
                 Swal.fire({
-                    title: 'Uploaded with warnings',
-                    text: `${doneCount} uploaded. Some files had name format issues.`,
-                    icon: 'warning'
+                    title: 'Yamepakiwa na Onyo',
+                    text: `Mafaili ${doneCount} yamepakiwa. Baadhi ya majina ya mafaili hayakuwa sahihi.`,
+                    icon: 'warning',
+                    confirmButtonText: 'Sawa'
+                }).then(() => {
+                    window.location.href = "{{ route('admin.results.index') }}";
                 });
                 return;
             }
 
             Swal.fire({
-                title: 'Success!',
-                text: `${doneCount} files uploaded successfully.`,
-                icon: 'success'
+                title: 'Hongera!',
+                text: `Mafaili yote ${doneCount} yamepakiwa kikamilifu.`,
+                icon: 'success',
+                confirmButtonText: 'Sawa'
+            }).then(() => {
+                window.location.href = "{{ route('admin.results.index') }}";
             });
         }
 
