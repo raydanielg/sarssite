@@ -69,7 +69,10 @@ class ResultsController extends Controller
 
         $results = $query->get();
 
-        return view('landing.results.final', compact('yearData', 'level', 'resultTitle', 'results'));
+        // Fetch Result Summaries for this Title
+        $summaries = \App\Models\ResultSummary::where('result_title_id', $resultTitle->id)->get();
+
+        return view('landing.results.final', compact('yearData', 'level', 'resultTitle', 'results', 'summaries'));
     }
 
     public function viewPdf(Request $request)

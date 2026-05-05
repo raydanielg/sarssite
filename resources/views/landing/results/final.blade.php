@@ -60,7 +60,33 @@
     }
     .col-blue { background-color: #d1e9ff; }
     .col-pink { background-color: #fce4ec; }
-    .col-green { background-color: #dcfce7; }
+    .summary-item {
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+    .summary-item:hover {
+        background: #f8fafc;
+        transform: translateX(5px);
+    }
+    .summary-item a {
+        color: #1e40af;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .tab-btn {
+        transition: all 0.3s;
+        border-bottom: 3px solid transparent;
+    }
+    .tab-btn.active {
+        background: #f59e0b;
+        color: #000;
+        border-bottom-color: #d97706;
+    }
 
     @media (max-width: 768px) {
         .schools-container {
@@ -86,68 +112,140 @@
 <section class="pt-24 pb-12 bg-[#e2e2e2] min-h-screen">
     <div class="container mx-auto px-2 max-w-7xl">
         
-        <!-- Filter Section -->
+        <!-- Filter & Tabs Section -->
         <div class="text-center mb-6">
-            <div class="flex justify-center gap-2 mb-4">
-                <a href="{{ request()->fullUrlWithQuery(['letter' => 'ALL']) }}" class="all-centres-btn uppercase">All Centres</a>
-                <button class="bg-[#dbeafe] text-[#1e40af] px-3 py-1 border border-blue-800 font-bold text-[13px] uppercase">Private Candidates (PC)</button>
+            <div class="flex justify-center gap-2 mb-6">
+                <button onclick="switchTab('schools')" id="schools-tab-btn" class="tab-btn active px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
+                    <i class="ri-school-line mr-1"></i> School List
+                </button>
+                <button onclick="switchTab('summaries')" id="summaries-tab-btn" class="tab-btn px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
+                    <i class="ri-file-list-3-line mr-1"></i> Result Summary
+                </button>
             </div>
             
-            <p class="text-[11px] font-bold text-gray-700 mb-2 tracking-wide">CLICK ANY LETTER BELOW TO FILTER SCHOOLS BY ALPHABET</p>
-            
-            <div class="flex flex-wrap justify-center gap-0.5 max-w-2xl mx-auto mb-6">
-                @foreach(range('A', 'Z') as $char)
-                    <a href="{{ request()->fullUrlWithQuery(['letter' => $char]) }}" 
-                       class="alpha-link {{ request('letter') == $char ? 'active' : '' }}">
-                        {{ $char }}
+            <div id="schools-filters">
+                <p class="text-[11px] font-bold text-gray-700 mb-2 tracking-wide">CLICK ANY LETTER BELOW TO FILTER SCHOOLS BY ALPHABET</p>
+                
+                <div class="flex flex-wrap justify-center gap-0.5 max-w-2xl mx-auto mb-6">
+                    <a href="{{ request()->fullUrlWithQuery(['letter' => 'ALL']) }}" 
+                       class="alpha-link {{ request('letter') == 'ALL' || !request('letter') ? 'active' : '' }}">
+                        ALL
                     </a>
-                @endforeach
-            </div>
-
-            <!-- Search Input -->
-            <div class="max-w-md mx-auto relative mb-8">
-                <form action="{{ url()->current() }}" method="GET">
-                    @if(request('letter')) <input type="hidden" name="letter" value="{{ request('letter') }}"> @endif
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Andika jina la shule, mf. 'Nyakato' au 'Girls'"
-                           class="w-full pl-4 pr-10 py-2 border border-gray-400 text-sm focus:outline-none focus:border-blue-500 shadow-inner">
-                    @if(request('search'))
-                        <a href="{{ request()->fullUrlWithQuery(['search' => '']) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <i class="ri-close-line"></i>
+                    @foreach(range('A', 'Z') as $char)
+                        <a href="{{ request()->fullUrlWithQuery(['letter' => $char]) }}" 
+                           class="alpha-link {{ request('letter') == $char ? 'active' : '' }}">
+                            {{ $char }}
                         </a>
-                    @endif
-                </form>
+                    @endforeach
+                </div>
+
+                <!-- Search Input -->
+                <div class="max-w-md mx-auto relative mb-8">
+                    <form action="{{ url()->current() }}" method="GET">
+                        @if(request('letter')) <input type="hidden" name="letter" value="{{ request('letter') }}"> @endif
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               placeholder="Andika jina la shule, mf. 'Nyakato' au 'Girls'"
+                               class="w-full pl-4 pr-10 py-2 border border-gray-400 text-sm focus:outline-none focus:border-blue-500 shadow-inner rounded-sm">
+                        @if(request('search'))
+                            <a href="{{ request()->fullUrlWithQuery(['search' => '']) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i class="ri-close-line"></i>
+                            </a>
+                        @endif
+                    </form>
+                </div>
             </div>
         </div>
 
-        <!-- Schools Grid -->
-        @php
-            $count = $results->count();
-            // Kwenye PC tunataka 3 columns, kwenye Mobile 2 columns.
-            // Tutatengeneza list moja kisha CSS itapanga columns.
-        @endphp
+        <!-- Content Sections -->
+        <div id="schools-content">
+            @php
+                $count = $results->count();
+            @endphp
 
-        @if($count > 0)
-            <div class="schools-container animate__animated animate__fadeIn">
-                @foreach($results as $index => $result)
-                    @php
-                        // Hii logic ni kwa ajili ya kupanga rangi tu kulingana na index
-                        $colColorClass = '';
-                        $mod = $index % 3;
-                        if ($mod == 0) $colColorClass = 'col-blue';
-                        elseif ($mod == 1) $colColorClass = 'col-pink';
-                        else $colColorClass = 'col-green';
-                    @endphp
-                    <div class="school-item {{ $colColorClass }}">
-                        <a href="{{ route('results.view_pdf', ['file' => $result->file_path]) }}">
-                            {{ $result->school->code }} – {{ strtoupper($result->school->name) }}
-                        </a>
-                    </div>
-                @endforeach
+            @if($count > 0)
+                <div class="schools-container animate__animated animate__fadeIn">
+                    @foreach($results as $index => $result)
+                        @php
+                            $colColorClass = '';
+                            $mod = $index % 3;
+                            if ($mod == 0) $colColorClass = 'col-blue';
+                            elseif ($mod == 1) $colColorClass = 'col-pink';
+                            else $colColorClass = 'col-green';
+                        @endphp
+                        <div class="school-item {{ $colColorClass }}">
+                            <a href="{{ route('results.view_pdf', ['file' => $result->file_path]) }}">
+                                {{ $result->school->code }} – {{ strtoupper($result->school->name) }}
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="bg-white p-12 text-center border border-gray-300 rounded shadow-sm">
+                    <i class="ri-search-line text-4xl text-gray-300 mb-2"></i>
+                    <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">Hakuna shule iliyopatikana.</p>
+                </div>
+            @endif
+        </div>
+
+        <div id="summaries-content" class="hidden">
+            <div class="max-w-3xl mx-auto bg-white border border-gray-300 shadow-sm animate__animated animate__fadeIn">
+                <div class="bg-gray-50 p-4 border-b border-gray-200">
+                    <h4 class="text-sm font-black text-[#1e293b] uppercase tracking-wider flex items-center gap-2">
+                        <i class="ri-file-info-line text-blue-600"></i> Posted Result Summaries
+                    </h4>
+                </div>
+                <div class="divide-y divide-gray-100">
+                    @forelse($summaries as $summary)
+                        <div class="summary-item bg-white">
+                            <a href="{{ route('results.view_pdf', ['file' => $summary->file_path]) }}">
+                                <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
+                                <span>{{ strtoupper($summary->name) }}</span>
+                                <span class="ml-auto text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded uppercase tracking-tighter">View PDF</span>
+                            </a>
+                        </div>
+                    @empty
+                        <div class="p-12 text-center">
+                            <i class="ri-file-list-off-line text-4xl text-gray-300 mb-2"></i>
+                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Hakuna muhtasari wa matokeo uliowekwa.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
-        @else
-            <div class="bg-white p-12 text-center border border-gray-300 rounded shadow-sm">
-                <i class="ri-search-line text-4xl text-gray-300 mb-2"></i>
+        </div>
+    </div>
+</section>
+
+<script>
+    function switchTab(tab) {
+        const schoolsBtn = document.getElementById('schools-tab-btn');
+        const summariesBtn = document.getElementById('summaries-tab-btn');
+        const schoolsFilters = document.getElementById('schools-filters');
+        const schoolsContent = document.getElementById('schools-content');
+        const summariesContent = document.getElementById('summaries-content');
+
+        if (tab === 'schools') {
+            schoolsBtn.classList.add('active');
+            summariesBtn.classList.remove('active');
+            schoolsFilters.classList.remove('hidden');
+            schoolsContent.classList.remove('hidden');
+            summariesContent.classList.add('hidden');
+        } else {
+            summariesBtn.classList.add('active');
+            schoolsBtn.classList.remove('active');
+            schoolsFilters.classList.add('hidden');
+            schoolsContent.classList.add('hidden');
+            summariesContent.classList.remove('hidden');
+        }
+    }
+
+    // Auto-switch to schools tab if there's a search or letter filter
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('search') || (urlParams.has('letter') && urlParams.get('letter') !== 'ALL')) {
+            switchTab('schools');
+        }
+    };
+</script>
                 <p class="text-gray-500 font-bold uppercase tracking-widest text-sm">Hakuna shule iliyoonekana kwa utafutaji huu.</p>
                 <a href="{{ url()->current() }}" class="text-blue-600 text-xs underline mt-2 inline-block">Reset search</a>
             </div>
