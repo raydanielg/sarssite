@@ -15,8 +15,10 @@ class CreateResultsTable extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('result_title_id')->constrained()->onDelete('cascade');
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('result_title_id');
+            $table->unsignedBigInteger('school_id');
+            $table->index('result_title_id');
+            $table->index('school_id');
             $table->text('description')->nullable();
             $table->string('file_path');
             $table->enum('status', ['Published', 'Draft'])->default('Draft');
