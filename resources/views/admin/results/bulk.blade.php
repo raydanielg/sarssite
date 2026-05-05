@@ -170,6 +170,8 @@
         const doneUploadsBtn = $('#doneUploadsBtn');
         const closeProgressModalBtn = $('#closeProgressModalBtn');
 
+        const maxConcurrentUploads = 3;
+
         let uploadQueue = [];
         let doneCount = 0;
         let failedCount = 0;
@@ -349,7 +351,7 @@
             addToQueue(fileInput[0].files);
 
             cancelUploadsBtn.prop('disabled', false);
-            uploadProgressSummary.text('Uploading files one by one...');
+            uploadProgressSummary.text(`Uploading (fast mode: ${maxConcurrentUploads} at a time)...`);
             progressModal.modal('show');
 
             uploadBtn.prop('disabled', true);
@@ -358,38 +360,52 @@
 
             isUploading = true;
 
-            for (const item of uploadQueue) {
-                if (cancelRequested) {
-                    setRowStatus(item.id, 'canceled', 'Canceled', 'badge-warning');
-                    continue;
+            let nextIndex = 0;
+            const total = uploadQueue.length;
+
+            const worker = async () => {
+                while (nextIndex < total && !cancelRequested) {
+                    const item = uploadQueue[nextIndex++];
+
+                    setRowStatus(item.id, 'uploading', 'Uploading', 'badge-info');
+                    setRowProgress(item.id, 0);
+
+                    try {
+                        const resp = await uploadSingleFile(item);
+
+                        if (resp && resp.errors && resp.errors.length > 0) {
+                            warningList = warningList.concat(resp.errors);
+                        }
+
+                        setRowStatus(item.id, 'done', 'Done', 'badge-success');
+                        setRowProgress(item.id, 100);
+                        doneCount++;
+                        updateOverallProgress();
+
+                        setTimeout(() => {
+                            $(`#upload-row-${item.id}`).fadeOut(250, function() { $(this).remove(); });
+                        }, 400);
+                    } catch (xhr) {
+                        failedCount++;
+                        setRowStatus(item.id, 'failed', 'Failed', 'badge-danger');
+                        if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                            warningList.push(`${item.file.name}: ${xhr.responseJSON.message}`);
+                        } else {
+                            warningList.push(`${item.file.name}: Upload failed`);
+                        }
+                    }
                 }
+            };
 
-                setRowStatus(item.id, 'uploading', 'Uploading', 'badge-info');
-                setRowProgress(item.id, 0);
+            const workers = [];
+            for (let i = 0; i < maxConcurrentUploads; i++) {
+                workers.push(worker());
+            }
+            await Promise.all(workers);
 
-                try {
-                    const resp = await uploadSingleFile(item);
-
-                    if (resp && resp.errors && resp.errors.length > 0) {
-                        warningList = warningList.concat(resp.errors);
-                    }
-
-                    setRowStatus(item.id, 'done', 'Done', 'badge-success');
-                    setRowProgress(item.id, 100);
-                    doneCount++;
-                    updateOverallProgress();
-
-                    setTimeout(() => {
-                        $(`#upload-row-${item.id}`).fadeOut(250, function() { $(this).remove(); });
-                    }, 400);
-                } catch (xhr) {
-                    failedCount++;
-                    setRowStatus(item.id, 'failed', 'Failed', 'badge-danger');
-                    if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
-                        warningList.push(`${item.file.name}: ${xhr.responseJSON.message}`);
-                    } else {
-                        warningList.push(`${item.file.name}: Upload failed`);
-                    }
+            if (cancelRequested) {
+                for (let i = nextIndex; i < uploadQueue.length; i++) {
+                    setRowStatus(uploadQueue[i].id, 'canceled', 'Canceled', 'badge-warning');
                 }
             }
 
