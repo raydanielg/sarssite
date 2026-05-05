@@ -221,6 +221,37 @@
             </ul>
           </li>
 
+          <!-- Result Summaries -->
+          <li class="nav-item {{ request()->is('admin/result-summaries*') || request()->is('admin/bulk-summaries') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('admin/result-summaries*') || request()->is('admin/bulk-summaries') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-file-alt"></i>
+              <p>
+                Result Summaries
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.result-summaries.index') }}" class="nav-link {{ request()->is('admin/result-summaries') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Summaries</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.result-summaries.create') }}" class="nav-link {{ request()->is('admin/result-summaries/create') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Upload Summary</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.result-summaries.bulk-upload-form') }}" class="nav-link {{ request()->is('admin/bulk-summaries') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Bulk Upload</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
           <!-- Results -->
           <li class="nav-item {{ request()->is('admin/results*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is('admin/results*') ? 'active' : '' }}">
