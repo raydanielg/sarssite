@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', [App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+Route::get('/sitemap', [App\Http\Controllers\LandingController::class, 'sitemap'])->name('sitemap');
+Route::get('/sitemap.xml', [App\Http\Controllers\LandingController::class, 'sitemapXml'])->name('sitemap.xml');
 Route::get('/api/exams-by-year', [App\Http\Controllers\Landing\ResultsController::class, 'getExamsByYear'])->name('api.exams-by-year');
 Route::get('/results', [App\Http\Controllers\Landing\ResultsController::class, 'index'])->name('results.index');
 Route::get('/results/tour', [App\Http\Controllers\Landing\ResultsController::class, 'tour'])->name('results.tour');

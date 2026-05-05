@@ -36,8 +36,11 @@
                     <div class="h-0.5 w-10 bg-primary-600 rounded-full"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <a href="#" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
+                    <a href="{{ route('landing') }}" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
                         <i class="ri-arrow-right-s-line text-primary-600 group-hover:translate-x-1 transition-transform"></i> Home
+                    </a>
+                    <a href="{{ route('sitemap') }}" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
+                        <i class="ri-arrow-right-s-line text-primary-600 group-hover:translate-x-1 transition-transform"></i> Sitemap
                     </a>
                     <a href="#" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
                         <i class="ri-arrow-right-s-line text-primary-600 group-hover:translate-x-1 transition-transform"></i> About Us
@@ -45,7 +48,7 @@
                     <a href="#" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
                         <i class="ri-arrow-right-s-line text-primary-600 group-hover:translate-x-1 transition-transform"></i> Exams
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
+                    <a href="{{ route('results.index') }}" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
                         <i class="ri-arrow-right-s-line text-primary-600 group-hover:translate-x-1 transition-transform"></i> Results
                     </a>
                     <a href="#" class="text-gray-400 hover:text-primary-500 text-sm flex items-center gap-2 transition-colors group">
