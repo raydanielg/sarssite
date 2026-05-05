@@ -420,9 +420,16 @@
             uploadBtn.html('<i class="fas fa-upload mr-2"></i> Anza Kupakia Sasa');
 
             if (failedCount > 0) {
+                let errorListHtml = '<ul class="text-left small mt-3" style="max-height: 200px; overflow-y: auto;">';
+                warningList.slice(0, 10).forEach(err => {
+                    errorListHtml += `<li>${err}</li>`;
+                });
+                if (warningList.length > 10) errorListHtml += `<li>...na mengine ${warningList.length - 10}</li>`;
+                errorListHtml += '</ul>';
+
                 Swal.fire({
                     title: 'Upload Imekamilika na Hitilafu',
-                    text: `Mafaili ${doneCount} yamepakiwa, ${failedCount} yamefeli.`,
+                    html: `Mafaili <b>${doneCount}</b> yamepakiwa, <b>${failedCount}</b> yamefeli.<br>${errorListHtml}`,
                     icon: 'warning',
                     confirmButtonText: 'Sawa'
                 }).then(() => {
@@ -432,9 +439,16 @@
             }
 
             if (warningList.length > 0) {
+                let warningListHtml = '<ul class="text-left small mt-3" style="max-height: 200px; overflow-y: auto;">';
+                warningList.slice(0, 10).forEach(warn => {
+                    warningListHtml += `<li>${warn}</li>`;
+                });
+                if (warningList.length > 10) warningListHtml += `<li>...na mengine ${warningList.length - 10}</li>`;
+                warningListHtml += '</ul>';
+
                 Swal.fire({
                     title: 'Yamepakiwa na Onyo',
-                    text: `Mafaili ${doneCount} yamepakiwa. Baadhi ya majina ya mafaili hayakuwa sahihi.`,
+                    html: `Mafaili <b>${doneCount}</b> yamepakiwa. Baadhi ya mafaili yalikuwa na majina yasiyo sahihi:<br>${warningListHtml}`,
                     icon: 'warning',
                     confirmButtonText: 'Sawa'
                 }).then(() => {

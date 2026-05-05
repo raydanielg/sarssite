@@ -158,8 +158,8 @@ class ResultController extends Controller
                 $originalName = $file->getClientOriginalName(); // e.g., S0104-BWIRU BOYS SECONDARY.pdf
                 $filename = pathinfo($originalName, PATHINFO_FILENAME);
                 
-                // Extract code and name using regex: S0104-BWIRU BOYS SECONDARY
-                if (preg_match('/^([A-Z0-9]+)-(.*)$/i', $filename, $matches)) {
+                // Extract code and name using regex: S0104-BWIRU BOYS SECONDARY or S0104 - BWIRU BOYS SECONDARY
+                if (preg_match('/^([A-Z0-9]+)\s*-\s*(.*)$/i', $filename, $matches)) {
                     $schoolCode = trim($matches[1]);
                     $schoolName = trim($matches[2]);
 
