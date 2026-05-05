@@ -29,20 +29,23 @@
                 <i class="ri-arrow-right-s-line ml-2 text-lg"></i>
             </a>
         @endif
-        <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-            Welcome to <span class="text-primary-600">SARS</span> Portal
+        <h1 class="mb-4 text-4xl font-black tracking-tight leading-none text-gray-900 md:text-5xl lg:text-7xl dark:text-white animate__animated animate__fadeInDown">
+            Your Academic <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-green-500">Success</span> Starts Here
         </h1>
-        <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-            Student Academic Results System (SARS) is a modern marking and results management system designed to unlock long-term value and drive school performance growth.
+        <p class="mb-8 text-lg font-medium text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400 animate__animated animate__fadeInUp animate__delay-1s">
+            Access your results quickly, securely, and easily. Student Academic Results System (SARS) brings transparency and efficiency to school performance management.
         </p>
-        <div class="flex flex-row items-center justify-center mb-8 lg:mb-16 space-x-3 sm:space-x-4">
-            <a href="#" class="inline-flex justify-center items-center py-2.5 px-4 sm:py-3 sm:px-5 text-xs sm:text-base font-bold text-center text-white rounded-lg bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 transition-all uppercase tracking-tight group whitespace-nowrap">
-                Get started
-                <i class="ri-arrow-right-line ml-1 sm:ml-2 text-sm sm:text-xl group-hover:translate-x-1 transition-transform"></i>
+        <div class="flex flex-row items-center justify-center mb-8 lg:mb-16 space-x-2 sm:space-x-4 animate__animated animate__zoomIn animate__delay-2s px-2">
+            <a href="{{ route('results.index') }}" class="flex-1 sm:flex-none inline-flex justify-center items-center py-3 px-4 sm:px-8 text-xs sm:text-base font-black text-center text-white rounded-xl bg-primary-600 hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-200 focus:ring-4 focus:ring-primary-300 transition-all uppercase tracking-wider group relative overflow-hidden whitespace-nowrap">
+                <span class="relative z-10 flex items-center">
+                    Check Results
+                    <i class="ri-arrow-right-line ml-1 sm:ml-2 text-lg sm:text-xl group-hover:translate-x-1 transition-transform"></i>
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             </a>
-            <a href="#" class="inline-flex justify-center items-center py-2.5 px-4 sm:py-3 sm:px-5 text-xs sm:text-base font-bold text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all uppercase tracking-tight group whitespace-nowrap">
-                <i class="ri-play-circle-fill mr-1 sm:mr-2 text-sm sm:text-xl group-hover:scale-110 transition-transform text-primary-600"></i>
-                Watch demo
+            <a href="{{ route('results.tour') }}" class="flex-1 sm:flex-none inline-flex justify-center items-center py-3 px-4 sm:px-8 text-xs sm:text-base font-bold text-center text-gray-900 rounded-xl border-2 border-gray-200 hover:border-primary-600 hover:text-primary-600 hover:bg-primary-50 focus:ring-4 focus:ring-gray-100 transition-all uppercase tracking-wider group whitespace-nowrap">
+                <i class="ri-play-circle-fill mr-1 sm:mr-2 text-xl sm:text-2xl group-hover:scale-110 transition-transform"></i>
+                Tour
             </a>  
         </div>
         <div class="px-4 mx-auto text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">

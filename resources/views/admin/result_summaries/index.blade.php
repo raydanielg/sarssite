@@ -1,7 +1,7 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Manage Results')
-@section('page_title', 'Results Management')
+@section('title', 'Manage Result Summaries')
+@section('page_title', 'Result Summaries')
 
 @section('content')
 <div class="row">
@@ -19,20 +19,6 @@
                 </button>
             </div>
         @endif
-
-        @if(session('warning_list'))
-            <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm" role="alert">
-                <h5><i class="icon fas fa-exclamation-triangle mr-2"></i> Some files were not uploaded:</h5>
-                <ul class="mb-0 mt-2 pl-4">
-                    @foreach(session('warning_list') as $warning)
-                        <li>{{ $warning }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
     </div>
 </div>
 
@@ -41,31 +27,29 @@
         <div class="row align-items-center">
             <div class="col-md-4 col-12 mb-2 mb-md-0">
                 <h3 class="card-title font-weight-bold text-dark mb-0 d-inline-block float-none">
-                    <i class="fas fa-file-invoice mr-2 text-success"></i> All Results
+                    <i class="fas fa-file-alt mr-2 text-primary"></i> Result Summaries
                 </h3>
             </div>
             <div class="col-md-8 col-12 text-center text-md-right">
                 <div class="d-flex flex-column flex-sm-row justify-content-md-end align-items-center gap-2">
-                    <!-- Search Input -->
                     <div class="input-group input-group-sm mr-sm-3 mb-2 mb-sm-0" style="max-width: 250px;">
-                        <input type="text" id="resultSearch" class="form-control" placeholder="Search school name/code...">
+                        <input type="text" id="summarySearch" class="form-control" placeholder="Search summaries...">
                         <div class="input-group-append">
                             <span class="input-group-text bg-light border-left-0"><i class="fas fa-search text-muted"></i></span>
                         </div>
                     </div>
                     
-                    <!-- Limit Selector -->
-                    <select id="resultLimit" class="form-control form-control-sm mr-sm-3 mb-2 mb-sm-0 shadow-sm" style="width: auto;">
+                    <select id="summaryLimit" class="form-control form-control-sm mr-sm-3 mb-2 mb-sm-0 shadow-sm" style="width: auto;">
                         <option value="10" {{ $limit == 10 ? 'selected' : '' }}>Show 10</option>
                         <option value="50" {{ $limit == 50 ? 'selected' : '' }}>Show 50</option>
                         <option value="all" {{ $limit == 'all' ? 'selected' : '' }}>Show All</option>
                     </select>
 
-                    <a href="{{ route('admin.results.bulk-upload-form') }}" class="btn btn-primary btn-sm px-4 shadow-sm mb-2 mb-sm-0 mr-sm-2">
+                    <a href="{{ route('admin.result-summaries.bulk-upload-form') }}" class="btn btn-primary btn-sm px-4 shadow-sm mb-2 mb-sm-0 mr-sm-2">
                         <i class="fas fa-layer-group mr-1 small"></i> Bulk Upload
                     </a>
-                    <a href="{{ route('admin.results.create') }}" class="btn btn-success btn-sm px-4 shadow-sm">
-                        <i class="fas fa-plus-circle mr-1 small"></i> Upload Single
+                    <a href="{{ route('admin.result-summaries.create') }}" class="btn btn-success btn-sm px-4 shadow-sm">
+                        <i class="fas fa-upload mr-1 small"></i> Upload Single
                     </a>
                 </div>
             </div>
@@ -74,18 +58,17 @@
 
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0" id="resultsTable">
+            <table class="table table-hover mb-0">
                 <thead class="bg-light text-muted small text-uppercase font-weight-bold">
                     <tr>
-                        <th class="px-4 py-3 border-0">Result Details</th>
-                        <th class="py-3 border-0 text-center">Year & Level</th>
-                        <th class="py-3 border-0 px-4">School</th>
+                        <th class="px-4 py-3 border-0">Summary Name</th>
+                        <th class="py-3 border-0 px-4">Examination</th>
                         <th class="py-3 border-0">Status</th>
                         <th class="py-3 border-0 text-right px-4">Action</th>
                     </tr>
                 </thead>
-                <tbody id="resultsTableBody">
-                    @include('admin.results.partials.table')
+                <tbody id="summariesTableBody">
+                    @include('admin.result_summaries.partials.table')
                 </tbody>
             </table>
         </div>
@@ -95,7 +78,6 @@
 <style>
     .btn-white { background: #fff; color: #444; border: 1px solid #dee2e6; }
     .btn-white:hover { background: #f8f9fa; border-color: #c1c9d0; }
-    .badge-info-soft { background-color: #e3f2fd; color: #0277bd; font-size: 10px; font-weight: bold; }
     
     @keyframes blink {
         0% { opacity: 1; transform: scale(1); }
@@ -109,9 +91,7 @@
     }
     
     .gap-2 { gap: 0.5rem; }
-    .font-weight-black { font-weight: 900 !important; }
     
-    /* Responsive Adjustments */
     @media (max-width: 767.98px) {
         .card-header .btn, .card-header select { width: 100%; }
         .input-group { width: 100% !important; max-width: none !important; }
@@ -122,14 +102,14 @@
 <script>
 $(document).ready(function() {
     let searchTimer;
-    const searchInput = $('#resultSearch');
-    const limitSelect = $('#resultLimit');
-    const tableBody = $('#resultsTableBody');
+    const searchInput = $('#summarySearch');
+    const limitSelect = $('#summaryLimit');
+    const tableBody = $('#summariesTableBody');
 
-    function fetchResults(page = 1) {
+    function fetchSummaries(page = 1) {
         const query = searchInput.val();
         const limit = limitSelect.val();
-        const url = "{{ route('admin.results.index') }}";
+        const url = "{{ route('admin.result-summaries.index') }}";
 
         tableBody.css('opacity', '0.5');
 
@@ -143,57 +123,41 @@ $(document).ready(function() {
             success: function(html) {
                 tableBody.html(html);
                 tableBody.css('opacity', '1');
-            },
-            error: function() {
-                tableBody.css('opacity', '1');
-                alert('Error fetching results. Please try again.');
             }
         });
     }
 
-    // Search event
     searchInput.on('keyup', function() {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => {
-            fetchResults(1);
-        }, 500);
+        searchTimer = setTimeout(() => fetchSummaries(1), 500);
     });
 
-    // Limit change event
     limitSelect.on('change', function() {
-        fetchResults(1);
+        fetchSummaries(1);
     });
 
-    // Pagination click event
     $(document).on('click', '.pagination a', function(e) {
         e.preventDefault();
         const url = $(this).attr('href');
         const page = new URL(url).searchParams.get('page');
-        fetchResults(page);
+        fetchSummaries(page);
     });
 
-    // SweetAlert for Delete
-    $(document).on('submit', '.delete-result-form', function(e) {
+    $(document).on('submit', '.delete-summary-form', function(e) {
         e.preventDefault();
         const form = this;
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "Delete this result summary?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
+            confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+            if (result.isConfirmed) form.submit();
         });
     });
 });
 </script>
 @endpush
 @endsection
-
-

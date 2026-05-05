@@ -33,6 +33,15 @@
             </div>
 
             <div class="form-group">
+                <label for="link">Action Link (Hiari - Mfano: https://google.com)</label>
+                <input type="url" id="link" name="link" value="{{ old('link') }}" class="form-control @error('link') is-invalid @enderror" placeholder="Ingiza link kama ipo...">
+                <small class="text-muted">Mtu akibofya tangazo, atapelekwa kwenye link hii.</small>
+                @error('link')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group">
                 <label for="content">Content</label>
                 <textarea name="content" id="content" rows="5" class="form-control @error('content') is-invalid @enderror" placeholder="Write your announcement here..." required>{{ old('content') }}</textarea>
             </div>

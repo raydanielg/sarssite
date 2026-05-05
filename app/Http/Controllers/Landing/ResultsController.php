@@ -14,6 +14,11 @@ class ResultsController extends Controller
         return view('landing.results.index', compact('years'));
     }
 
+    public function tour()
+    {
+        return view('landing.results.tour');
+    }
+
     public function showYear($year)
     {
         $yearData = Year::where('year', $year)->firstOrFail();

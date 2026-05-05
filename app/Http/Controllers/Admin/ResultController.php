@@ -21,10 +21,31 @@ class ResultController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $results = Result::with(['resultTitle.year', 'resultTitle.level', 'resultTitle.region', 'school'])->latest()->paginate(10);
-        return view('admin.results.index', compact('results'));
+        $limit = $request->get('limit', 10);
+        $query = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest();
+
+        if ($request->ajax()) {
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+                $query->whereHas('school', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('code', 'like', "%{$search}%");
+                });
+            }
+
+            if ($limit === 'all') {
+                $results = $query->get();
+            } else {
+                $results = $query->paginate($limit);
+            }
+
+            return view('admin.results.partials.table', compact('results', 'limit'))->render();
+        }
+
+        $results = $query->paginate($limit);
+        return view('admin.results.index', compact('results', 'limit'));
     }
 
     public function bulkUploadForm()

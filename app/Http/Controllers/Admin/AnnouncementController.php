@@ -29,12 +29,14 @@ class AnnouncementController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
+            'link' => 'nullable|url',
             'type' => 'required|in:info,success,warning,danger',
         ]);
 
         Announcement::create([
             'title' => $request->title,
             'content' => $request->content,
+            'link' => $request->link,
             'type' => $request->type,
             'is_active' => $request->has('is_active'),
         ]);
@@ -55,12 +57,14 @@ class AnnouncementController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
+            'link' => 'nullable|url',
             'type' => 'required|in:info,success,warning,danger',
         ]);
 
         $announcement->update([
             'title' => $request->title,
             'content' => $request->content,
+            'link' => $request->link,
             'type' => $request->type,
             'is_active' => $request->has('is_active'),
         ]);
