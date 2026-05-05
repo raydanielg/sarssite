@@ -72,6 +72,45 @@
     </div>
 </div>
 
+<div class="modal fade" id="summaryUploadProgressModal" tabindex="-1" role="dialog" aria-labelledby="summaryUploadProgressModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="summaryUploadProgressModalLabel"><i class="fas fa-cloud-upload-alt mr-2"></i> Upload Progress</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeSummaryProgressModalBtn" style="display:none;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="text-muted small" id="summaryUploadProgressSummary">Preparing uploads...</div>
+                    <div class="text-muted small"><span id="summaryUploadDoneCount">0</span>/<span id="summaryUploadTotalCount">0</span></div>
+                </div>
+                <div class="progress mb-3" style="height: 10px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="summaryOverallProgressBar" role="progressbar" style="width: 0%"></div>
+                </div>
+
+                <div class="table-responsive" style="max-height: 360px; overflow-y: auto;">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>File</th>
+                                <th style="width: 140px;">Status</th>
+                                <th style="width: 220px;">Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryUploadQueueTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="cancelSummaryUploadsBtn" disabled>Cancel</button>
+                <button type="button" class="btn btn-success" id="doneSummaryUploadsBtn" style="display:none;">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .dropzone-area { border: 2px dashed #cbd5e0; transition: all 0.3s; cursor: pointer; }
     .dropzone-area:hover, .dropzone-area.dragover { border-color: #3182ce; background-color: #ebf8ff; }
@@ -85,6 +124,25 @@ $(document).ready(function() {
     const previewContainer = $('#filePreviewContainer');
     const previewBody = $('#filePreviewBody');
     const dropzone = $('#dropzone');
+    const bulkUploadForm = $('#bulkUploadForm');
+
+    const progressModal = $('#summaryUploadProgressModal');
+    const queueBody = $('#summaryUploadQueueTableBody');
+    const overallProgressBar = $('#summaryOverallProgressBar');
+    const uploadProgressSummary = $('#summaryUploadProgressSummary');
+    const uploadDoneCount = $('#summaryUploadDoneCount');
+    const uploadTotalCount = $('#summaryUploadTotalCount');
+    const cancelUploadsBtn = $('#cancelSummaryUploadsBtn');
+    const doneUploadsBtn = $('#doneSummaryUploadsBtn');
+    const closeProgressModalBtn = $('#closeSummaryProgressModalBtn');
+
+    const maxConcurrentUploads = 3;
+
+    let uploadQueue = [];
+    let doneCount = 0;
+    let failedCount = 0;
+    let cancelRequested = false;
+    let isUploading = false;
 
     fileInput.on('change', function() {
         handleFiles(this.files);
@@ -133,6 +191,191 @@ $(document).ready(function() {
         }
     }
 
+    function resetUploadState() {
+        uploadQueue = [];
+        doneCount = 0;
+        failedCount = 0;
+        cancelRequested = false;
+        isUploading = false;
+        queueBody.empty();
+        overallProgressBar.css('width', '0%');
+        uploadDoneCount.text('0');
+        uploadTotalCount.text('0');
+        uploadProgressSummary.text('Preparing uploads...');
+        doneUploadsBtn.hide();
+        closeProgressModalBtn.hide();
+        cancelUploadsBtn.prop('disabled', true);
+    }
+
+    function bytesToMB(bytes) {
+        return (bytes / 1024 / 1024).toFixed(2);
+    }
+
+    function addToQueue(files) {
+        uploadQueue = Array.from(files).map((file, idx) => ({
+            id: idx,
+            file,
+        }));
+
+        uploadTotalCount.text(uploadQueue.length);
+        uploadDoneCount.text('0');
+        queueBody.empty();
+
+        uploadQueue.forEach(item => {
+            queueBody.append(`
+                <tr id="summary-upload-row-${item.id}">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-file-pdf text-danger mr-2"></i>
+                            <div>
+                                <div class="font-weight-bold" style="font-size: 12px;">${item.file.name}</div>
+                                <div class="text-muted" style="font-size: 11px;">${bytesToMB(item.file.size)} MB</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-secondary" id="summary-upload-status-${item.id}">Pending</span>
+                    </td>
+                    <td>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" id="summary-upload-bar-${item.id}" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div class="text-muted" style="font-size: 11px;" id="summary-upload-percent-${item.id}">0%</div>
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    function setRowStatus(id, label, badgeClass) {
+        $(`#summary-upload-status-${id}`).removeClass('badge-secondary badge-info badge-success badge-danger badge-warning').addClass(badgeClass).text(label);
+    }
+
+    function setRowProgress(id, percent) {
+        const p = Math.max(0, Math.min(100, percent));
+        $(`#summary-upload-bar-${id}`).css('width', `${p}%`);
+        $(`#summary-upload-percent-${id}`).text(`${p}%`);
+    }
+
+    function updateOverallProgress() {
+        const total = uploadQueue.length || 1;
+        const overall = Math.round((doneCount / total) * 100);
+        overallProgressBar.css('width', `${overall}%`);
+        uploadDoneCount.text(doneCount);
+    }
+
+    function uploadSingleFile(queueItem) {
+        return new Promise((resolve, reject) => {
+            const resultTitleId = $('#result_title_id').val();
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('result_title_id', resultTitleId);
+            formData.append('files[]', queueItem.file);
+
+            $.ajax({
+                url: "{{ route('admin.result-summaries.bulk-upload') }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function() {
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', function(e) {
+                        if (e.lengthComputable) {
+                            const percent = Math.round((e.loaded / e.total) * 100);
+                            setRowProgress(queueItem.id, percent);
+                        }
+                    });
+                    return xhr;
+                },
+                success: function(resp) {
+                    resolve(resp);
+                },
+                error: function(xhr) {
+                    reject(xhr);
+                }
+            });
+        });
+    }
+
+    async function startUploadsFast() {
+        const resultTitleId = $('#result_title_id').val();
+        if (!resultTitleId) {
+            Swal.fire('Error', 'Please select Examination Category first.', 'error');
+            return;
+        }
+        if (selectedFiles.length === 0) {
+            Swal.fire('Error', 'Please select files to upload', 'error');
+            return;
+        }
+
+        resetUploadState();
+        addToQueue(selectedFiles);
+
+        cancelUploadsBtn.prop('disabled', false);
+        uploadProgressSummary.text(`Uploading (fast mode: ${maxConcurrentUploads} at a time)...`);
+        progressModal.modal('show');
+
+        const uploadBtn = $('#uploadBtn');
+        uploadBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Uploading...');
+        isUploading = true;
+
+        let nextIndex = 0;
+        const total = uploadQueue.length;
+
+        const worker = async () => {
+            while (nextIndex < total && !cancelRequested) {
+                const current = uploadQueue[nextIndex++];
+                setRowStatus(current.id, 'Uploading', 'badge-info');
+                setRowProgress(current.id, 0);
+
+                try {
+                    await uploadSingleFile(current);
+                    setRowStatus(current.id, 'Done', 'badge-success');
+                    setRowProgress(current.id, 100);
+                    doneCount++;
+                    updateOverallProgress();
+                    setTimeout(() => {
+                        $(`#summary-upload-row-${current.id}`).fadeOut(250, function() { $(this).remove(); });
+                    }, 350);
+                } catch (xhr) {
+                    failedCount++;
+                    setRowStatus(current.id, 'Failed', 'badge-danger');
+                    if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                        console.error(xhr.responseJSON.message);
+                    }
+                }
+            }
+        };
+
+        const workers = [];
+        for (let i = 0; i < maxConcurrentUploads; i++) {
+            workers.push(worker());
+        }
+        await Promise.all(workers);
+
+        isUploading = false;
+        cancelUploadsBtn.prop('disabled', true);
+        doneUploadsBtn.show();
+        closeProgressModalBtn.show();
+        uploadProgressSummary.text('Upload finished.');
+
+        uploadBtn.prop('disabled', false).html('<i class="fas fa-upload mr-1"></i> Start Bulk Upload');
+
+        if (failedCount > 0) {
+            Swal.fire('Completed with errors', `${doneCount} uploaded, ${failedCount} failed.`, 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Success!',
+            text: `${doneCount} summaries uploaded successfully.`,
+            icon: 'success'
+        }).then(() => {
+            window.location.href = "{{ route('admin.result-summaries.index') }}";
+        });
+    }
+
     window.removeFile = function(index) {
         selectedFiles.splice(index, 1);
         updatePreview();
@@ -145,40 +388,17 @@ $(document).ready(function() {
 
     $('#bulkUploadForm').on('submit', function(e) {
         e.preventDefault();
-        
-        if (selectedFiles.length === 0) {
-            Swal.fire('Error', 'Please select files to upload', 'error');
-            return;
-        }
+        startUploadsFast();
+    });
 
-        const formData = new FormData(this);
-        formData.delete('files[]');
-        selectedFiles.forEach(file => formData.append('files[]', file));
+    cancelUploadsBtn.on('click', function() {
+        if (!isUploading) return;
+        cancelRequested = true;
+        uploadProgressSummary.text('Cancel requested. Finishing current uploads...');
+    });
 
-        const uploadBtn = $('#uploadBtn');
-        uploadBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Uploading...');
-
-        $.ajax({
-            url: "{{ route('admin.result-summaries.bulk-upload') }}",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: response.message,
-                    icon: 'success'
-                }).then(() => {
-                    window.location.href = "{{ route('admin.result-summaries.index') }}";
-                });
-            },
-            error: function(xhr) {
-                uploadBtn.prop('disabled', false).html('<i class="fas fa-upload mr-1"></i> Start Bulk Upload');
-                const msg = xhr.responseJSON ? xhr.responseJSON.message : 'Error uploading files';
-                Swal.fire('Failed', msg, 'error');
-            }
-        });
+    doneUploadsBtn.on('click', function() {
+        progressModal.modal('hide');
     });
 });
 </script>
