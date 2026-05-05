@@ -24,6 +24,7 @@ Route::get('/results/{year}', [App\Http\Controllers\Landing\ResultsController::c
 Route::get('/results/{year}/{level_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showLevelResults'])->name('results.level');
 Route::get('/results/{year}/{level_slug}/{title_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showFinalResults'])->name('results.final');
 Route::get('/view-results', [App\Http\Controllers\Landing\ResultsController::class, 'viewPdf'])->name('results.view_pdf');
+Route::get('/download-results', [App\Http\Controllers\Landing\ResultsController::class, 'downloadPdf'])->name('results.download_pdf');
 
 Auth::routes(['register' => true]);
 

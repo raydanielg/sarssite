@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Landing;
 use App\Http\Controllers\Controller;
 use App\Models\Year;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ResultsController extends Controller
 {
@@ -83,5 +84,29 @@ class ResultsController extends Controller
         }
 
         return view('landing.results.pdf_viewer', compact('filePath'));
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $filePath = $request->query('file');
+        $name = $request->query('name');
+
+        if (!$filePath) {
+            abort(404);
+        }
+
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404);
+        }
+
+        $safeBase = $name ? preg_replace('/[^A-Za-z0-9 _\-]/', '', $name) : pathinfo($filePath, PATHINFO_FILENAME);
+        $safeBase = trim(preg_replace('/\s+/', ' ', $safeBase));
+        if ($safeBase === '') {
+            $safeBase = 'results';
+        }
+
+        $downloadName = $safeBase . '.pdf';
+
+        return Storage::disk('public')->download($filePath, $downloadName);
     }
 }

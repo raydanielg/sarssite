@@ -78,6 +78,36 @@
         font-weight: 500;
         backdrop-filter: blur(4px);
     }
+    .download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #16a34a;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: all 0.2s;
+        border: 1px solid rgba(255,255,255,0.15);
+        white-space: nowrap;
+    }
+    .download-btn:hover {
+        background: #15803d;
+        transform: translateY(-1px);
+    }
+    .doc-name {
+        max-width: 38vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(226,232,240,0.85);
+    }
     #loading-screen {
         position: fixed;
         top: 0;
@@ -125,10 +155,13 @@
         <a href="javascript:history.back()" class="back-btn">
             <i class="ri-arrow-left-line"></i> <span>RUDI NYUMA</span>
         </a>
-        <div id="page-count" class="page-indicator">Loading...</div>
-        <div class="hidden md:block">
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">NECTA RESULTS VIEWER</span>
+        <div class="flex items-center gap-3">
+            <div class="hidden sm:block doc-name" id="doc-name"></div>
+            <div id="page-count" class="page-indicator">Loading...</div>
         </div>
+        <a id="download-btn" href="#" class="download-btn">
+            <i class="ri-download-2-line"></i> DOWNLOAD
+        </a>
     </div>
     
     <div id="pdf-render-container" class="pdf-content">
@@ -138,9 +171,21 @@
 
 <script>
     const url = '{{ asset("storage/" . $filePath) }}';
+    const filePath = @json($filePath);
+    const fileName = @json(request('name'));
     const container = document.getElementById('pdf-render-container');
     const loadingScreen = document.getElementById('loading-screen');
     const pageCountDisplay = document.getElementById('page-count');
+    const downloadBtn = document.getElementById('download-btn');
+    const docNameEl = document.getElementById('doc-name');
+
+    const prettyName = (fileName && String(fileName).trim() !== '') ? String(fileName) : (String(filePath).split('/').pop() || 'RESULTS');
+    if (docNameEl) {
+        docNameEl.textContent = prettyName;
+        docNameEl.title = prettyName;
+    }
+
+    downloadBtn.href = "{{ route('results.download_pdf') }}" + `?file=${encodeURIComponent(filePath)}&name=${encodeURIComponent(prettyName)}`;
 
     // High quality rendering configuration
     const scale = window.devicePixelRatio || 2; // Use high resolution scale for crisp text

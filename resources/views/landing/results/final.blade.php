@@ -173,7 +173,7 @@
                             else $colColorClass = 'col-green';
                         @endphp
                         <div class="school-item {{ $colColorClass }}">
-                            <a href="{{ route('results.view_pdf', ['file' => $result->file_path]) }}">
+                            <a href="{{ route('results.view_pdf', ['file' => $result->file_path, 'name' => $result->school->code . '-' . $result->school->name]) }}">
                                 {{ $result->school->code }} – {{ strtoupper($result->school->name) }}
                             </a>
                         </div>
@@ -197,7 +197,7 @@
                 <div class="divide-y divide-gray-100">
                     @forelse($summaries as $summary)
                         <div class="summary-item bg-white">
-                            <a href="{{ route('results.view_pdf', ['file' => $summary->file_path]) }}">
+                            <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}">
                                 <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
                                 <span>{{ strtoupper($summary->name) }}</span>
                                 <span class="ml-auto text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded uppercase tracking-tighter">View PDF</span>
