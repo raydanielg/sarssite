@@ -246,11 +246,4 @@
         }
     };
 </script>
-                <p class="text-gray-500 font-bold uppercase tracking-widest text-sm">Hakuna shule iliyoonekana kwa utafutaji huu.</p>
-                <a href="{{ url()->current() }}" class="text-blue-600 text-xs underline mt-2 inline-block">Reset search</a>
-            </div>
-        @endif
-
-    </div>
-</section>
 @endsection
