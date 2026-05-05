@@ -32,6 +32,11 @@
             </div>
             <div class="col-md-8 col-12 text-center text-md-right">
                 <div class="d-flex flex-column flex-sm-row justify-content-md-end align-items-center gap-2">
+                    <!-- Bulk Delete Button -->
+                    <button id="bulkDeleteBtn" class="btn btn-danger btn-sm px-4 shadow-sm mb-2 mb-sm-0 mr-sm-2" style="display:none;">
+                        <i class="fas fa-trash-alt mr-1"></i> Delete Selected (<span id="selectedCount">0</span>)
+                    </button>
+
                     <div class="input-group input-group-sm mr-sm-3 mb-2 mb-sm-0" style="max-width: 250px;">
                         <input type="text" id="summarySearch" class="form-control" placeholder="Search summaries...">
                         <div class="input-group-append">
@@ -61,6 +66,12 @@
             <table class="table table-hover mb-0">
                 <thead class="bg-light text-muted small text-uppercase font-weight-bold">
                     <tr>
+                        <th class="px-4 py-3 border-0" style="width: 40px;">
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input" type="checkbox" id="checkAll">
+                                <label for="checkAll" class="custom-control-label"></label>
+                            </div>
+                        </th>
                         <th class="px-4 py-3 border-0">Summary Name</th>
                         <th class="py-3 border-0 px-4">Examination</th>
                         <th class="py-3 border-0">Status</th>
@@ -155,6 +166,85 @@ $(document).ready(function() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) form.submit();
+        });
+    });
+
+    // Bulk Delete Logic
+    const bulkDeleteBtn = $('#bulkDeleteBtn');
+    const selectedCountSpan = $('#selectedCount');
+
+    function updateBulkDeleteUI() {
+        const checkedCount = $('.item-checkbox:checked').length;
+        if (checkedCount > 0) {
+            bulkDeleteBtn.fadeIn();
+            selectedCountSpan.text(checkedCount);
+        } else {
+            bulkDeleteBtn.fadeOut();
+        }
+    }
+
+    $(document).on('change', '#checkAll', function() {
+        $('.item-checkbox').prop('checked', $(this).is(':checked'));
+        updateBulkDeleteUI();
+    });
+
+    $(document).on('change', '.item-checkbox', function() {
+        const allChecked = $('.item-checkbox').length === $('.item-checkbox:checked').length;
+        $('#checkAll').prop('checked', allChecked);
+        updateBulkDeleteUI();
+    });
+
+    bulkDeleteBtn.on('click', function() {
+        const ids = $('.item-checkbox:checked').map(function() {
+            return $(this).val();
+        }).get();
+
+        if (ids.length === 0) return;
+
+        Swal.fire({
+            title: 'Una uhakika?',
+            text: `Unataka kufuta summaries ${ids.length} zilizochaguliwa? Kitendo hiki hakiwezi kurudishwa!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ndio, futa zote',
+            cancelButtonText: 'Hapana',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.result-summaries.bulk-delete') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        ids: ids
+                    },
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Inafuta...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Imefutwa!', response.message, 'success').then(() => {
+                                fetchSummaries(1);
+                                $('#checkAll').prop('checked', false);
+                                bulkDeleteBtn.fadeOut();
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Hitilafu imetokea wakati wa kufuta.', 'error');
+                    }
+                });
+            }
         });
     });
 });

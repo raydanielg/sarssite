@@ -219,4 +219,25 @@ class ResultController extends Controller
 
         return redirect()->route('admin.results.index')->with('success', $message);
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'Tafadhali chagua angalau item moja.'], 400);
+        }
+
+        try {
+            $results = Result::whereIn('id', $ids)->get();
+            foreach ($results as $result) {
+                if (Storage::disk('public')->exists($result->file_path)) {
+                    Storage::disk('public')->delete($result->file_path);
+                }
+                $result->delete();
+            }
+            return response()->json(['success' => true, 'message' => 'Results zilizochaguliwa zimefutwa kikamilifu.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
 }

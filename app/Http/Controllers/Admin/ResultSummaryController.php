@@ -146,4 +146,25 @@ class ResultSummaryController extends Controller
 
         return response()->json(['success' => true, 'message' => "Successfully uploaded $count summaries."]);
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'Tafadhali chagua angalau item moja.'], 400);
+        }
+
+        try {
+            $summaries = \App\Models\ResultSummary::whereIn('id', $ids)->get();
+            foreach ($summaries as $summary) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($summary->file_path)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($summary->file_path);
+                }
+                $summary->delete();
+            }
+            return response()->json(['success' => true, 'message' => 'Summaries zilizochaguliwa zimefutwa kikamilifu.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
 }

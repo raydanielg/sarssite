@@ -4,6 +4,12 @@
     @endphp
     <tr>
         <td class="px-4 py-3">
+            <div class="custom-control custom-checkbox">
+                <input class="custom-control-input item-checkbox" type="checkbox" id="check-{{ $summary->id }}" value="{{ $summary->id }}">
+                <label for="check-{{ $summary->id }}" class="custom-control-label"></label>
+            </div>
+        </td>
+        <td class="py-3">
             <div class="d-flex align-items-center">
                 <div class="mr-3 bg-light rounded p-2 text-primary">
                     <i class="fas fa-file-pdf fa-lg"></i>
@@ -43,13 +49,13 @@
     </tr>
 @empty
     <tr>
-        <td colspan="4" class="text-center py-5 text-muted">No summaries found.</td>
+        <td colspan="5" class="text-center py-5 text-muted">No summaries found.</td>
     </tr>
 @endforelse
 
 @if(isset($summaries) && method_exists($summaries, 'links') && $summaries->hasPages())
     <tr class="pagination-row">
-        <td colspan="4" class="px-4 py-3 bg-light">
+        <td colspan="5" class="px-4 py-3 bg-light">
             <div class="d-flex justify-content-center">
                 {{ $summaries->appends(request()->except('page'))->links() }}
             </div>

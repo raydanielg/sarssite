@@ -4,6 +4,12 @@
     @endphp
     <tr>
         <td class="px-4 py-3">
+            <div class="custom-control custom-checkbox">
+                <input class="custom-control-input item-checkbox" type="checkbox" id="check-{{ $result->id }}" value="{{ $result->id }}">
+                <label for="check-{{ $result->id }}" class="custom-control-label"></label>
+            </div>
+        </td>
+        <td class="py-3">
             <div class="d-flex align-items-center">
                 <div class="mr-3 bg-light rounded p-2 text-success">
                     <i class="fas fa-file-pdf fa-lg"></i>
@@ -46,13 +52,13 @@
     </tr>
 @empty
     <tr>
-        <td colspan="5" class="text-center py-5 text-muted">No results found.</td>
+        <td colspan="6" class="text-center py-5 text-muted">No results found.</td>
     </tr>
 @endforelse
 
 @if(isset($results) && method_exists($results, 'links') && $results->hasPages())
     <tr class="pagination-row">
-        <td colspan="5" class="px-4 py-3 bg-light">
+        <td colspan="6" class="px-4 py-3 bg-light">
             <div class="d-flex justify-content-center">
                 {{ $results->appends(request()->except('page'))->links() }}
             </div>
