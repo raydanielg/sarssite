@@ -30,7 +30,7 @@ class LandingController extends Controller
         $years = Year::orderBy('year', 'desc')->get();
         $levels = Level::orderBy('name')->get();
 
-        $resultTitles = ResultTitle::with(['year', 'level'])
+        $resultTitles = ResultTitle::with(['year', 'region', 'district'])
             ->orderByDesc('id')
             ->get();
 
@@ -66,16 +66,27 @@ class LandingController extends Controller
             ];
         }
 
-        foreach (ResultTitle::with(['year', 'level'])->get() as $title) {
-            if (!$title->year || !$title->level) {
+        foreach (ResultTitle::with(['year', 'region', 'district'])->get() as $title) {
+            if (!$title->year || !$title->region) {
                 continue;
             }
 
-            $urls[] = [
-                'loc' => $baseUrl . route('results.final', [$title->year->year, $title->level->slug, $title->slug], false),
-                'changefreq' => 'monthly',
-                'priority' => '0.7',
-            ];
+            $params = [$title->year->year, $title->region->slug];
+            if ($title->district) {
+                $params[] = $title->district->slug;
+                $params[] = $title->slug;
+                $urls[] = [
+                    'loc' => $baseUrl . route('results.final', $params, false),
+                    'changefreq' => 'monthly',
+                    'priority' => '0.7',
+                ];
+            } else {
+                $urls[] = [
+                    'loc' => $baseUrl . route('results.districts', $params, false),
+                    'changefreq' => 'monthly',
+                    'priority' => '0.7',
+                ];
+            }
         }
 
         $xml = view('landing.sitemap_xml', compact('urls'));

@@ -102,10 +102,19 @@
 
 @section('content')
 <div class="fixed top-0 left-0 w-full p-3 sm:p-4 z-50 flex flex-col gap-2 no-print">
-    <div>
-        <a href="{{ route('results.level', [$yearData->year, $level->slug]) }}" class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/90 backdrop-blur text-[#1e293b] text-xs sm:text-sm font-bold rounded-xl shadow-sm hover:shadow-md hover:text-blue-600 transition-all group border border-white/20">
-            <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i> Back to Results
+    <div class="flex items-center gap-2 flex-wrap">
+        <a href="{{ route('results.titles', [$yearData->year, $region->slug, $district->slug]) }}" class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/90 backdrop-blur text-[#1e293b] text-xs sm:text-sm font-bold rounded-xl shadow-sm hover:shadow-md hover:text-blue-600 transition-all group border border-white/20">
+            <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i> Back to Mitihani
         </a>
+        <div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-gray-500 bg-white/70 backdrop-blur px-3 py-1.5 rounded-xl">
+            <span>{{ $yearData->year }}</span>
+            <i class="ri-arrow-right-s-line"></i>
+            <span class="text-green-700">{{ $region->name }}</span>
+            <i class="ri-arrow-right-s-line"></i>
+            <span class="text-blue-700">{{ $district->name }}</span>
+            <i class="ri-arrow-right-s-line"></i>
+            <span class="text-amber-700">{{ $resultTitle->name }}</span>
+        </div>
     </div>
 </div>
 

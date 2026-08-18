@@ -18,16 +18,19 @@ class ResultController extends Controller
             return response()->json(['exams' => []]);
         }
 
-        $exams = ResultTitle::with(['level'])
+        $exams = ResultTitle::with(['region', 'district'])
             ->where('year_id', $year->id)
             ->get()
             ->map(function ($exam) use ($yearValue) {
+                $regionSlug = $exam->region ? $exam->region->slug : null;
+                $districtSlug = $exam->district ? $exam->district->slug : null;
+                $url = $regionSlug ? route('results.districts', ['year' => $yearValue, 'region_slug' => $regionSlug]) : route('results.year', ['year' => $yearValue]);
                 return [
                     'name' => $exam->name,
-                    'level' => $exam->level->name,
-                    'url' => route('results.level', ['year' => $yearValue, 'level_slug' => $exam->level->slug]),
-                    'icon' => $this->getIconForLevel($exam->level->slug),
-                    'color' => $this->getColorForLevel($exam->level->slug)
+                    'region' => $exam->region ? $exam->region->name : 'N/A',
+                    'url' => $url,
+                    'icon' => 'ri-map-pin-line',
+                    'color' => 'bg-green-50 text-green-600 border-green-100'
                 ];
             });
 

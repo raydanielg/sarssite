@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Landing;
 
 use App\Http\Controllers\Controller;
 use App\Models\Year;
+use App\Models\Region;
+use App\Models\District;
+use App\Models\ResultTitle;
+use App\Models\Result;
+use App\Models\ResultSummary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,57 +28,102 @@ class ResultsController extends Controller
     public function showYear($year)
     {
         $yearData = Year::where('year', $year)->firstOrFail();
-        $levels = \App\Models\Level::all();
-        return view('landing.results.year', compact('yearData', 'levels'));
+
+        $regions = Region::whereHas('resultTitles', function ($q) use ($yearData) {
+            $q->where('year_id', $yearData->id);
+        })->orderBy('name')->get();
+
+        if ($regions->isEmpty()) {
+            $regions = Region::orderBy('name')->get();
+        }
+
+        return view('landing.results.year', compact('yearData', 'regions'));
     }
 
-    public function showLevelResults($year, $level_slug)
+    public function showDistricts($year, $region_slug)
     {
         $yearData = Year::where('year', $year)->firstOrFail();
-        $level = \App\Models\Level::where('slug', $level_slug)->firstOrFail();
-        
-        // Tunachukua result titles na kuhesabu idadi ya shule (centres) kwa kila title
-        $resultTitles = \App\Models\ResultTitle::where('year_id', $yearData->id)
-                                             ->where('level_id', $level->id)
-                                             ->withCount('results')
-                                             ->with('resultType')
-                                             ->get();
-        
-        return view('landing.results.titles', compact('yearData', 'level', 'resultTitles'));
+        $region = Region::where('slug', $region_slug)->firstOrFail();
+
+        $districts = District::where('region_id', $region->id)
+            ->whereHas('resultTitles', function ($q) use ($yearData) {
+                $q->where('year_id', $yearData->id);
+            })
+            ->orderBy('name')
+            ->get();
+
+        if ($districts->isEmpty()) {
+            $districts = District::where('region_id', $region->id)->orderBy('name')->get();
+        }
+
+        $regionSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region) {
+            $q->where('year_id', $yearData->id)
+              ->where('region_id', $region->id)
+              ->whereNull('district_id');
+        })->get();
+
+        return view('landing.results.districts', compact('yearData', 'region', 'districts', 'regionSummaries'));
     }
 
-    public function showFinalResults(Request $request, $year, $level_slug, $title_slug)
+    public function showTitles($year, $region_slug, $district_slug)
     {
         $yearData = Year::where('year', $year)->firstOrFail();
-        $level = \App\Models\Level::where('slug', $level_slug)->firstOrFail();
-        $resultTitle = \App\Models\ResultTitle::where('slug', $title_slug)->firstOrFail();
-        
-        $query = \App\Models\Result::where('result_title_id', $resultTitle->id)
-                                   ->with('school');
+        $region = Region::where('slug', $region_slug)->firstOrFail();
+        $district = District::where('slug', $district_slug)
+            ->where('region_id', $region->id)
+            ->firstOrFail();
 
-        // Filtering by search text
+        $resultTitles = ResultTitle::where('year_id', $yearData->id)
+            ->where('region_id', $region->id)
+            ->where('district_id', $district->id)
+            ->withCount('results')
+            ->with('resultType')
+            ->orderByDesc('id')
+            ->get();
+
+        $districtSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region, $district) {
+            $q->where('year_id', $yearData->id)
+              ->where('region_id', $region->id)
+              ->where('district_id', $district->id);
+        })->get();
+
+        return view('landing.results.titles', compact('yearData', 'region', 'district', 'resultTitles', 'districtSummaries'));
+    }
+
+    public function showFinalResults(Request $request, $year, $region_slug, $district_slug, $title_slug)
+    {
+        $yearData = Year::where('year', $year)->firstOrFail();
+        $region = Region::where('slug', $region_slug)->firstOrFail();
+        $district = District::where('slug', $district_slug)
+            ->where('region_id', $region->id)
+            ->firstOrFail();
+        $resultTitle = ResultTitle::where('slug', $title_slug)
+            ->where('year_id', $yearData->id)
+            ->firstOrFail();
+
+        $query = Result::where('result_title_id', $resultTitle->id)
+            ->with('school');
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->whereHas('school', function($q) use ($search) {
+            $query->whereHas('school', function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                   ->orWhere('code', 'like', '%' . $search . '%');
             });
         }
 
-        // Filtering by alphabet
         if ($request->has('letter') && $request->letter != 'ALL') {
             $letter = $request->letter;
-            $query->whereHas('school', function($q) use ($letter) {
+            $query->whereHas('school', function ($q) use ($letter) {
                 $q->where('name', 'like', $letter . '%');
             });
         }
 
         $results = $query->get();
 
-        // Fetch Result Summaries for this Title
-        $summaries = \App\Models\ResultSummary::where('result_title_id', $resultTitle->id)->get();
+        $summaries = ResultSummary::where('result_title_id', $resultTitle->id)->get();
 
-        return view('landing.results.final', compact('yearData', 'level', 'resultTitle', 'results', 'summaries'));
+        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries'));
     }
 
     public function viewPdf(Request $request)

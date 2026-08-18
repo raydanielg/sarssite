@@ -9,7 +9,7 @@ class ResultTitle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'year_id', 'level_id', 'region_id', 'result_type_id', 'slug'];
+    protected $fillable = ['name', 'year_id', 'level_id', 'region_id', 'district_id', 'result_type_id', 'slug'];
 
     public function resultType()
     {
@@ -29,6 +29,11 @@ class ResultTitle extends Model
     public function region()
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
     }
 
     public function results()

@@ -10,31 +10,39 @@
         </a>
     </div>
     <div class="animate__animated animate__fadeInDown">
-        <h1 class="text-xl sm:text-4xl font-bold text-[#1e293b] tracking-tight bg-white/50 backdrop-blur inline-block px-3 py-1 rounded-lg">Year {{ $yearData->year }} - Levels</h1>
+        <h1 class="text-xl sm:text-4xl font-bold text-[#1e293b] tracking-tight bg-white/50 backdrop-blur inline-block px-3 py-1 rounded-lg">Year {{ $yearData->year }} - Select Region</h1>
     </div>
 </div>
 
-<section class="pt-32 pb-12 sm:py-24 bg-[#e9ecef] min-h-screen flex items-center justify-center overflow-hidden">
+<section class="pt-32 pb-12 sm:py-24 bg-[#e9ecef] min-h-screen overflow-hidden">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-2 md:flex md:flex-wrap justify-center gap-3 sm:gap-6 max-w-7xl mx-auto">
-            @forelse($levels as $index => $level)
-                <div class="bg-white/70 backdrop-blur p-4 sm:p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-500 animate__animated animate__fadeInUp" style="animation-delay: {{ $index * 0.05 }}s">
+        <div class="text-center mb-8 animate__animated animate__fadeInDown">
+            <p class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest">Chagua Mkoa (Region) ili kuendelea</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 max-w-7xl mx-auto">
+            @forelse($regions as $index => $region)
+                <a href="{{ route('results.districts', [$yearData->year, $region->slug]) }}"
+                   class="group bg-white/80 backdrop-blur p-4 sm:p-5 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 border border-white/40 transition-all duration-300 animate__animated animate__fadeInUp"
+                   style="animation-delay: {{ $index * 0.03 }}s">
                     <div class="flex flex-col items-center text-center">
-                        <div class="w-10 h-10 sm:w-16 sm:h-16 mb-2 sm:mb-4 relative flex items-center justify-center">
-                            <div class="absolute inset-0 bg-gray-200/50 rounded-full scale-110"></div>
-                            <i class="ri-graduation-cap-line text-blue-500 text-xl sm:text-3xl z-10"></i>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 mb-2 sm:mb-3 rounded-xl bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all duration-300">
+                            <i class="ri-map-pin-line text-lg sm:text-xl"></i>
                         </div>
-                        <h3 class="text-base sm:text-xl font-bold text-[#1e293b] mb-2 sm:mb-4">{{ $level->name }}</h3>
-                        <div class="w-full text-center sm:text-left">
-                            <a href="{{ route('results.level', [$yearData->year, $level->slug]) }}" class="inline-flex items-center gap-1 text-green-600 hover:text-green-700 text-[10px] sm:text-[13px] font-medium transition-colors">
-                                <i class="ri-link text-blue-400"></i> <span class="hidden sm:inline">Choose level</span><span class="sm:hidden">Select</span>
-                            </a>
+                        <h3 class="text-xs sm:text-sm font-bold text-[#1e293b] group-hover:text-green-700 transition-colors leading-tight">
+                            {{ $region->name }}
+                        </h3>
+                        <div class="mt-2 flex items-center gap-1 text-[10px] font-bold text-green-600 uppercase tracking-tighter">
+                            <i class="ri-arrow-right-s-line"></i> Wilaya
                         </div>
                     </div>
-                </div>
+                </a>
             @empty
-                <div class="w-full text-center py-12 animate__animated animate__fadeIn">
-                    <p class="text-[#64748b] font-bold uppercase tracking-widest italic">Hakuna Levels zilizopatikana.</p>
+                <div class="col-span-full text-center py-12 animate__animated animate__fadeIn">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ri-map-pin-line text-3xl text-gray-300"></i>
+                    </div>
+                    <p class="text-[#64748b] font-bold uppercase tracking-widest italic text-xs">Hakuna Mikoa iliyopatikana.</p>
                 </div>
             @endforelse
         </div>

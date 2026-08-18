@@ -14,7 +14,7 @@ class AddResultTypeIdToResultTitlesTable extends Migration
     public function up()
     {
         Schema::table('result_titles', function (Blueprint $table) {
-            //
+            $table->foreignId('result_type_id')->nullable()->after('region_id')->constrained()->onDelete('cascade');
         });
     }
 
@@ -26,7 +26,8 @@ class AddResultTypeIdToResultTitlesTable extends Migration
     public function down()
     {
         Schema::table('result_titles', function (Blueprint $table) {
-            //
+            $table->dropForeign(['result_type_id']);
+            $table->dropColumn('result_type_id');
         });
     }
 }

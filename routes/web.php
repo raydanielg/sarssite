@@ -21,8 +21,9 @@ Route::get('/api/exams-by-year', [App\Http\Controllers\Landing\ResultsController
 Route::get('/results', [App\Http\Controllers\Landing\ResultsController::class, 'index'])->name('results.index');
 Route::get('/results/tour', [App\Http\Controllers\Landing\ResultsController::class, 'tour'])->name('results.tour');
 Route::get('/results/{year}', [App\Http\Controllers\Landing\ResultsController::class, 'showYear'])->name('results.year');
-Route::get('/results/{year}/{level_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showLevelResults'])->name('results.level');
-Route::get('/results/{year}/{level_slug}/{title_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showFinalResults'])->name('results.final');
+Route::get('/results/{year}/{region_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showDistricts'])->name('results.districts');
+Route::get('/results/{year}/{region_slug}/{district_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showTitles'])->name('results.titles');
+Route::get('/results/{year}/{region_slug}/{district_slug}/{title_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showFinalResults'])->name('results.final');
 Route::get('/view-results', [App\Http\Controllers\Landing\ResultsController::class, 'viewPdf'])->name('results.view_pdf');
 Route::get('/download-results', [App\Http\Controllers\Landing\ResultsController::class, 'downloadPdf'])->name('results.download_pdf');
 

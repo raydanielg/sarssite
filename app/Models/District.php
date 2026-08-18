@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Region extends Model
+class District extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = ['region_id', 'name', 'slug'];
 
-    public function districts()
+    public function region()
     {
-        return $this->hasMany(District::class);
+        return $this->belongsTo(Region::class);
     }
 
     public function schools()

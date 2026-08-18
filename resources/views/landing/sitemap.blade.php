@@ -29,7 +29,7 @@
                     <h2 class="text-sm font-black uppercase tracking-widest text-gray-900 flex items-center gap-2">
                         <i class="ri-file-list-3-line text-primary-600"></i> Results Navigation
                     </h2>
-                    <div class="text-xs font-bold text-gray-400 uppercase tracking-widest">Year → Level → Examination → Schools/PDF</div>
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-widest">Year → Region → Wilaya → Examination → Schools/PDF</div>
                 </div>
 
                 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -48,8 +48,15 @@
                         <h3 class="text-xs font-black uppercase tracking-widest text-gray-900">Recent Examinations</h3>
                         <div class="mt-3 space-y-2">
                             @forelse($resultTitles->take(12) as $t)
-                                @if($t->year && $t->level)
-                                    <a class="block text-sm font-bold text-gray-700 hover:text-primary-600" href="{{ route('results.final', [$t->year->year, $t->level->slug, $t->slug]) }}">
+                                @if($t->year && $t->region)
+                                    @php
+                                        $params = [$t->year->year, $t->region->slug];
+                                        if ($t->district) {
+                                            $params[] = $t->district->slug;
+                                            $params[] = $t->slug;
+                                        }
+                                    @endphp
+                                    <a class="block text-sm font-bold text-gray-700 hover:text-primary-600" href="{{ $t->district ? route('results.final', $params) : route('results.districts', $params) }}">
                                         {{ $t->name }}
                                     </a>
                                 @endif
@@ -58,7 +65,7 @@
                             @endforelse
                         </div>
                         <div class="mt-4 text-[11px] text-gray-500">
-                            Kuona list yote ya examinations, nenda kwenye Results Portal kisha chagua Year/Level.
+                            Kuona list yote ya examinations, nenda kwenye Results Portal kisha chagua Year/Region/Wilaya.
                         </div>
                     </div>
                 </div>

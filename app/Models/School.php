@@ -9,11 +9,16 @@ class School extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'name', 'is_pc', 'region_id', 'slug'];
+    protected $fillable = ['code', 'name', 'is_pc', 'region_id', 'district_id', 'slug'];
 
     public function region()
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
     }
 
     public function levels()
