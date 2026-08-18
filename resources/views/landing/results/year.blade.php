@@ -5,7 +5,7 @@
 @section('content')
 <div class="fixed top-0 left-0 w-full p-3 sm:p-4 z-50 flex flex-col gap-2">
     <div>
-        <a href="{{ route('results.index') }}" class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/90 backdrop-blur text-[#1e293b] text-xs sm:text-sm font-bold rounded-xl shadow-sm hover:shadow-md hover:text-blue-600 transition-all group border border-white/20">
+        <a href="{{ route('landing') }}" class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/90 backdrop-blur text-[#1e293b] text-xs sm:text-sm font-bold rounded-xl shadow-sm hover:shadow-md hover:text-blue-600 transition-all group border border-white/20">
             <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i> Back to Years
         </a>
     </div>
