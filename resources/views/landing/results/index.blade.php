@@ -6,16 +6,7 @@
 <!-- Top Bar -->
 <div class="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center shadow-md">
-                <i class="ri-graduation-cap-fill text-white text-lg"></i>
-            </div>
-            <div>
-                <h1 class="text-sm sm:text-lg font-black text-[#1e293b] leading-none tracking-tight">SARS</h1>
-                <p class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mt-0.5">Regional Exam System</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-2 sm:gap-3">
+        <div class="flex items-center gap-2 sm:gap-3 ml-auto">
             <a href="{{ route('results.tour') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary-600 transition-colors">
                 <i class="ri-play-circle-line text-base"></i> Tour
             </a>
@@ -32,20 +23,6 @@
 <!-- Hero + Year Selection -->
 <section class="min-h-screen bg-gradient-to-br from-[#e9ecef] via-[#f0f4f8] to-[#e9ecef] flex items-center justify-center overflow-hidden pt-16">
     <div class="container mx-auto px-4 py-12">
-
-        <!-- Hero Title -->
-        <div class="text-center mb-10 sm:mb-14 animate__animated animate__fadeInDown">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-50 border border-primary-100 rounded-full mb-4">
-                <span class="w-2 h-2 bg-primary-600 rounded-full animate-pulse"></span>
-                <span class="text-[10px] sm:text-xs font-bold text-primary-700 uppercase tracking-widest">Matokeo Yanapatikana Sasa</span>
-            </div>
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#1e293b] leading-tight">
-                Chagua Mwaka wa<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-green-500">Matokeo ya Mtihani</span>
-            </h1>
-            <p class="mt-4 text-sm sm:text-lg text-gray-500 font-medium max-w-2xl mx-auto">
-                Pata matokeo ya mitihani kwa kuchagua mwaka, mkoa, wilaya, na shule yako.
-            </p>
-        </div>
 
         <!-- Year Cards -->
         <div class="max-w-5xl mx-auto">
