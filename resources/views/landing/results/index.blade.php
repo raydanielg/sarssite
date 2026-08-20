@@ -6,7 +6,8 @@
 <!-- Top Bar -->
 <div class="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
-        <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+        <h1 class="text-sm sm:text-lg font-black text-[#1e293b] tracking-tight">Regional Examination System</h1>
+        <div class="flex items-center gap-2 sm:gap-3">
             <a href="{{ route('results.tour') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary-600 transition-colors">
                 <i class="ri-play-circle-line text-base"></i> Tour
             </a>
