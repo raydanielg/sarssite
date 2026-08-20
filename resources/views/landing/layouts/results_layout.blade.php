@@ -49,7 +49,40 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #e9ecef;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .results-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        .results-btn {
+            background: #1f7a35;
+            color: #ffffff;
+            font-weight: 700;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .results-btn:hover {
+            background: #145524;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .results-link {
+            color: #1f7a35;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .results-link:hover {
+            color: #145524;
+            text-decoration: underline;
+        }
+        .breadcrumb-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
     </style>
     @stack('css')
