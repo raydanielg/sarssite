@@ -46,10 +46,24 @@
             </div>
             <div class="col-md-8 col-12 text-center text-md-right">
                 <div class="d-flex flex-column flex-sm-row justify-content-md-end align-items-center gap-2">
-                    <!-- Bulk Delete Button -->
-                    <button id="bulkDeleteBtn" class="btn btn-danger btn-sm px-4 shadow-sm mb-2 mb-sm-0 mr-sm-2" style="display:none;">
-                        <i class="fas fa-trash-alt mr-1"></i> Delete Selected (<span id="selectedCount">0</span>)
-                    </button>
+                    <!-- Bulk Actions Dropdown -->
+                    <div class="btn-group shadow-sm mb-2 mb-sm-0 mr-sm-2" id="bulkActionsGroup" style="display:none;">
+                        <button type="button" class="btn btn-warning btn-sm px-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-tasks mr-1"></i> Bulk Actions (<span id="selectedCount">0</span>)
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0">
+                            <button class="dropdown-item text-success font-weight-bold" id="bulkPublishBtn">
+                                <i class="fas fa-globe mr-2"></i> Publish Selected
+                            </button>
+                            <button class="dropdown-item text-warning font-weight-bold" id="bulkDraftBtn">
+                                <i class="fas fa-lock mr-2"></i> Make Draft (Private)
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item text-danger font-weight-bold" id="bulkDeleteBtn">
+                                <i class="fas fa-trash-alt mr-2"></i> Delete Selected
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Search Input -->
                     <div class="input-group input-group-sm mr-sm-3 mb-2 mb-sm-0" style="max-width: 250px;">
@@ -203,36 +217,96 @@ $(document).ready(function() {
         });
     });
 
-    // Bulk Delete Logic
-    const bulkDeleteBtn = $('#bulkDeleteBtn');
+    // Bulk Actions Logic
+    const bulkActionsGroup = $('#bulkActionsGroup');
     const selectedCountSpan = $('#selectedCount');
     const checkAll = $('#checkAll');
 
-    function updateBulkDeleteUI() {
+    function updateBulkUI() {
         const checkedCount = $('.item-checkbox:checked').length;
         if (checkedCount > 0) {
-            bulkDeleteBtn.fadeIn();
+            bulkActionsGroup.fadeIn();
             selectedCountSpan.text(checkedCount);
         } else {
-            bulkDeleteBtn.fadeOut();
+            bulkActionsGroup.fadeOut();
         }
+    }
+
+    function getSelectedIds() {
+        return $('.item-checkbox:checked').map(function() {
+            return $(this).val();
+        }).get();
     }
 
     $(document).on('change', '#checkAll', function() {
         $('.item-checkbox').prop('checked', $(this).is(':checked'));
-        updateBulkDeleteUI();
+        updateBulkUI();
     });
 
     $(document).on('change', '.item-checkbox', function() {
         const allChecked = $('.item-checkbox').length === $('.item-checkbox:checked').length;
         $('#checkAll').prop('checked', allChecked);
-        updateBulkDeleteUI();
+        updateBulkUI();
     });
 
-    bulkDeleteBtn.on('click', function() {
-        const ids = $('.item-checkbox:checked').map(function() {
-            return $(this).val();
-        }).get();
+    // Bulk Status Change
+    function bulkStatusChange(status) {
+        const ids = getSelectedIds();
+        if (ids.length === 0) return;
+        const label = status === 'Published' ? 'kupublish' : 'kufanya Draft';
+
+        Swal.fire({
+            title: 'Una uhakika?',
+            text: `Unataka ${label} matokeo ${ids.length} yaliyochaguliwa?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ndio, endelea',
+            cancelButtonText: 'Hapana',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.results.bulk-status') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        ids: ids,
+                        status: status
+                    },
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Inabadilisha status...',
+                            allowOutsideClick: false,
+                            didOpen: () => { Swal.showLoading(); }
+                        });
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Imefanyika!', response.message, 'success').then(() => {
+                                fetchResults(1);
+                                $('#checkAll').prop('checked', false);
+                                bulkActionsGroup.fadeOut();
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Hitilafu imetokea.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    $('#bulkPublishBtn').on('click', function() { bulkStatusChange('Published'); });
+    $('#bulkDraftBtn').on('click', function() { bulkStatusChange('Draft'); });
+
+    // Bulk Delete
+    $('#bulkDeleteBtn').on('click', function() {
+        const ids = getSelectedIds();
 
         if (ids.length === 0) return;
 
@@ -259,9 +333,7 @@ $(document).ready(function() {
                         Swal.fire({
                             title: 'Inafuta...',
                             allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
+                            didOpen: () => { Swal.showLoading(); }
                         });
                     },
                     success: function(response) {
@@ -269,7 +341,7 @@ $(document).ready(function() {
                             Swal.fire('Imefutwa!', response.message, 'success').then(() => {
                                 fetchResults(1);
                                 $('#checkAll').prop('checked', false);
-                                bulkDeleteBtn.fadeOut();
+                                bulkActionsGroup.fadeOut();
                             });
                         } else {
                             Swal.fire('Error', response.message, 'error');

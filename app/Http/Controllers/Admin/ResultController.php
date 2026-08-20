@@ -240,4 +240,20 @@ class ResultController extends Controller
             return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
         }
     }
+
+    public function bulkStatus(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'status' => 'required|in:Published,Draft',
+        ]);
+
+        try {
+            $count = Result::whereIn('id', $request->ids)->update(['status' => $request->status]);
+            $label = $request->status === 'Published' ? 'zimechapishwa' : 'zimefanywa Draft';
+            return response()->json(['success' => true, 'message' => "Matokeo {$count} {$label} kikamilifu."]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
 }
