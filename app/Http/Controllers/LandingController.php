@@ -31,12 +31,14 @@ class LandingController extends Controller
     {
         $years = Year::orderBy('year', 'desc')->get();
         $levels = Level::orderBy('name')->get();
+        $regions = Region::orderBy('name')->get();
+        $announcements = Announcement::where('is_active', true)->latest()->get();
 
         $resultTitles = ResultTitle::with(['year', 'region', 'district'])
             ->orderByDesc('id')
             ->get();
 
-        return view('landing.sitemap', compact('years', 'levels', 'resultTitles'));
+        return view('landing.sitemap', compact('years', 'levels', 'regions', 'announcements', 'resultTitles'));
     }
 
     public function sitemapXml(Request $request)
