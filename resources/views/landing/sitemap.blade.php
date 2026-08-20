@@ -29,36 +29,6 @@
     </div>
 @endif
 
-<!-- Hero Section -->
-<section class="bg-gradient-to-br from-gray-50 via-white to-primary-50/30 overflow-hidden">
-    <div class="max-w-6xl mx-auto px-4 py-12 sm:py-20 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-50 border border-primary-100 rounded-full mb-6 animate__animated animate__fadeInDown">
-            <span class="w-2 h-2 bg-primary-600 rounded-full animate-pulse"></span>
-            <span class="text-[10px] sm:text-xs font-bold text-primary-700 uppercase tracking-widest">Matokeo Yanapatikana Sasa</span>
-        </div>
-        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-gray-900 leading-tight animate__animated animate__fadeInUp">
-            Karibu kwenye<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-green-500"> Mfumo wa Matokeo</span>
-        </h1>
-        <p class="mt-4 text-sm sm:text-lg text-gray-500 font-medium max-w-2xl mx-auto animate__animated animate__fadeInUp animate__delay-1s">
-            Pata matokeo ya mitihani kwa kuchagua mwaka, mkoa, wilaya, na shule yako. Chagua link hapa chini.
-        </p>
-
-        <div class="mt-8 flex flex-row items-center justify-center space-x-2 sm:space-x-4 animate__animated animate__zoomIn animate__delay-2s">
-            <a href="{{ route('results.index') }}" class="inline-flex justify-center items-center py-3 px-6 sm:px-8 text-xs sm:text-base font-black text-center text-white rounded-xl bg-primary-600 hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-200 transition-all uppercase tracking-wider group relative overflow-hidden whitespace-nowrap">
-                <span class="relative z-10 flex items-center">
-                    Check Results
-                    <i class="ri-arrow-right-line ml-2 text-lg sm:text-xl group-hover:translate-x-1 transition-transform"></i>
-                </span>
-                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            </a>
-            <a href="{{ route('results.tour') }}" class="inline-flex justify-center items-center py-3 px-6 sm:px-8 text-xs sm:text-base font-bold text-center text-gray-900 rounded-xl border-2 border-gray-200 hover:border-primary-600 hover:text-primary-600 hover:bg-primary-50 transition-all uppercase tracking-wider group whitespace-nowrap">
-                <i class="ri-play-circle-fill mr-2 text-xl sm:text-2xl group-hover:scale-110 transition-transform"></i>
-                Tour
-            </a>
-        </div>
-    </div>
-</section>
-
 <!-- Main Content -->
 <section class="bg-white py-12 sm:py-16">
     <div class="max-w-6xl mx-auto px-4">
