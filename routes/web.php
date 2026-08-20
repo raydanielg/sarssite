@@ -37,6 +37,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('levels', App\Http\Controllers\Admin\LevelController::class);
     Route::resource('regions', App\Http\Controllers\Admin\RegionController::class);
     Route::resource('schools', App\Http\Controllers\Admin\SchoolController::class);
+    Route::resource('districts', App\Http\Controllers\Admin\DistrictController::class);
+    Route::get('districts-by-region/{id}', [App\Http\Controllers\Admin\DistrictController::class, 'getByRegion'])->name('districts.by-region');
+    Route::get('districts-bulk-create', [App\Http\Controllers\Admin\DistrictController::class, 'bulkCreateForm'])->name('districts.bulk-create-form');
+    Route::post('districts/bulk-store', [App\Http\Controllers\Admin\DistrictController::class, 'bulkStore'])->name('districts.bulk-store');
+    Route::post('districts/bulk-delete', [App\Http\Controllers\Admin\DistrictController::class, 'bulkDelete'])->name('districts.bulk-delete');
     Route::resource('result-summaries', App\Http\Controllers\Admin\ResultSummaryController::class);
     Route::post('result-summaries/bulk-delete', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkDelete'])->name('result-summaries.bulk-delete');
     Route::post('result-titles/bulk-delete', [App\Http\Controllers\Admin\ResultTitleController::class, 'bulkDelete'])->name('result-titles.bulk-delete');

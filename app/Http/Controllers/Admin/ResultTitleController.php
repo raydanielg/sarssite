@@ -7,8 +7,10 @@ use App\Models\ResultTitle;
 use App\Models\Year;
 use App\Models\Level;
 use App\Models\Region;
+use App\Models\District;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ResultTitleController extends Controller
 {
@@ -28,7 +30,8 @@ class ResultTitleController extends Controller
         $years = Year::orderByDesc('year')->get();
         $levels = Level::orderBy('name')->get();
         $regions = Region::orderBy('name')->get();
-        return view('admin.result-titles.create', compact('years', 'levels', 'regions'));
+        $resultTypes = \App\Models\ResultType::orderBy('name')->get();
+        return view('admin.result-titles.create', compact('years', 'levels', 'regions', 'resultTypes'));
     }
 
     public function store(Request $request)
@@ -37,18 +40,46 @@ class ResultTitleController extends Controller
             'name' => 'required|string|max:255',
             'year_id' => 'required|exists:years,id',
             'level_id' => 'required|exists:levels,id',
-            'region_id' => 'required|exists:regions,id',
+            'region_ids' => 'required|array',
+            'region_ids.*' => 'exists:regions,id',
+            'result_type_id' => 'nullable|exists:result_types,id',
         ]);
 
-        ResultTitle::create([
-            'name' => $request->name,
-            'year_id' => $request->year_id,
-            'level_id' => $request->level_id,
-            'region_id' => $request->region_id,
-            'slug' => Str::slug($request->name . '-' . time()),
-        ]);
+        $count = 0;
+        foreach ($request->region_ids as $regionId) {
+            $districtIds = $request->input('district_ids_' . $regionId, []);
 
-        return redirect()->route('admin.result-titles.index')->with('success', 'Result Category created successfully.');
+            if (empty($districtIds)) {
+                // Create for entire region (no specific district)
+                ResultTitle::create([
+                    'name' => $request->name,
+                    'year_id' => $request->year_id,
+                    'level_id' => $request->level_id,
+                    'region_id' => $regionId,
+                    'district_id' => null,
+                    'result_type_id' => $request->result_type_id,
+                    'slug' => Str::slug($request->name . '-' . $regionId . '-' . time() . '-' . rand(100, 999)),
+                ]);
+                $count++;
+            } else {
+                // Create for each selected district
+                foreach ($districtIds as $districtId) {
+                    ResultTitle::create([
+                        'name' => $request->name,
+                        'year_id' => $request->year_id,
+                        'level_id' => $request->level_id,
+                        'region_id' => $regionId,
+                        'district_id' => $districtId,
+                        'result_type_id' => $request->result_type_id,
+                        'slug' => Str::slug($request->name . '-' . $districtId . '-' . time() . '-' . rand(100, 999)),
+                    ]);
+                    $count++;
+                }
+            }
+        }
+
+        $msg = $count === 1 ? 'Result Category created successfully.' : "{$count} Result Categories created successfully (for multiple regions/districts).";
+        return redirect()->route('admin.result-titles.index')->with('success', $msg);
     }
 
     public function edit($id)

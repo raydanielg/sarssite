@@ -169,6 +169,37 @@
             </ul>
           </li>
 
+          <!-- Districts -->
+          <li class="nav-item {{ request()->is('admin/districts*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('admin/districts*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-map-marked-alt"></i>
+              <p>
+                Districts (Wilaya)
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('admin.districts.index') }}" class="nav-link {{ request()->is('admin/districts') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Districts</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.districts.create') }}" class="nav-link {{ request()->is('admin/districts/create') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add District</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.districts.bulk-create-form') }}" class="nav-link {{ request()->is('admin/districts-bulk-create') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Bulk Add Districts</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
           <!-- Schools -->
           <li class="nav-item {{ request()->is('admin/schools*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is('admin/schools*') ? 'active' : '' }}">

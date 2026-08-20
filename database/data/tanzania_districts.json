@@ -1,0 +1,124 @@
+{
+  "regions": [
+    {
+      "name": "Dar es Salaam",
+      "districts": ["Ilala", "Kinondoni", "Temeke", "Kigamboni", "Ubungo"]
+    },
+    {
+      "name": "Arusha",
+      "districts": ["Arusha City", "Arusha DC", "Meru", "Karatu", "Longido", "Monduli", "Ngorongoro"]
+    },
+    {
+      "name": "Coast (Pwani)",
+      "districts": ["Bagamoyo", "Kibaha", "Kisarawe", "Mkuranga", "Rufiji", "Chalinze", "Kibaha TC"]
+    },
+    {
+      "name": "Dodoma",
+      "districts": ["Dodoma City", "Dodoma DC", "Bahi", "Chamwino", "Chemba", "Kondoa", "Kongwa", "Mpwapwa"]
+    },
+    {
+      "name": "Geita",
+      "districts": ["Geita Town", "Geita DC", "Bukombe", "Chato"]
+    },
+    {
+      "name": "Iringa",
+      "districts": ["Iringa Urban", "Iringa DC", "Kilolo", "Mafinga", "Mufindi"]
+    },
+    {
+      "name": "Kagera",
+      "districts": ["Bukoba Municipal", "Bukoba DC", "Muleba", "Karagwe", "Kyerwa", "Ngara", "Biharamulo"]
+    },
+    {
+      "name": "Kigoma",
+      "districts": ["Kigoma Urban", "Kigoma DC", "Kakonko", "Kasulu", "Kibondo", "Uvinza"]
+    },
+    {
+      "name": "Kilimanjaro",
+      "districts": ["Moshi Municipal", "Moshi DC", "Hai", "Mwanga", "Same", "Rombo", "Siha"]
+    },
+    {
+      "name": "Lindi",
+      "districts": ["Lindi Municipal", "Lindi DC", "Kilwa", "Ruangwa", "Nachingwea", "Liwale"]
+    },
+    {
+      "name": "Manyara",
+      "districts": ["Babati Town", "Babati DC", "Hanang", "Mbulu", "Simanjiro", "Kiteto"]
+    },
+    {
+      "name": "Mara",
+      "districts": ["Musoma Municipal", "Musoma DC", "Bunda", "Serengeti", "Tarime", "Rorya", "Butiama"]
+    },
+    {
+      "name": "Mbeya",
+      "districts": ["Mbeya City", "Mbeya DC", "Mbozi", "Vwawa", "Rungwe", "Kyela", "Ileje", "Mbarali"]
+    },
+    {
+      "name": "Morogoro",
+      "districts": ["Morogoro Municipal", "Morogoro DC", "Kilombero", "Kilosa", "Ulanga", "Malinyi", "Mvomero", "Gairo"]
+    },
+    {
+      "name": "Mtwara",
+      "districts": ["Mtwara Municipal", "Mtwara DC", "Masasi", "Masasi TC", "Newala", "Tandahimba", "Nanyumbu"]
+    },
+    {
+      "name": "Mwanza",
+      "districts": ["Mwanza City", "Ilemela", "Nyamagana", "Magu", "Kwimba", "Sengerema", "Geita", "Ukerewe", "Buchosa"]
+    },
+    {
+      "name": "Njombe",
+      "districts": ["Njombe Town", "Njombe DC", "Ludewa", "Makete", "Wanging'ombe"]
+    },
+    {
+      "name": "Rukwa",
+      "districts": ["Sumbawanga Municipal", "Sumbawanga DC", "Kalambo", "Nkasi"]
+    },
+    {
+      "name": "Ruvuma",
+      "districts": ["Songea Municipal", "Songea DC", "Namtumbo", "Tunduru", "Mbinga", "Madaba"]
+    },
+    {
+      "name": "Shinyanga",
+      "districts": ["Shinyanga Municipal", "Shinyanga DC", "Kahama", "Kahama TC", "Kishapu", "Bariadi", "Meatu"]
+    },
+    {
+      "name": "Simiyu",
+      "districts": ["Bariadi", "Busega", "Itilima", "Maswa", "Meatu"]
+    },
+    {
+      "name": "Singida",
+      "districts": ["Singida Municipal", "Singida DC", "Manyoni", "Ikungi", "Iramba", "Mkalama", "Itigi"]
+    },
+    {
+      "name": "Songwe",
+      "districts": ["Mbeya", "Mbozi", "Ileje", "Momba", "Songwe"]
+    },
+    {
+      "name": "Tabora",
+      "districts": ["Tabora Municipal", "Tabora DC", "Uyui", "Sikonge", "Kaliua", "Nzega", "Urambo", "Igunga"]
+    },
+    {
+      "name": "Tanga",
+      "districts": ["Tanga City", "Tanga DC", "Korogwe", "Korogwe TC", "Handeni", "Pangani", "Muheza", "Mkinga", "Lushoto"]
+    },
+    {
+      "name": "Zanzibar Urban/West",
+      "districts": ["Mjini Magharibi", "Magharibi A", "Magharibi B"]
+    },
+    {
+      "name": "Zanzibar North",
+      "districts": ["Kaskazini A", "Kaskazini B"]
+    },
+    {
+      "name": "Zanzibar South/Central",
+      "districts": ["Kusini", "Kati"]
+    },
+    {
+      "name": "Pemba North",
+      "districts": ["Kaskazini A", "Kaskazini B"]
+    },
+    {
+      "name": "Pemba South",
+      "districts": ["Kusini", "Chake Chake", "Mkoani"]
+    }
+  ]
+}
