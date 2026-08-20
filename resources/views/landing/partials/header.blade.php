@@ -36,26 +36,6 @@
 
                 <!-- Desktop Menu -->
                 <ul class="hidden lg:flex items-center gap-2 mx-auto list-none mb-0 p-0 py-2">
-                    <li>
-                        <a href="{{ route('landing') }}" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all uppercase tracking-wide">
-                            HOME
-                        </a>
-                    </li>
-                    <li class="relative group">
-                        <button class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all flex items-center gap-1 uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            ABOUT <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </button>
-                    </li>
-                    <li class="relative group">
-                        <button class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all flex items-center gap-1 uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            EXAM TYPES <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </button>
-                    </li>
-                    <li>
-                        <a href="#" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            REGISTRATION <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </a>
-                    </li>
                     <li class="relative group">
                         <a href="{{ route('results.index') }}" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all flex items-center gap-1 uppercase tracking-wide">
                             RESULTS <i class="ri-arrow-down-s-line opacity-60"></i>
@@ -91,31 +71,6 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
-                    <li>
-                        <a href="#" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            SERVICES <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            PUBLICATIONS <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            FAQ <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            E-MREJESHO <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="px-3 py-2 text-white text-[12px] font-bold hover:text-yellow-400 transition-all uppercase tracking-wide opacity-50 cursor-not-allowed">
-                            CONTACTS <span class="text-[9px] bg-yellow-400 text-[#1b5e20] px-1 rounded ml-1">SOON</span>
-                        </a>
                     </li>
                 </ul>
             </div>
@@ -239,12 +194,6 @@
     <!-- Sidebar Links -->
     <div class="flex-1 overflow-y-auto py-6">
         <nav class="px-4 space-y-2">
-            <a href="{{ route('landing') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 font-bold uppercase text-xs hover:bg-gray-100 hover:text-[#1b5e20] rounded-xl transition-all">
-                <i class="ri-home-4-line text-lg opacity-60"></i> HOME
-            </a>
-
-            <div class="border-t border-gray-100 my-2"></div>
-
             <!-- Results Dropdown for Mobile -->
             <div class="space-y-1">
                 <button id="mobileResultsToggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-bold uppercase text-xs hover:bg-gray-100 hover:text-[#1b5e20] rounded-xl transition-all">
@@ -267,43 +216,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="border-t border-gray-100 my-2"></div>
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-gray-400 font-bold uppercase text-xs cursor-not-allowed">
-                <span class="flex items-center gap-3">
-                    <i class="ri-information-line text-lg opacity-40"></i> ABOUT
-                </span>
-                <span class="text-[8px] bg-gray-200 text-gray-500 px-1 rounded">SOON</span>
-            </button>
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-gray-400 font-bold uppercase text-xs cursor-not-allowed">
-                <span class="flex items-center gap-3">
-                    <i class="ri-book-open-line text-lg opacity-40"></i> EXAM TYPES
-                </span>
-                <span class="text-[8px] bg-gray-200 text-gray-500 px-1 rounded">SOON</span>
-            </button>
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-gray-400 font-bold uppercase text-xs cursor-not-allowed">
-                <span class="flex items-center gap-3">
-                    <i class="ri-user-add-line text-lg opacity-40"></i> REGISTRATION
-                </span>
-                <span class="text-[8px] bg-gray-200 text-gray-500 px-1 rounded">SOON</span>
-            </button>
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-gray-400 font-bold uppercase text-xs cursor-not-allowed">
-                <span class="flex items-center gap-3">
-                    <i class="ri-customer-service-2-line text-lg opacity-40"></i> SERVICES
-                </span>
-                <span class="text-[8px] bg-gray-200 text-gray-500 px-1 rounded">SOON</span>
-            </button>
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-gray-400 font-bold uppercase text-xs cursor-not-allowed">
-                <span class="flex items-center gap-3">
-                    <i class="ri-contacts-line text-lg opacity-40"></i> CONTACTS
-                </span>
-                <span class="text-[8px] bg-gray-200 text-gray-500 px-1 rounded">SOON</span>
-            </button>
         </nav>
     </div>
 
