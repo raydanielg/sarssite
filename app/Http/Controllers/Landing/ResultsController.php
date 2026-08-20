@@ -45,15 +45,24 @@ class ResultsController extends Controller
         $yearData = Year::where('year', $year)->firstOrFail();
         $region = Region::where('slug', $region_slug)->firstOrFail();
 
-        $districts = District::where('region_id', $region->id)
-            ->whereHas('resultTitles', function ($q) use ($yearData) {
-                $q->where('year_id', $yearData->id);
-            })
-            ->orderBy('name')
-            ->get();
+        $hasRegionLevelTitles = ResultTitle::where('year_id', $yearData->id)
+            ->where('region_id', $region->id)
+            ->whereNull('district_id')
+            ->exists();
 
-        if ($districts->isEmpty()) {
+        if ($hasRegionLevelTitles) {
             $districts = District::where('region_id', $region->id)->orderBy('name')->get();
+        } else {
+            $districts = District::where('region_id', $region->id)
+                ->whereHas('resultTitles', function ($q) use ($yearData) {
+                    $q->where('year_id', $yearData->id);
+                })
+                ->orderBy('name')
+                ->get();
+
+            if ($districts->isEmpty()) {
+                $districts = District::where('region_id', $region->id)->orderBy('name')->get();
+            }
         }
 
         $regionSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region) {
@@ -75,7 +84,10 @@ class ResultsController extends Controller
 
         $resultTitles = ResultTitle::where('year_id', $yearData->id)
             ->where('region_id', $region->id)
-            ->where('district_id', $district->id)
+            ->where(function ($q) use ($district) {
+                $q->where('district_id', $district->id)
+                  ->orWhereNull('district_id');
+            })
             ->withCount('results')
             ->with('resultType')
             ->orderByDesc('id')
@@ -84,7 +96,10 @@ class ResultsController extends Controller
         $districtSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region, $district) {
             $q->where('year_id', $yearData->id)
               ->where('region_id', $region->id)
-              ->where('district_id', $district->id);
+              ->where(function ($sq) use ($district) {
+                  $sq->where('district_id', $district->id)
+                    ->orWhereNull('district_id');
+              });
         })->get();
 
         return view('landing.results.titles', compact('yearData', 'region', 'district', 'resultTitles', 'districtSummaries'));
