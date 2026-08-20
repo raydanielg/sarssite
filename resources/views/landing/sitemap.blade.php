@@ -63,12 +63,6 @@
 <section class="bg-white py-12 sm:py-16">
     <div class="max-w-6xl mx-auto px-4">
 
-        <div class="text-center mb-10">
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-gray-900">Mfumo wa Navigation</h2>
-            <div class="h-1.5 w-20 bg-primary-600 mx-auto rounded-full mt-3"></div>
-            <p class="mt-3 text-sm text-gray-500 font-medium">Year → Region → Wilaya → Examination → Schools/PDF</p>
-        </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <!-- Quick Pages Card -->
