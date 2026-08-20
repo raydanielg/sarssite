@@ -59,7 +59,7 @@
     </div>
 </section>
 
-<!-- Main Content: Sitemap-style Navigation -->
+<!-- Main Content -->
 <section class="bg-white py-12 sm:py-16">
     <div class="max-w-6xl mx-auto px-4">
 
@@ -67,67 +67,44 @@
 
             <!-- Quick Pages Card -->
             <div class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 animate__animated animate__fadeInUp">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center">
-                        <i class="ri-links-line text-primary-600 text-xl"></i>
-                    </div>
-                    <h3 class="text-sm font-black uppercase tracking-widest text-gray-900">Quick Pages</h3>
-                </div>
-                <div class="space-y-1">
-                    <a href="{{ route('results.index') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all group">
-                        <i class="ri-file-list-3-line text-gray-400 group-hover:text-primary-600"></i> Results Portal
-                        <i class="ri-arrow-right-s-line ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                <h3 class="text-sm font-black uppercase tracking-widest text-gray-900 mb-5">Quick Pages</h3>
+                <div class="space-y-2">
+                    <a href="{{ route('results.index') }}" class="block px-4 py-3 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all">
+                        Results Portal
                     </a>
-                    <a href="{{ route('results.tour') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all group">
-                        <i class="ri-play-circle-line text-gray-400 group-hover:text-primary-600"></i> System Tour
-                        <i class="ri-arrow-right-s-line ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    <a href="{{ route('results.tour') }}" class="block px-4 py-3 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all">
+                        System Tour
                     </a>
-                    <a href="/login" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all group">
-                        <i class="ri-login-circle-line text-gray-400 group-hover:text-primary-600"></i> Staff Login
-                        <i class="ri-arrow-right-s-line ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    <a href="/login" class="block px-4 py-3 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all">
+                        Staff Login
                     </a>
-                    <a href="{{ route('sitemap.xml') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all group">
-                        <i class="ri-code-line text-gray-400 group-hover:text-primary-600"></i> Sitemap XML
-                        <i class="ri-arrow-right-s-line ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    <a href="{{ route('sitemap.xml') }}" class="block px-4 py-3 rounded-xl text-gray-700 hover:text-primary-600 hover:bg-primary-50 font-bold text-sm transition-all">
+                        Sitemap XML
                     </a>
                 </div>
             </div>
 
-            <!-- Years + Exams Card -->
+            <!-- Years + Recent Exams -->
             <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-2 hover:shadow-lg transition-shadow duration-300 animate__animated animate__fadeInUp animate__delay-1s">
-                <div class="flex items-center justify-between gap-4 flex-wrap mb-5">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center">
-                            <i class="ri-file-list-3-line text-primary-600 text-xl"></i>
-                        </div>
-                        <h3 class="text-sm font-black uppercase tracking-widest text-gray-900">Results Navigation</h3>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <!-- Years -->
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-900 flex items-center gap-2 mb-3">
-                            <i class="ri-calendar-line text-primary-600"></i> Years
-                        </h4>
-                        <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Years as Buttons -->
+                    <div>
+                        <h3 class="text-sm font-black uppercase tracking-widest text-gray-900 mb-4">Years</h3>
+                        <div class="flex flex-wrap gap-2">
                             @forelse($years as $y)
-                                <a href="{{ route('results.year', $y->year) }}" class="flex items-center justify-between px-3 py-2 bg-white rounded-lg border border-gray-200 hover:border-primary-400 hover:bg-primary-50 text-sm font-bold text-gray-700 hover:text-primary-700 transition-all group">
+                                <a href="{{ route('results.year', $y->year) }}" class="px-5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-black text-gray-700 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all">
                                     {{ $y->year }}
-                                    <i class="ri-arrow-right-s-line text-gray-300 group-hover:text-primary-600 transition-colors"></i>
                                 </a>
                             @empty
-                                <div class="col-span-2 text-sm text-gray-500 text-center py-4">Hakuna years zilizowekwa.</div>
+                                <p class="text-sm text-gray-500">Hakuna years zilizowekwa.</p>
                             @endforelse
                         </div>
                     </div>
 
-                    <!-- Recent Exams -->
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-900 flex items-center gap-2 mb-3">
-                            <i class="ri-graduation-cap-line text-primary-600"></i> Recent Exams
-                        </h4>
-                        <div class="space-y-2">
+                    <!-- Recent Exam Titles -->
+                    <div>
+                        <h3 class="text-sm font-black uppercase tracking-widest text-gray-900 mb-4">Recent Exams</h3>
+                        <div class="space-y-2.5">
                             @forelse($resultTitles->take(8) as $t)
                                 @if($t->year && $t->region)
                                     @php
@@ -138,28 +115,12 @@
                                         }
                                     @endphp
                                     <a href="{{ $t->district ? route('results.final', $params) : route('results.districts', $params) }}" class="block text-sm font-bold text-gray-700 hover:text-primary-600 truncate transition-colors">
-                                        <i class="ri-file-line text-gray-400 mr-1"></i> {{ $t->name }}
+                                        {{ $t->name }}
                                     </a>
                                 @endif
                             @empty
-                                <div class="text-sm text-gray-500">Hakuna examinations zilizowekwa.</div>
+                                <p class="text-sm text-gray-500">Hakuna examinations zilizowekwa.</p>
                             @endforelse
-                        </div>
-                        <a href="{{ route('results.index') }}" class="mt-3 inline-flex items-center gap-1 text-[11px] font-black text-primary-600 uppercase hover:underline">
-                            View All <i class="ri-arrow-right-s-line"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Tip Box -->
-                <div class="mt-5 bg-primary-50 border border-primary-100 rounded-xl p-4 flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-primary-600 text-white flex items-center justify-center flex-shrink-0">
-                        <i class="ri-information-line text-lg"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-black text-gray-900">Tip</div>
-                        <div class="text-xs sm:text-sm text-gray-600 font-medium">
-                            Ukishafika kwenye "School List" au "Result Summary", bonyeza item yoyote kufungua PDF viewer.
                         </div>
                     </div>
                 </div>
