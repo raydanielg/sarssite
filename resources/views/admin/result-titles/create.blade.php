@@ -100,7 +100,7 @@ $(document).ready(function() {
             districtBox.show();
             if (districtBox.find('.district-checkbox').length === 0) {
                 districtBox.append('<small class="text-muted loading-msg">Loading...</small>');
-                $.getJSON('{{ route("admin.districts.by-region", "PLACEHOLDER") }}'.replace('PLACEHOLDER', regionId), function(data) {
+                $.getJSON('{{ url("admin/districts-by-region") }}/' + regionId, function(data) {
                     districtBox.find('.loading-msg').remove();
                     if (data.length === 0) {
                         districtBox.append('<small class="text-muted">No districts found for this region.</small>');

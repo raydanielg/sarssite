@@ -25,7 +25,7 @@
                             <option value="">-- Select Category --</option>
                             @foreach($resultTitles as $rt)
                                 <option value="{{ $rt->id }}" {{ old('result_title_id') == $rt->id ? 'selected' : '' }}>
-                                    {{ $rt->name }} ({{ $rt->year->year }} - {{ $rt->level->name }} - {{ $rt->region->name }})
+                                    {{ $rt->name }} ({{ $rt->year->year ?? '' }} - {{ $rt->level->name ?? '' }} - {{ $rt->region->name ?? '' }}{{ $rt->district ? ' - ' . $rt->district->name : '' }})
                                 </option>
                             @endforeach
                         </select>

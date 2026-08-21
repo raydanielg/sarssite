@@ -50,13 +50,13 @@ class ResultController extends Controller
 
     public function bulkUploadForm()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region'])->get();
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])->get();
         return view('admin.results.bulk', compact('resultTitles'));
     }
 
     public function create()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region'])->get();
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])->get();
         $schools = School::orderBy('name')->get();
         return view('admin.results.create', compact('resultTitles', 'schools'));
     }

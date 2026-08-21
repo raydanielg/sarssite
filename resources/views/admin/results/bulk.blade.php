@@ -83,7 +83,7 @@
                             <option value="">-- Chagua Jamii --</option>
                             @foreach($resultTitles as $title)
                                 <option value="{{ $title->id }}">
-                                    {{ $title->name }} ({{ $title->year->year }} - {{ $title->level->name }} - {{ $title->region->name }})
+                                    {{ $title->name }} ({{ $title->year->year ?? '' }} - {{ $title->level->name ?? '' }} - {{ $title->region->name ?? '' }}{{ $title->district ? ' - ' . $title->district->name : '' }})
                                 </option>
                             @endforeach
                         </select>
