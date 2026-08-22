@@ -263,9 +263,21 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('admin.result-summaries.index') }}" class="nav-link {{ request()->is('admin/result-summaries') ? 'active' : '' }}">
+                <a href="{{ route('admin.result-summaries.index') }}" class="nav-link {{ request()->is('admin/result-summaries') && !request()->has('type') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Summaries</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.result-summaries.index', ['type' => 'region']) }}" class="nav-link {{ request()->get('type') === 'region' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Summaries za Mikoa</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.result-summaries.index', ['type' => 'district']) }}" class="nav-link {{ request()->get('type') === 'district' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Summaries za Wilaya</p>
                 </a>
               </li>
               <li class="nav-item">

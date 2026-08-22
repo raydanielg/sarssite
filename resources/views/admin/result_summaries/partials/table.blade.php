@@ -29,6 +29,15 @@
             </div>
         </td>
         <td class="py-3">
+            @if($summary->resultTitle->district_id)
+                <span class="badge badge-info py-1 px-2"><i class="fas fa-map-marker-alt mr-1"></i> {{ $summary->resultTitle->district->name }}</span>
+                <div class="small text-muted mt-1">{{ $summary->resultTitle->region->name }}</div>
+            @else
+                <span class="badge badge-success py-1 px-2"><i class="fas fa-globe mr-1"></i> {{ $summary->resultTitle->region->name }}</span>
+                <div class="small text-muted mt-1">Mkoa (Region)</div>
+            @endif
+        </td>
+        <td class="py-3">
             @if($summary->status == 'Published')
                 <span class="text-success small font-weight-bold"><i class="fas fa-check-circle mr-1"></i> Published</span>
             @else
@@ -49,13 +58,13 @@
     </tr>
 @empty
     <tr>
-        <td colspan="5" class="text-center py-5 text-muted">No summaries found.</td>
+        <td colspan="6" class="text-center py-5 text-muted">No summaries found.</td>
     </tr>
 @endforelse
 
 @if(isset($summaries) && method_exists($summaries, 'links') && $summaries->hasPages())
     <tr class="pagination-row">
-        <td colspan="5" class="px-4 py-3 bg-light">
+        <td colspan="6" class="px-4 py-3 bg-light">
             <div class="d-flex justify-content-center">
                 {{ $summaries->appends(request()->except('page'))->links() }}
             </div>

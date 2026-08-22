@@ -25,7 +25,14 @@
                         <select name="result_title_id" id="result_title_id" class="form-control select2 @error('result_title_id') is-invalid @enderror" required>
                             <option value="">-- Select Examination --</option>
                             @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>{{ $title->year->year }} - {{ $title->level->name }} - {{ $title->name }}</option>
+                                @php
+                                    $levelLabel = $title->district_id 
+                                        ? 'WILAYA: ' . $title->district->name 
+                                        : 'Mkoa: ' . $title->region->name;
+                                @endphp
+                                <option value="{{ $title->id }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
+                                    {{ $title->year->year }} - {{ $title->level->name }} - [{{ $levelLabel }}] - {{ $title->name }}
+                                </option>
                             @endforeach
                         </select>
                         @error('result_title_id')

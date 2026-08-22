@@ -14,10 +14,10 @@
                 <div class="absolute inset-0 flex items-center">
                     <div class="container mx-auto px-4 text-center">
                         <div class="max-w-3xl mx-auto animate__animated animate__fadeInUp">
-                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">Welcome to SARS</h2>
-                            <p class="text-base md:text-lg text-green-50/90 mb-6 leading-relaxed">Thank you for visiting the official website of the Regional Examination System. We provide national assessment results for schools across Tanzania.</p>
-                            <a href="{{ route('results.index') }}" class="inline-flex items-center gap-2 px-8 py-3 bg-yellow-400 hover:bg-yellow-300 text-[#0d3c14] font-black rounded-lg transition-all duration-300 hover:shadow-xl uppercase tracking-wider text-sm">
-                                Check Results <i class="ri-arrow-right-line"></i>
+                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">Karibu SARS</h2>
+                            <p class="text-base md:text-lg text-green-50/90 mb-6 leading-relaxed">Mfumo wa Matokeo ya Mtihani wa Mkoa. Pata matokeo ya shule kwa urahisi na kwa uhakika.</p>
+                            <a href="{{ route('results.index') }}" class="inline-flex items-center gap-2 px-10 py-4 bg-yellow-400 hover:bg-yellow-300 text-[#0d3c14] font-black rounded-xl transition-all duration-300 hover:shadow-2xl uppercase tracking-wider text-base">
+                                <i class="ri-bar-chart-box-line text-xl"></i> Matokeo
                             </a>
                         </div>
                     </div>
@@ -29,10 +29,10 @@
                 <div class="absolute inset-0 flex items-center">
                     <div class="container mx-auto px-4 text-center">
                         <div class="max-w-3xl mx-auto animate__animated animate__fadeInUp">
-                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">Examination Results</h2>
-                            <p class="text-base md:text-lg text-green-50/90 mb-6 leading-relaxed">Access your examination results quickly and securely. Search by year, region, district, and school.</p>
-                            <a href="{{ route('results.index') }}" class="inline-flex items-center gap-2 px-8 py-3 bg-yellow-400 hover:bg-yellow-300 text-[#0d3c14] font-black rounded-lg transition-all duration-300 hover:shadow-xl uppercase tracking-wider text-sm">
-                                View Results <i class="ri-arrow-right-line"></i>
+                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">Matokeo ya Mtihani</h2>
+                            <p class="text-base md:text-lg text-green-50/90 mb-6 leading-relaxed">Chagua mwaka, mkoa, na wilaya ili kuona matokeo ya shule yako. Haraka na rahisi.</p>
+                            <a href="{{ route('results.index') }}" class="inline-flex items-center gap-2 px-10 py-4 bg-yellow-400 hover:bg-yellow-300 text-[#0d3c14] font-black rounded-xl transition-all duration-300 hover:shadow-2xl uppercase tracking-wider text-base">
+                                <i class="ri-bar-chart-box-line text-xl"></i> Matokeo
                             </a>
                         </div>
                     </div>
@@ -44,10 +44,10 @@
                 <div class="absolute inset-0 flex items-center">
                     <div class="container mx-auto px-4 text-center">
                         <div class="max-w-3xl mx-auto animate__animated animate__fadeInUp">
-                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">School Performance</h2>
-                            <p class="text-base md:text-lg text-green-50/90 mb-6 leading-relaxed">Track and compare school performance across regions and districts. Transparent and efficient results management.</p>
-                            <a href="{{ route('results.tour') }}" class="inline-flex items-center gap-2 px-8 py-3 bg-yellow-400 hover:bg-yellow-300 text-[#0d3c14] font-black rounded-lg transition-all duration-300 hover:shadow-xl uppercase tracking-wider text-sm">
-                                Take a Tour <i class="ri-arrow-right-line"></i>
+                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">Utendaji wa Shule</h2>
+                            <p class="text-base md:text-lg text-green-50/90 mb-6 leading-relaxed">Fuatilia na linganisha utendaji wa shule katika mikoa na wilaya mbalimbali. Wazi na bora.</p>
+                            <a href="{{ route('results.index') }}" class="inline-flex items-center gap-2 px-10 py-4 bg-yellow-400 hover:bg-yellow-300 text-[#0d3c14] font-black rounded-xl transition-all duration-300 hover:shadow-2xl uppercase tracking-wider text-base">
+                                <i class="ri-bar-chart-box-line text-xl"></i> Matokeo
                             </a>
                         </div>
                     </div>
@@ -87,14 +87,28 @@
                     </h2>
                     <div class="space-y-4">
                         @forelse($announcements as $announcement)
-                            <div class="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition-all duration-300">
-                                <div class="flex-shrink-0 w-14 h-14 bg-primary-600 rounded-xl flex flex-col items-center justify-center text-white">
+                            @php
+                                $typeColors = [
+                                    'New' => ['border' => 'hover:border-green-400', 'bg' => 'hover:bg-green-50', 'text' => 'hover:text-green-700', 'badge' => 'bg-green-600', 'date_bg' => 'bg-green-600'],
+                                    'Update' => ['border' => 'hover:border-yellow-400', 'bg' => 'hover:bg-yellow-50', 'text' => 'hover:text-yellow-700', 'badge' => 'bg-yellow-500', 'date_bg' => 'bg-yellow-500'],
+                                    'Alert' => ['border' => 'hover:border-red-400', 'bg' => 'hover:bg-red-50', 'text' => 'hover:text-red-700', 'badge' => 'bg-red-600', 'date_bg' => 'bg-red-600'],
+                                    'Info' => ['border' => 'hover:border-primary-400', 'bg' => 'hover:bg-primary-50', 'text' => 'hover:text-primary-700', 'badge' => 'bg-primary-600', 'date_bg' => 'bg-primary-600'],
+                                ];
+                                $c = $typeColors[$announcement->type] ?? $typeColors['Info'];
+                            @endphp
+                            <div onclick="showAnnouncement('{{ addslashes($announcement->title) }}', '{{ addslashes($announcement->content) }}', '{{ $announcement->type }}')"
+                                 class="cursor-pointer flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition-all duration-300 {{ $c['border'] }} {{ $c['bg'] }}">
+                                <div class="flex-shrink-0 w-14 h-14 {{ $c['date_bg'] }} rounded-xl flex flex-col items-center justify-center text-white">
                                     <span class="text-xs font-bold uppercase">{{ \Carbon\Carbon::parse($announcement->created_at)->format('M') }}</span>
                                     <span class="text-lg font-black leading-none">{{ \Carbon\Carbon::parse($announcement->created_at)->format('d') }}</span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h4 class="font-bold text-gray-900 text-sm leading-snug mb-1">{{ $announcement->title }}</h4>
-                                    <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">{{ $announcement->type }}</p>
+                                    <h4 class="font-bold text-gray-900 text-sm leading-snug mb-1 transition-colors duration-300 {{ $c['text'] }}">{{ $announcement->title }}</h4>
+                                    <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-1">{{ \Illuminate\Support\Str::limit($announcement->content, 100) }}</p>
+                                    <span class="inline-block text-[10px] font-bold uppercase tracking-wider text-white px-2 py-0.5 rounded-full {{ $c['badge'] }}">{{ $announcement->type }}</span>
+                                </div>
+                                <div class="flex-shrink-0 self-center text-gray-300">
+                                    <i class="ri-arrow-right-s-line text-lg"></i>
                                 </div>
                             </div>
                         @empty
@@ -106,46 +120,33 @@
                     </div>
                 </div>
 
-                <!-- News / Recent Results (Right) -->
-                <div data-aos="fade-left">
+                <!-- Matokeo Button (Right) -->
+                <div data-aos="fade-left" class="flex flex-col items-center justify-center">
                     <h2 class="text-2xl font-black text-gray-900 mb-6 flex items-center gap-2">
-                        <i class="ri-bar-chart-box-line text-primary-600"></i> Recent Exam Results
+                        <i class="ri-bar-chart-box-line text-primary-600"></i> Matokeo
                     </h2>
-                    <div class="space-y-3">
-                        @forelse($resultTitles as $title)
-                            @if($title->year && $title->region)
-                                @php
-                                    $params = [$title->year->year, $title->region->slug];
-                                    if ($title->district) {
-                                        $params[] = $title->district->slug;
-                                        $params[] = $title->slug;
-                                    }
-                                @endphp
-                                <a href="{{ $title->district ? route('results.final', $params) : route('results.districts', $params) }}" class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-primary-200 hover:shadow-md transition-all duration-300 group">
-                                    <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-600 transition-colors">
-                                        <i class="ri-file-list-3-line text-xl text-primary-600 group-hover:text-white transition-colors"></i>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="font-bold text-gray-900 text-sm truncate group-hover:text-primary-600 transition-colors">{{ $title->name }}</p>
-                                        <p class="text-xs text-gray-500">
-                                            {{ $title->year->year }}
-                                            @if($title->resultType) · {{ $title->resultType->name }} @endif
-                                            @if($title->region) · {{ $title->region->name }} @endif
-                                        </p>
-                                    </div>
-                                    <i class="ri-arrow-right-s-line text-gray-400 group-hover:text-primary-600 transition-colors"></i>
-                                </a>
-                            @endif
-                        @empty
-                            <div class="p-8 bg-gray-50 rounded-xl text-center text-gray-500 text-sm">
-                                <i class="ri-inbox-line text-3xl block mb-2 text-gray-300"></i>
-                                Hakuna matokeo yaliyowekwa.
-                            </div>
-                        @endforelse
-                    </div>
-                    <a href="{{ route('results.index') }}" class="inline-flex items-center gap-1 mt-4 text-primary-600 font-bold text-sm hover:gap-2 transition-all">
-                        All Results <i class="ri-arrow-right-line"></i>
+                    <p class="text-sm text-gray-500 text-center mb-8 leading-relaxed max-w-sm">
+                        Bofya kitufe cha Matokeo kuchagua mwaka, mkoa, na wilaya ili kuona matokeo ya shule.
+                    </p>
+                    <a href="{{ route('results.index') }}" class="group inline-flex flex-col items-center gap-3 px-12 py-10 bg-gradient-to-br from-primary-600 to-primary-800 hover:from-primary-700 hover:to-primary-900 text-white font-black rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                        <i class="ri-bar-chart-box-line text-5xl group-hover:scale-110 transition-transform"></i>
+                        <span class="text-xl uppercase tracking-wider">Matokeo</span>
+                        <span class="text-xs font-medium text-white/70">Chagua Mwaka & Wilaya</span>
                     </a>
+
+                    <!-- Quick Year Shortcuts -->
+                    <div class="mt-8 w-full">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-3">Mwaka wa Haraka</p>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            @forelse($years as $y)
+                                <a href="{{ route('results.year', $y->year) }}" class="px-5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-black text-gray-700 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-300">
+                                    {{ $y->year }}
+                                </a>
+                            @empty
+                                <p class="text-sm text-gray-400">Hakuna miaka iliyowekwa.</p>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -261,7 +262,6 @@
                     </div>
                     <h4 class="font-bold text-gray-900 mb-2">Check Results</h4>
                     <p class="text-sm text-gray-600 leading-relaxed">Search and view examination results by year, region, district, and school name.</p>
-                    <a href="{{ route('results.index') }}" class="inline-flex items-center gap-1 mt-3 text-primary-600 font-bold text-sm hover:gap-2 transition-all">View Results <i class="ri-arrow-right-line"></i></a>
                 </div>
 
                 <!-- Service 2 -->
@@ -366,7 +366,7 @@
                         <i class="ri-map-pin-line text-3xl text-primary-600"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Anwani</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">Mkurugenzi wa Mtihani,<br>Mkoa wa <strong>{{ $regions->first()?->name ?? 'Mkoa Wako' }}</strong>,<br>Tanzania</p>
+                    <p class="text-sm text-gray-600 leading-relaxed">Ofisi ya Elimu Mkoa<br>S.L.P. 119<br>Mwanza, Tanzania</p>
                 </div>
                 <div class="group p-8 bg-gray-50 rounded-2xl border border-gray-100 hover:border-primary-200 hover:shadow-xl transition-all duration-500 text-center" data-aos="zoom-in" data-aos-delay="200">
                     <div class="w-16 h-16 mx-auto mb-4 bg-primary-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -374,8 +374,7 @@
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Simu</h3>
                     <p class="text-sm text-gray-600 leading-relaxed">
-                        <a href="tel:+255123456789" class="hover:text-primary-600 transition-colors">+255 12 345 6789</a><br>
-                        <a href="tel:+255987654321" class="hover:text-primary-600 transition-colors">+255 98 765 4321</a>
+                        <a href="tel:+255763074657" class="hover:text-primary-600 transition-colors">+255 763 074 657</a>
                     </p>
                 </div>
                 <div class="group p-8 bg-gray-50 rounded-2xl border border-gray-100 hover:border-primary-200 hover:shadow-xl transition-all duration-500 text-center" data-aos="zoom-in" data-aos-delay="300">
@@ -385,7 +384,8 @@
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Barua Pepe</h3>
                     <p class="text-sm text-gray-600 leading-relaxed">
                         <a href="mailto:info@sars.ac.tz" class="hover:text-primary-600 transition-colors">info@sars.ac.tz</a><br>
-                        <a href="mailto:support@sars.ac.tz" class="hover:text-primary-600 transition-colors">support@sars.ac.tz</a>
+                        <a href="mailto:support@sars.ac.tz" class="hover:text-primary-600 transition-colors">support@sars.ac.tz</a><br>
+                        <a href="mailto:nnonimusa85@gmail.com" class="hover:text-primary-600 transition-colors">nnonimusa85@gmail.com</a>
                     </p>
                 </div>
             </div>

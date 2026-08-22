@@ -74,6 +74,7 @@
                         </th>
                         <th class="px-4 py-3 border-0">Summary Name</th>
                         <th class="py-3 border-0 px-4">Examination</th>
+                        <th class="py-3 border-0">Level</th>
                         <th class="py-3 border-0">Status</th>
                         <th class="py-3 border-0 text-right px-4">Action</th>
                     </tr>
@@ -121,16 +122,18 @@ $(document).ready(function() {
         const query = searchInput.val();
         const limit = limitSelect.val();
         const url = "{{ route('admin.result-summaries.index') }}";
+        const params = new URLSearchParams();
+        params.set('search', query);
+        params.set('limit', limit);
+        params.set('page', page);
+        const typeParam = new URLSearchParams(window.location.search).get('type');
+        if (typeParam) params.set('type', typeParam);
 
         tableBody.css('opacity', '0.5');
 
         $.ajax({
             url: url,
-            data: {
-                search: query,
-                limit: limit,
-                page: page
-            },
+            data: params.toString(),
             success: function(html) {
                 tableBody.html(html);
                 tableBody.css('opacity', '1');

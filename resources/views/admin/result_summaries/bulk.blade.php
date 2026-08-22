@@ -25,10 +25,17 @@
                         <select name="result_title_id" id="result_title_id" class="form-control select2 shadow-sm" required>
                             <option value="">-- Select Examination --</option>
                             @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}">{{ $title->year->year }} - {{ $title->level->name }} - {{ $title->name }}</option>
+                                @php
+                                    $levelLabel = $title->district_id 
+                                        ? 'WILAYA: ' . $title->district->name 
+                                        : 'Mkoa: ' . $title->region->name;
+                                @endphp
+                                <option value="{{ $title->id }}">
+                                    {{ $title->year->year }} - {{ $title->level->name }} - [{{ $levelLabel }}] - {{ $title->name }}
+                                </option>
                             @endforeach
                         </select>
-                        <small class="text-muted">All uploaded files will be linked to this exam category.</small>
+                        <small class="text-muted">Chagua examination category. [Mkoa: ...] = Summary ya Mkoa. [WILAYA: ...] = Summary ya Wilaya.</small>
                     </div>
                 </div>
             </div>

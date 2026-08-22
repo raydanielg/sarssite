@@ -10,8 +10,8 @@
                     <p class="text-sm text-white/60 leading-relaxed">
                         The Regional Examination System<br>
                         Student Academic Results System<br><br>
-                        <strong class="text-white/80">Phone:</strong> +255 12 345 6789<br>
-                        <strong class="text-white/80">Email:</strong> info@sars.ac.tz<br>
+                        <strong class="text-white/80">Phone:</strong> +255 763 074 657<br>
+                        <strong class="text-white/80">Email:</strong> nnonimusa85@gmail.com<br>
                     </p>
                 </div>
 

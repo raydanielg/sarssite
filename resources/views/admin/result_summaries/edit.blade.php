@@ -25,7 +25,14 @@
                         <label for="result_title_id">Examination Category</label>
                         <select name="result_title_id" id="result_title_id" class="form-control select2 @error('result_title_id') is-invalid @enderror" required>
                             @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}" {{ old('result_title_id', $resultSummary->result_title_id) == $title->id ? 'selected' : '' }}>{{ $title->year->year }} - {{ $title->level->name }} - {{ $title->name }}</option>
+                                @php
+                                    $levelLabel = $title->district_id 
+                                        ? 'WILAYA: ' . $title->district->name 
+                                        : 'Mkoa: ' . $title->region->name;
+                                @endphp
+                                <option value="{{ $title->id }}" {{ old('result_title_id', $resultSummary->result_title_id) == $title->id ? 'selected' : '' }}>
+                                    {{ $title->year->year }} - {{ $title->level->name }} - [{{ $levelLabel }}] - {{ $title->name }}
+                                </option>
                             @endforeach
                         </select>
                         @error('result_title_id')

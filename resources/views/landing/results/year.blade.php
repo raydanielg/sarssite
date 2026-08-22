@@ -17,9 +17,10 @@
             <div class="space-y-2">
                 @forelse($regions as $region)
                     <a href="{{ route('results.districts', [$yearData->year, $region->slug]) }}"
-                       class="block px-5 py-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-[#1f7a35] hover:bg-green-50 text-sm sm:text-base font-bold text-gray-700 hover:text-[#1f7a35] transition-all animate__animated animate__fadeInUp"
+                       class="group flex items-center justify-between px-5 py-4 bg-gray-50 rounded-xl border border-gray-100 hover:bg-green-600 hover:border-green-600 hover:shadow-lg hover:-translate-y-0.5 text-sm sm:text-base font-bold text-gray-700 hover:text-white transition-all duration-300 animate__animated animate__fadeInUp"
                        style="animation-delay: {{ $loop->index * 0.03 }}s">
-                        {{ $region->name }}
+                        <span>{{ $region->name }}</span>
+                        <i class="ri-arrow-right-s-line text-gray-300 group-hover:text-white text-xl transition-colors"></i>
                     </a>
                 @empty
                     <p class="text-center text-gray-400 font-medium py-12">Hakuna Mikoa iliyopatikana.</p>

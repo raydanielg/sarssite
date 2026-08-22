@@ -13,7 +13,7 @@
                 <h1 class="text-yellow-400 text-base lg:text-2xl font-bold uppercase tracking-tight leading-tight animate__animated animate__fadeInDown">
                     THE REGIONAL EXAMINATION SYSTEM
                 </h1>
-                <p class="text-white/70 text-[10px] lg:text-xs font-medium mt-0.5 tracking-wide">Student Academic Results System (SARS)</p>
+                <p class="text-white/70 text-sm lg:text-base font-semibold mt-1 tracking-wide">Student Academic Results System (SARS)</p>
             </div>
 
             <!-- Right: Logo -->

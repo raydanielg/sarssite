@@ -20,7 +20,17 @@ class ResultSummaryController extends Controller
     public function index(Request $request)
     {
         $limit = $request->get('limit', 10);
-        $query = ResultSummary::with(['resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest();
+        $query = ResultSummary::with(['resultTitle.year', 'resultTitle.level', 'resultTitle.region', 'resultTitle.district'])->latest();
+
+        if ($request->has('type') && $request->type === 'region') {
+            $query->whereHas('resultTitle', function ($q) {
+                $q->whereNull('district_id');
+            });
+        } elseif ($request->has('type') && $request->type === 'district') {
+            $query->whereHas('resultTitle', function ($q) {
+                $q->whereNotNull('district_id');
+            });
+        }
 
         if ($request->ajax()) {
             if ($request->has('search') && $request->search != '') {
@@ -46,7 +56,7 @@ class ResultSummaryController extends Controller
 
     public function create()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region'])->get();
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])->latest()->get();
         return view('admin.result_summaries.create', compact('resultTitles'));
     }
 
@@ -72,7 +82,7 @@ class ResultSummaryController extends Controller
 
     public function edit(ResultSummary $resultSummary)
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region'])->get();
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])->latest()->get();
         return view('admin.result_summaries.edit', compact('resultSummary', 'resultTitles'));
     }
 
@@ -109,7 +119,7 @@ class ResultSummaryController extends Controller
 
     public function bulkUploadForm()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region'])->get();
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])->latest()->get();
         return view('admin.result_summaries.bulk', compact('resultTitles'));
     }
 

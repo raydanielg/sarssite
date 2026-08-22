@@ -60,35 +60,6 @@
                     </div>
                 @endforelse
             </div>
-
-            @if($districtSummaries->isNotEmpty())
-            <div class="border-t border-gray-200 pt-8 mt-10 animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-sm sm:text-lg font-black text-[#1e293b] uppercase tracking-wider">
-                        Summary za Wilaya - {{ $district->name }}
-                    </h2>
-                    <span class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase">Muhtasari wa Matokeo ya Wilaya</span>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                    @foreach($districtSummaries as $summary)
-                        <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}"
-                           class="group flex items-center gap-3 bg-gray-50 border border-gray-100 rounded-xl p-4 hover:border-[#1f7a35] hover:shadow-md transition-all duration-300">
-                            <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 flex-shrink-0">
-                                <i class="ri-file-pdf-fill text-xl"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h3 class="text-xs sm:text-sm font-bold text-[#1e293b] group-hover:text-[#1f7a35] transition-colors truncate">
-                                    {{ strtoupper($summary->name) }}
-                                </h3>
-                                <span class="text-[10px] font-bold text-[#1f7a35] uppercase tracking-tighter">View PDF</span>
-                            </div>
-                            <i class="ri-arrow-right-s-line text-gray-300 group-hover:text-[#1f7a35] text-xl"></i>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-            @endif
         </div>
     </div>
 </section>

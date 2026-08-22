@@ -207,11 +207,16 @@
                 <div class="divide-y divide-gray-100">
                     @forelse($summaries as $summary)
                         <div class="summary-item bg-white">
-                            <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}">
-                                <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
-                                <span>{{ strtoupper($summary->name) }}</span>
-                                <span class="ml-auto text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded uppercase tracking-tighter">View PDF</span>
-                            </a>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
+                                    <span>{{ strtoupper($summary->name) }}</span>
+                                </div>
+                                <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}"
+                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition-all duration-300 shadow-sm hover:shadow-md">
+                                    <i class="ri-eye-line"></i> View
+                                </a>
+                            </div>
                         </div>
                     @empty
                         <div class="p-12 text-center">
