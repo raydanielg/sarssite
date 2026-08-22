@@ -10,4 +10,9 @@ class Year extends Model
     use HasFactory;
 
     protected $fillable = ['year'];
+
+    public function resultTitles()
+    {
+        return $this->hasMany(ResultTitle::class);
+    }
 }
