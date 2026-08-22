@@ -253,8 +253,8 @@
           </li>
 
           <!-- Result Summaries -->
-          <li class="nav-item {{ request()->is('admin/result-summaries*') || request()->is('admin/bulk-summaries') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is('admin/result-summaries*') || request()->is('admin/bulk-summaries') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is('admin/result-summaries*') || request()->is('admin/bulk-summaries') || request()->is('admin/region-summaries*') || request()->is('admin/district-summaries*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('admin/result-summaries*') || request()->is('admin/bulk-summaries') || request()->is('admin/region-summaries*') || request()->is('admin/district-summaries*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-alt"></i>
               <p>
                 Result Summaries
@@ -281,15 +281,27 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('admin.result-summaries.create') }}" class="nav-link {{ request()->is('admin/result-summaries/create') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Upload Summary</p>
+                <a href="{{ route('admin.region-summaries.create') }}" class="nav-link {{ request()->is('admin/region-summaries/create') ? 'active' : '' }}">
+                  <i class="fas fa-map-marked-alt nav-icon text-success"></i>
+                  <p>Upload Summary ya Mkoa</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('admin.result-summaries.bulk-upload-form') }}" class="nav-link {{ request()->is('admin/bulk-summaries') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Bulk Upload</p>
+                <a href="{{ route('admin.region-summaries.bulk-form') }}" class="nav-link {{ request()->is('admin/region-summaries/bulk') ? 'active' : '' }}">
+                  <i class="fas fa-layer-group nav-icon text-success"></i>
+                  <p>Bulk Upload - Mikoa</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.district-summaries.create') }}" class="nav-link {{ request()->is('admin/district-summaries/create') ? 'active' : '' }}">
+                  <i class="fas fa-map-pin nav-icon text-primary"></i>
+                  <p>Upload Summary ya Wilaya</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.district-summaries.bulk-form') }}" class="nav-link {{ request()->is('admin/district-summaries/bulk') ? 'active' : '' }}">
+                  <i class="fas fa-layer-group nav-icon text-primary"></i>
+                  <p>Bulk Upload - Wilaya</p>
                 </a>
               </li>
             </ul>

@@ -49,6 +49,14 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('districts/bulk-delete', [App\Http\Controllers\Admin\DistrictController::class, 'bulkDelete'])->name('districts.bulk-delete');
     Route::resource('result-summaries', App\Http\Controllers\Admin\ResultSummaryController::class);
     Route::post('result-summaries/bulk-delete', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkDelete'])->name('result-summaries.bulk-delete');
+    Route::get('region-summaries/create', [App\Http\Controllers\Admin\ResultSummaryController::class, 'createRegion'])->name('region-summaries.create');
+    Route::post('region-summaries/store', [App\Http\Controllers\Admin\ResultSummaryController::class, 'storeRegion'])->name('region-summaries.store');
+    Route::get('region-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkRegionForm'])->name('region-summaries.bulk-form');
+    Route::post('region-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkRegionUpload'])->name('region-summaries.bulk-upload');
+    Route::get('district-summaries/create', [App\Http\Controllers\Admin\ResultSummaryController::class, 'createDistrict'])->name('district-summaries.create');
+    Route::post('district-summaries/store', [App\Http\Controllers\Admin\ResultSummaryController::class, 'storeDistrict'])->name('district-summaries.store');
+    Route::get('district-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkDistrictForm'])->name('district-summaries.bulk-form');
+    Route::post('district-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkDistrictUpload'])->name('district-summaries.bulk-upload');
     Route::post('result-titles/bulk-delete', [App\Http\Controllers\Admin\ResultTitleController::class, 'bulkDelete'])->name('result-titles.bulk-delete');
     Route::post('results/bulk-delete', [App\Http\Controllers\Admin\ResultController::class, 'bulkDelete'])->name('results.bulk-delete');
     Route::post('results/bulk-status', [App\Http\Controllers\Admin\ResultController::class, 'bulkStatus'])->name('results.bulk-status');

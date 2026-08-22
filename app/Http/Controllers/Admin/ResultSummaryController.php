@@ -177,4 +177,168 @@ class ResultSummaryController extends Controller
             return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
         }
     }
+
+    // Region-level summaries (district_id is null)
+    public function createRegion()
+    {
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+            ->whereNull('district_id')
+            ->latest()
+            ->get();
+        return view('admin.result_summaries.create_region', compact('resultTitles'));
+    }
+
+    public function storeRegion(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'name' => 'required|max:255',
+            'file' => 'required|mimes:pdf|max:20480',
+        ]);
+
+        $title = ResultTitle::findOrFail($request->result_title_id);
+        if ($title->district_id !== null) {
+            return back()->withErrors(['result_title_id' => 'Tafadhali chagua category ya Mkoa, sio Wilaya.'])->withInput();
+        }
+
+        $path = $request->file('file')->store('summaries', 'public');
+
+        ResultSummary::create([
+            'result_title_id' => $request->result_title_id,
+            'name' => $request->name,
+            'file_path' => $path,
+            'status' => 'Published',
+        ]);
+
+        return redirect()->route('admin.result-summaries.index', ['type' => 'region'])->with('success', 'Summary ya Mkoa imepakiwa kikamilifu.');
+    }
+
+    public function bulkRegionForm()
+    {
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+            ->whereNull('district_id')
+            ->latest()
+            ->get();
+        return view('admin.result_summaries.bulk_region', compact('resultTitles'));
+    }
+
+    public function bulkRegionUpload(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'files' => 'required|array',
+            'files.*' => 'required|mimes:pdf|max:51200',
+        ]);
+
+        $title = ResultTitle::findOrFail($request->result_title_id);
+        if ($title->district_id !== null) {
+            return response()->json(['success' => false, 'message' => 'Tafadhali chagua category ya Mkoa, sio Wilaya.'], 400);
+        }
+
+        $count = 0;
+        DB::beginTransaction();
+        try {
+            foreach ($request->file('files') as $file) {
+                $originalName = $file->getClientOriginalName();
+                $name = pathinfo($originalName, PATHINFO_FILENAME);
+                $path = $file->store('summaries', 'public');
+
+                ResultSummary::create([
+                    'result_title_id' => $request->result_title_id,
+                    'name' => $name,
+                    'file_path' => $path,
+                    'status' => 'Published',
+                ]);
+                $count++;
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+
+        return response()->json(['success' => true, 'message' => "Successfully uploaded $count region summaries."]);
+    }
+
+    // District-level summaries (district_id is not null)
+    public function createDistrict()
+    {
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+            ->whereNotNull('district_id')
+            ->latest()
+            ->get();
+        return view('admin.result_summaries.create_district', compact('resultTitles'));
+    }
+
+    public function storeDistrict(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'name' => 'required|max:255',
+            'file' => 'required|mimes:pdf|max:20480',
+        ]);
+
+        $title = ResultTitle::findOrFail($request->result_title_id);
+        if ($title->district_id === null) {
+            return back()->withErrors(['result_title_id' => 'Tafadhali chagua category ya Wilaya, sio Mkoa.'])->withInput();
+        }
+
+        $path = $request->file('file')->store('summaries', 'public');
+
+        ResultSummary::create([
+            'result_title_id' => $request->result_title_id,
+            'name' => $request->name,
+            'file_path' => $path,
+            'status' => 'Published',
+        ]);
+
+        return redirect()->route('admin.result-summaries.index', ['type' => 'district'])->with('success', 'Summary ya Wilaya imepakiwa kikamilifu.');
+    }
+
+    public function bulkDistrictForm()
+    {
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+            ->whereNotNull('district_id')
+            ->latest()
+            ->get();
+        return view('admin.result_summaries.bulk_district', compact('resultTitles'));
+    }
+
+    public function bulkDistrictUpload(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'files' => 'required|array',
+            'files.*' => 'required|mimes:pdf|max:51200',
+        ]);
+
+        $title = ResultTitle::findOrFail($request->result_title_id);
+        if ($title->district_id === null) {
+            return response()->json(['success' => false, 'message' => 'Tafadhali chagua category ya Wilaya, sio Mkoa.'], 400);
+        }
+
+        $count = 0;
+        DB::beginTransaction();
+        try {
+            foreach ($request->file('files') as $file) {
+                $originalName = $file->getClientOriginalName();
+                $name = pathinfo($originalName, PATHINFO_FILENAME);
+                $path = $file->store('summaries', 'public');
+
+                ResultSummary::create([
+                    'result_title_id' => $request->result_title_id,
+                    'name' => $name,
+                    'file_path' => $path,
+                    'status' => 'Published',
+                ]);
+                $count++;
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+
+        return response()->json(['success' => true, 'message' => "Successfully uploaded $count district summaries."]);
+    }
 }
