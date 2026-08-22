@@ -25,23 +25,28 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="result_title_id">Examination Category (Mkoa)</label>
-                        <select name="result_title_id" id="result_title_id" class="form-control select2 @error('result_title_id') is-invalid @enderror" required>
-                            <option value="">-- Chagua Mtihani (Mkoa) --</option>
-                            @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
-                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}
-                                </option>
+                        <label for="region_id">Chagua Mkoa <span class="text-danger">*</span></label>
+                        <select name="region_id" id="region_id" class="form-control select2" required>
+                            <option value="">-- Chagua Mkoa --</option>
+                            @foreach($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->name }}</option>
                             @endforeach
+                        </select>
+                        @if($regions->isEmpty())
+                            <small class="text-danger d-block mt-2">
+                                <i class="fas fa-exclamation-triangle"></i> Hakuna mkoa uliowekwa kwenye examination categories. Tafadhali ongeza Result Title na district iwe empty.
+                            </small>
+                        @endif
+                    </div>
+
+                    <div class="form-group">
+                        <label for="result_title_id">Examination Category <span class="text-danger">*</span></label>
+                        <select name="result_title_id" id="result_title_id" class="form-control select2 @error('result_title_id') is-invalid @enderror" required disabled>
+                            <option value="">-- Chagua Mkoa kwanza --</option>
                         </select>
                         @error('result_title_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
-                        @if($resultTitles->isEmpty())
-                            <small class="text-danger d-block mt-2">
-                                <i class="fas fa-exclamation-triangle"></i> Hakuna examination category ya Mkoa iliyowekwa. Tafadhali ongeza Result Title na district iwe empty.
-                            </small>
-                        @endif
                     </div>
 
                     <div class="form-group">
@@ -79,6 +84,38 @@ $(document).ready(function() {
     $('.custom-file-input').on('change', function() {
         let fileName = $(this).val().split('\\').pop();
         $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
+    $('#region_id').on('change', function() {
+        const regionId = $(this).val();
+        const titleSelect = $('#result_title_id');
+
+        if (!regionId) {
+            titleSelect.empty().append('<option value="">-- Chagua Mkoa kwanza --</option>').prop('disabled', true);
+            return;
+        }
+
+        titleSelect.prop('disabled', true).empty().append('<option value="">Inatafuta...</option>');
+
+        $.ajax({
+            url: '{{ route("admin.region-summaries.titles-by-region", ":id") }}'.replace(':id', regionId),
+            type: 'GET',
+            success: function(data) {
+                titleSelect.empty();
+                if (data.length > 0) {
+                    titleSelect.append('<option value="">-- Chagua Mtihani --</option>');
+                    data.forEach(function(item) {
+                        titleSelect.append('<option value="' + item.id + '">' + item.text + '</option>');
+                    });
+                    titleSelect.prop('disabled', false);
+                } else {
+                    titleSelect.append('<option value="">Hakuna mtihani wa mkoa huu</option>').prop('disabled', true);
+                }
+            },
+            error: function() {
+                titleSelect.empty().append('<option value="">Hitilafu imetokea. Jaribu tena.</option>').prop('disabled', true);
+            }
+        });
     });
 });
 </script>

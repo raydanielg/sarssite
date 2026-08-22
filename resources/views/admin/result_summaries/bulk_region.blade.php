@@ -25,17 +25,23 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="result_title_id">Target Examination Category (Mkoa)</label>
-                        <select name="result_title_id" id="result_title_id" class="form-control select2 shadow-sm" required>
-                            <option value="">-- Chagua Mtihani (Mkoa) --</option>
-                            @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}">
-                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}
-                                </option>
+                        <label for="region_id">Chagua Mkoa <span class="text-danger">*</span></label>
+                        <select name="region_id" id="region_id" class="form-control select2 shadow-sm" required>
+                            <option value="">-- Chagua Mkoa --</option>
+                            @foreach($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->name }}</option>
                             @endforeach
                         </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="result_title_id">Target Examination Category <span class="text-danger">*</span></label>
+                        <select name="result_title_id" id="result_title_id" class="form-control select2 shadow-sm" required disabled>
+                            <option value="">-- Chagua Mkoa kwanza --</option>
+                        </select>
                         <small class="text-muted">Summary zitapakiwa chini ya category hii ya Mkoa.</small>
-                        @if($resultTitles->isEmpty())
+                        @if($regions->isEmpty())
                             <small class="text-danger d-block mt-2">
                                 <i class="fas fa-exclamation-triangle"></i> Hakuna examination category ya Mkoa iliyowekwa.
                             </small>
@@ -136,6 +142,38 @@ $(document).ready(function() {
     const previewBody = $('#filePreviewBody');
     const dropzone = $('#dropzone');
     const bulkUploadForm = $('#bulkUploadForm');
+
+    $('#region_id').on('change', function() {
+        const regionId = $(this).val();
+        const titleSelect = $('#result_title_id');
+
+        if (!regionId) {
+            titleSelect.empty().append('<option value="">-- Chagua Mkoa kwanza --</option>').prop('disabled', true);
+            return;
+        }
+
+        titleSelect.prop('disabled', true).empty().append('<option value="">Inatafuta...</option>');
+
+        $.ajax({
+            url: '{{ route("admin.region-summaries.titles-by-region", ":id") }}'.replace(':id', regionId),
+            type: 'GET',
+            success: function(data) {
+                titleSelect.empty();
+                if (data.length > 0) {
+                    titleSelect.append('<option value="">-- Chagua Mtihani --</option>');
+                    data.forEach(function(item) {
+                        titleSelect.append('<option value="' + item.id + '">' + item.text + '</option>');
+                    });
+                    titleSelect.prop('disabled', false);
+                } else {
+                    titleSelect.append('<option value="">Hakuna mtihani wa mkoa huu</option>').prop('disabled', true);
+                }
+            },
+            error: function() {
+                titleSelect.empty().append('<option value="">Hitilafu imetokea. Jaribu tena.</option>').prop('disabled', true);
+            }
+        });
+    });
 
     const progressModal = $('#summaryUploadProgressModal');
     const queueBody = $('#summaryUploadQueueTableBody');

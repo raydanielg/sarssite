@@ -25,23 +25,28 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="result_title_id">Examination Category (Wilaya)</label>
-                        <select name="result_title_id" id="result_title_id" class="form-control select2 @error('result_title_id') is-invalid @enderror" required>
-                            <option value="">-- Chagua Mtihani (Wilaya) --</option>
-                            @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
-                                    {{ $title->year->year }} - {{ $title->level->name }} - [Wilaya: {{ $title->district->name }}] - {{ $title->name }}
-                                </option>
+                        <label for="district_id">Chagua Wilaya <span class="text-danger">*</span></label>
+                        <select name="district_id" id="district_id" class="form-control select2" required>
+                            <option value="">-- Chagua Wilaya --</option>
+                            @foreach($districts as $district)
+                                <option value="{{ $district->id }}">{{ $district->name }} ({{ $district->region->name }})</option>
                             @endforeach
+                        </select>
+                        @if($districts->isEmpty())
+                            <small class="text-danger d-block mt-2">
+                                <i class="fas fa-exclamation-triangle"></i> Hakuna wilaya iliowekwa kwenye examination categories. Tafadhali ongeza Result Title na district ilichaguliwa.
+                            </small>
+                        @endif
+                    </div>
+
+                    <div class="form-group">
+                        <label for="result_title_id">Examination Category <span class="text-danger">*</span></label>
+                        <select name="result_title_id" id="result_title_id" class="form-control select2 @error('result_title_id') is-invalid @enderror" required disabled>
+                            <option value="">-- Chagua Wilaya kwanza --</option>
                         </select>
                         @error('result_title_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
-                        @if($resultTitles->isEmpty())
-                            <small class="text-danger d-block mt-2">
-                                <i class="fas fa-exclamation-triangle"></i> Hakuna examination category ya Wilaya iliyowekwa. Tafadhali ongeza Result Title na district ilichaguliwa.
-                            </small>
-                        @endif
                     </div>
 
                     <div class="form-group">
@@ -79,6 +84,38 @@ $(document).ready(function() {
     $('.custom-file-input').on('change', function() {
         let fileName = $(this).val().split('\\').pop();
         $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
+    $('#district_id').on('change', function() {
+        const districtId = $(this).val();
+        const titleSelect = $('#result_title_id');
+
+        if (!districtId) {
+            titleSelect.empty().append('<option value="">-- Chagua Wilaya kwanza --</option>').prop('disabled', true);
+            return;
+        }
+
+        titleSelect.prop('disabled', true).empty().append('<option value="">Inatafuta...</option>');
+
+        $.ajax({
+            url: '{{ route("admin.district-summaries.titles-by-district", ":id") }}'.replace(':id', districtId),
+            type: 'GET',
+            success: function(data) {
+                titleSelect.empty();
+                if (data.length > 0) {
+                    titleSelect.append('<option value="">-- Chagua Mtihani --</option>');
+                    data.forEach(function(item) {
+                        titleSelect.append('<option value="' + item.id + '">' + item.text + '</option>');
+                    });
+                    titleSelect.prop('disabled', false);
+                } else {
+                    titleSelect.append('<option value="">Hakuna mtihani wa wilaya hii</option>').prop('disabled', true);
+                }
+            },
+            error: function() {
+                titleSelect.empty().append('<option value="">Hitilafu imetokea. Jaribu tena.</option>').prop('disabled', true);
+            }
+        });
     });
 });
 </script>

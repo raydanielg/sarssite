@@ -50,10 +50,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('result-summaries', App\Http\Controllers\Admin\ResultSummaryController::class);
     Route::post('result-summaries/bulk-delete', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkDelete'])->name('result-summaries.bulk-delete');
     Route::get('region-summaries/create', [App\Http\Controllers\Admin\ResultSummaryController::class, 'createRegion'])->name('region-summaries.create');
+    Route::get('region-summaries/titles-by-region/{id}', [App\Http\Controllers\Admin\ResultSummaryController::class, 'getTitlesByRegion'])->name('region-summaries.titles-by-region');
     Route::post('region-summaries/store', [App\Http\Controllers\Admin\ResultSummaryController::class, 'storeRegion'])->name('region-summaries.store');
     Route::get('region-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkRegionForm'])->name('region-summaries.bulk-form');
     Route::post('region-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkRegionUpload'])->name('region-summaries.bulk-upload');
     Route::get('district-summaries/create', [App\Http\Controllers\Admin\ResultSummaryController::class, 'createDistrict'])->name('district-summaries.create');
+    Route::get('district-summaries/titles-by-district/{id}', [App\Http\Controllers\Admin\ResultSummaryController::class, 'getTitlesByDistrict'])->name('district-summaries.titles-by-district');
     Route::post('district-summaries/store', [App\Http\Controllers\Admin\ResultSummaryController::class, 'storeDistrict'])->name('district-summaries.store');
     Route::get('district-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkDistrictForm'])->name('district-summaries.bulk-form');
     Route::post('district-summaries/bulk', [App\Http\Controllers\Admin\ResultSummaryController::class, 'bulkDistrictUpload'])->name('district-summaries.bulk-upload');

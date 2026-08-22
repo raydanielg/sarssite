@@ -181,11 +181,26 @@ class ResultSummaryController extends Controller
     // Region-level summaries (district_id is null)
     public function createRegion()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+        $regions = \App\Models\Region::whereHas('resultTitles', function ($q) {
+            $q->whereNull('district_id');
+        })->orderBy('name')->get();
+        return view('admin.result_summaries.create_region', compact('regions'));
+    }
+
+    public function getTitlesByRegion($regionId)
+    {
+        $titles = ResultTitle::with(['year', 'level', 'region'])
+            ->where('region_id', $regionId)
             ->whereNull('district_id')
-            ->latest()
+            ->orderByDesc('year_id')
             ->get();
-        return view('admin.result_summaries.create_region', compact('resultTitles'));
+
+        return response()->json($titles->map(function ($t) {
+            return [
+                'id' => $t->id,
+                'text' => $t->year->year . ' - ' . $t->level->name . ' - [Mkoa: ' . $t->region->name . '] - ' . $t->name,
+            ];
+        }));
     }
 
     public function storeRegion(Request $request)
@@ -215,11 +230,10 @@ class ResultSummaryController extends Controller
 
     public function bulkRegionForm()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
-            ->whereNull('district_id')
-            ->latest()
-            ->get();
-        return view('admin.result_summaries.bulk_region', compact('resultTitles'));
+        $regions = \App\Models\Region::whereHas('resultTitles', function ($q) {
+            $q->whereNull('district_id');
+        })->orderBy('name')->get();
+        return view('admin.result_summaries.bulk_region', compact('regions'));
     }
 
     public function bulkRegionUpload(Request $request)
@@ -263,11 +277,26 @@ class ResultSummaryController extends Controller
     // District-level summaries (district_id is not null)
     public function createDistrict()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+        $districts = \App\Models\District::whereHas('resultTitles', function ($q) {
+            $q->whereNotNull('district_id');
+        })->with('region')->orderBy('name')->get();
+        return view('admin.result_summaries.create_district', compact('districts'));
+    }
+
+    public function getTitlesByDistrict($districtId)
+    {
+        $titles = ResultTitle::with(['year', 'level', 'region', 'district'])
+            ->where('district_id', $districtId)
             ->whereNotNull('district_id')
-            ->latest()
+            ->orderByDesc('year_id')
             ->get();
-        return view('admin.result_summaries.create_district', compact('resultTitles'));
+
+        return response()->json($titles->map(function ($t) {
+            return [
+                'id' => $t->id,
+                'text' => $t->year->year . ' - ' . $t->level->name . ' - [Wilaya: ' . $t->district->name . '] - ' . $t->name,
+            ];
+        }));
     }
 
     public function storeDistrict(Request $request)
@@ -297,11 +326,10 @@ class ResultSummaryController extends Controller
 
     public function bulkDistrictForm()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
-            ->whereNotNull('district_id')
-            ->latest()
-            ->get();
-        return view('admin.result_summaries.bulk_district', compact('resultTitles'));
+        $districts = \App\Models\District::whereHas('resultTitles', function ($q) {
+            $q->whereNotNull('district_id');
+        })->with('region')->orderBy('name')->get();
+        return view('admin.result_summaries.bulk_district', compact('districts'));
     }
 
     public function bulkDistrictUpload(Request $request)
