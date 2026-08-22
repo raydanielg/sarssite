@@ -22,10 +22,13 @@ class LandingController extends Controller
         $latestResults = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest()->take(6)->get();
         $resultTypes = ResultType::where('is_active', true)->orderBy('name')->get();
 
-        $resultTitles = ResultTitle::with(['year', 'region', 'district', 'resultType'])
+        $resultTitles = ResultTitle::select('name')->distinct()
             ->orderByDesc('id')
             ->take(8)
-            ->get();
+            ->get()
+            ->map(function ($t) {
+                return (object) ['name' => $t->name];
+            });
 
         return view('landing.sitemap', compact('years', 'levels', 'regions', 'announcements', 'latestResults', 'resultTitles', 'resultTypes'));
     }
@@ -37,11 +40,15 @@ class LandingController extends Controller
         $regions = Region::orderBy('name')->get();
         $announcements = Announcement::where('is_active', true)->latest()->get();
 
-        $resultTitles = ResultTitle::with(['year', 'region', 'district'])
+        $resultTitles = ResultTitle::select('name')->distinct()
             ->orderByDesc('id')
-            ->get();
+            ->get()
+            ->map(function ($t) {
+                return (object) ['name' => $t->name];
+            });
+        $resultTypes = ResultType::where('is_active', true)->orderBy('name')->get();
 
-        return view('landing.sitemap', compact('years', 'levels', 'regions', 'announcements', 'resultTitles'));
+        return view('landing.sitemap', compact('years', 'levels', 'regions', 'announcements', 'resultTitles', 'resultTypes'));
     }
 
     public function sitemapXml(Request $request)

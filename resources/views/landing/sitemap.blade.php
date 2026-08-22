@@ -126,24 +126,24 @@
                         <i class="ri-bar-chart-box-line text-primary-600"></i> Matokeo
                     </h2>
                     <p class="text-sm text-gray-500 text-center mb-8 leading-relaxed max-w-sm">
-                        Bofya kitufe cha Matokeo kuchagua mwaka, mkoa, na wilaya ili kuona matokeo ya shule.
+                        Bofya kitufe cha Matokeo kuchagua mtihani, mwaka, mkoa, na wilaya ili kuona matokeo ya shule.
                     </p>
                     <a href="{{ route('results.index') }}" class="group inline-flex flex-col items-center gap-3 px-12 py-10 bg-gradient-to-br from-primary-600 to-primary-800 hover:from-primary-700 hover:to-primary-900 text-white font-black rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                         <i class="ri-bar-chart-box-line text-5xl group-hover:scale-110 transition-transform"></i>
                         <span class="text-xl uppercase tracking-wider">Matokeo</span>
-                        <span class="text-xs font-medium text-white/70">Chagua Mwaka & Wilaya</span>
+                        <span class="text-xs font-medium text-white/70">Chagua Mtihani & Wilaya</span>
                     </a>
 
-                    <!-- Quick Year Shortcuts -->
+                    <!-- Quick Exam Shortcuts -->
                     <div class="mt-8 w-full">
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-3">Mwaka wa Haraka</p>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-3">Mitihani ya Haraka</p>
                         <div class="flex flex-wrap justify-center gap-2">
-                            @forelse($years as $y)
-                                <a href="{{ route('results.year', $y->year) }}" class="px-5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-black text-gray-700 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-300">
-                                    {{ $y->year }}
+                            @forelse($resultTitles as $title)
+                                <a href="{{ route('results.exam_years', \Illuminate\Support\Str::slug($title->name)) }}" class="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-black text-gray-700 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-300">
+                                    {{ $title->name }}
                                 </a>
                             @empty
-                                <p class="text-sm text-gray-400">Hakuna miaka iliyowekwa.</p>
+                                <p class="text-sm text-gray-400">Hakuna mtihani uliowekwa.</p>
                             @endforelse
                         </div>
                     </div>

@@ -103,17 +103,17 @@
 @section('content')
 <div class="breadcrumb-bar fixed top-0 left-0 w-full p-3 sm:p-4 z-50 flex flex-col gap-2 no-print">
     <div class="flex items-center gap-2 flex-wrap">
-        <a href="{{ route('results.titles', [$yearData->year, $region->slug, $district->slug]) }}" class="results-link inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-[#1e293b] text-xs sm:text-sm font-bold rounded-lg transition-all group">
-            <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i> Back to Mitihani
+        <a href="{{ route('results.index') }}" class="results-link inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-[#1e293b] text-xs sm:text-sm font-bold rounded-lg transition-all group">
+            <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i> Rudi Mitihani
         </a>
         <div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-gray-500 px-3 py-1.5">
+            <span class="text-[#1f7a35]">{{ $resultTitle->name }}</span>
+            <i class="ri-arrow-right-s-line"></i>
             <span>{{ $yearData->year }}</span>
             <i class="ri-arrow-right-s-line"></i>
             <span class="text-[#1f7a35]">{{ $region->name }}</span>
             <i class="ri-arrow-right-s-line"></i>
             <span class="text-blue-700">{{ $district->name }}</span>
-            <i class="ri-arrow-right-s-line"></i>
-            <span class="text-amber-700">{{ $resultTitle->name }}</span>
         </div>
     </div>
 </div>

@@ -69,10 +69,10 @@
                             <i class="ri-bar-chart-box-line"></i> Results <i class="bi bi-chevron-down text-xs ml-0.5"></i>
                         </a>
                         <ul class="nav-dropdown-menu">
-                            @foreach($years ?? [] as $y)
-                                <li><a href="{{ route('results.year', $y->year) }}">Results {{ $y->year }}</a></li>
+                            @foreach($resultTitles ?? [] as $title)
+                                <li><a href="{{ route('results.exam_years', \Illuminate\Support\Str::slug($title->name)) }}">{{ $title->name }}</a></li>
                             @endforeach
-                            @if(empty($years) || count($years) === 0)
+                            @if(empty($resultTitles) || count($resultTitles) === 0)
                                 <li><a href="{{ route('results.index') }}">All Results</a></li>
                             @endif
                         </ul>
@@ -158,10 +158,10 @@
                     <i class="bi bi-chevron-down text-xs"></i>
                 </a>
                 <div id="resultsDropdown" class="mobile-dropdown-content">
-                    @foreach($years ?? [] as $y)
-                        <a href="{{ route('results.year', $y->year) }}" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">Results {{ $y->year }}</a>
+                    @foreach($resultTitles ?? [] as $title)
+                        <a href="{{ route('results.exam_years', \Illuminate\Support\Str::slug($title->name)) }}" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">{{ $title->name }}</a>
                     @endforeach
-                    @if(empty($years) || count($years) === 0)
+                    @if(empty($resultTitles) || count($resultTitles) === 0)
                         <a href="{{ route('results.index') }}" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">All Results</a>
                     @endif
                 </div>
