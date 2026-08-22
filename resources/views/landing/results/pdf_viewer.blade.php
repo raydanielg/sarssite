@@ -170,7 +170,7 @@
 </div>
 
 <script>
-    const url = '{{ asset("storage/" . $filePath) }}';
+    const url = '{{ route("results.serve_pdf", ["file" => $filePath]) }}';
     const filePath = @json($filePath);
     const fileName = @json(request('name'));
     const container = document.getElementById('pdf-render-container');

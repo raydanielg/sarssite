@@ -62,7 +62,7 @@
                             <input type="file" name="file" id="file" class="custom-file-input @error('file') is-invalid @enderror" accept=".pdf">
                             <label class="custom-file-label" for="file">Choose new PDF...</label>
                         </div>
-                        <small class="text-muted d-block mt-2">Current file: <a href="{{ asset('storage/' . $resultSummary->file_path) }}" target="_blank" class="text-primary font-weight-bold">View PDF</a></small>
+                        <small class="text-muted d-block mt-2">Current file: <a href="{{ route('results.serve_pdf', ['file' => $resultSummary->file_path]) }}" target="_blank" class="text-primary font-weight-bold">View PDF</a></small>
                         @error('file')
                             <span class="text-danger small">{{ $message }}</span>
                         @enderror

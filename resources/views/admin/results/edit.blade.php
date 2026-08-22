@@ -57,7 +57,7 @@
                                 <label class="custom-file-label" for="file">Choose new PDF file</label>
                             </div>
                         </div>
-                        <p class="text-muted text-sm mt-1">Current file: <a href="{{ asset('storage/' . $result->file_path) }}" target="_blank">View Current PDF</a></p>
+                        <p class="text-muted text-sm mt-1">Current file: <a href="{{ route('results.serve_pdf', ['file' => $result->file_path]) }}" target="_blank">View Current PDF</a></p>
                     </div>
                 </div>
                 <div class="col-md-6">

@@ -46,7 +46,7 @@
         </td>
         <td class="text-right px-4 py-3">
             <div class="btn-group shadow-sm border rounded overflow-hidden">
-                <a href="{{ asset('storage/' . $summary->file_path) }}" target="_blank" class="btn btn-white btn-sm" title="View"><i class="fas fa-eye text-info"></i></a>
+                <a href="{{ route('results.serve_pdf', ['file' => $summary->file_path]) }}" target="_blank" class="btn btn-white btn-sm" title="View"><i class="fas fa-eye text-info"></i></a>
                 <a href="{{ route('admin.result-summaries.edit', $summary) }}" class="btn btn-white btn-sm border-left" title="Edit"><i class="fas fa-edit text-primary"></i></a>
                 <form action="{{ route('admin.result-summaries.destroy', $summary) }}" method="POST" class="d-inline delete-summary-form">
                     @csrf

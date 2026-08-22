@@ -151,6 +151,27 @@ class ResultsController extends Controller
         return view('landing.results.pdf_viewer', compact('filePath'));
     }
 
+    public function servePdf(Request $request)
+    {
+        $filePath = $request->query('file');
+        if (!$filePath) {
+            abort(404);
+        }
+
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404);
+        }
+
+        $file = Storage::disk('public')->get($filePath);
+        $mime = Storage::disk('public')->mimeType($filePath);
+
+        return response($file, 200, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
+    }
+
     public function downloadPdf(Request $request)
     {
         $filePath = $request->query('file');

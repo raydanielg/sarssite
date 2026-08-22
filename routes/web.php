@@ -26,6 +26,7 @@ Route::get('/results/{year}/{region_slug}/{district_slug}', [App\Http\Controller
 Route::get('/results/{year}/{region_slug}/{district_slug}/{title_slug}', [App\Http\Controllers\Landing\ResultsController::class, 'showFinalResults'])->name('results.final');
 Route::get('/view-results', [App\Http\Controllers\Landing\ResultsController::class, 'viewPdf'])->name('results.view_pdf');
 Route::get('/download-results', [App\Http\Controllers\Landing\ResultsController::class, 'downloadPdf'])->name('results.download_pdf');
+Route::get('/serve-pdf', [App\Http\Controllers\Landing\ResultsController::class, 'servePdf'])->name('results.serve_pdf');
 
 Auth::routes(['register' => true]);
 
