@@ -22,10 +22,9 @@ class LandingController extends Controller
         $latestResults = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest()->take(6)->get();
         $resultTypes = ResultType::where('is_active', true)->orderBy('name')->get();
 
-        $resultTitles = ResultTitle::select('name')->distinct()
-            ->orderByDesc('id')
+        $resultTitles = ResultTitle::select('name', 'id')->orderByDesc('id')->get()
+            ->unique('name')
             ->take(8)
-            ->get()
             ->map(function ($t) {
                 return (object) ['name' => $t->name];
             });
@@ -40,9 +39,8 @@ class LandingController extends Controller
         $regions = Region::orderBy('name')->get();
         $announcements = Announcement::where('is_active', true)->latest()->get();
 
-        $resultTitles = ResultTitle::select('name')->distinct()
-            ->orderByDesc('id')
-            ->get()
+        $resultTitles = ResultTitle::select('name', 'id')->orderByDesc('id')->get()
+            ->unique('name')
             ->map(function ($t) {
                 return (object) ['name' => $t->name];
             });

@@ -26,7 +26,7 @@ class ResultsController extends Controller
             ->map(function ($item) {
                 $level = Level::find($item->level_id);
                 $title = ResultTitle::where('name', $item->name)->latest()->first();
-                $yearsCount = ResultTitle::where('name', $item->name)->distinct('year_id')->count('year_id');
+                $yearsCount = ResultTitle::where('name', $item->name)->select('year_id')->distinct()->count('year_id');
                 $resultsCount = Result::whereHas('resultTitle', function ($q) use ($item) {
                     $q->where('name', $item->name);
                 })->count();
