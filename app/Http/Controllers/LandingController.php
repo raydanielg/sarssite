@@ -8,6 +8,7 @@ use App\Models\Region;
 use App\Models\Result;
 use App\Models\Announcement;
 use App\Models\ResultTitle;
+use App\Models\ResultType;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
@@ -17,14 +18,16 @@ class LandingController extends Controller
         $years = Year::orderBy('year', 'desc')->get();
         $levels = Level::orderBy('name')->get();
         $regions = Region::orderBy('name')->get();
-        $announcements = Announcement::where('is_active', true)->latest()->get();
+        $announcements = Announcement::where('is_active', true)->latest()->take(6)->get();
         $latestResults = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest()->take(6)->get();
+        $resultTypes = ResultType::where('is_active', true)->orderBy('name')->get();
 
         $resultTitles = ResultTitle::with(['year', 'region', 'district', 'resultType'])
             ->orderByDesc('id')
+            ->take(8)
             ->get();
 
-        return view('landing.sitemap', compact('years', 'levels', 'regions', 'announcements', 'latestResults', 'resultTitles'));
+        return view('landing.sitemap', compact('years', 'levels', 'regions', 'announcements', 'latestResults', 'resultTitles', 'resultTypes'));
     }
 
     public function sitemap()

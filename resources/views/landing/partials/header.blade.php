@@ -1,7 +1,7 @@
 <!-- Main Header -->
 <header class="bg-[#1b5e20] shadow-md sticky top-0 z-[100]">
     <!-- Branding Bar -->
-    <div class="container mx-auto px-4 py-3 lg:py-5">
+    <div class="container mx-auto px-4 py-3 lg:py-4">
         <div class="flex items-center justify-between relative">
             <!-- Left: Coat of Arms -->
             <div class="flex items-center">
@@ -34,16 +34,65 @@
                             <i class="ri-home-4-line"></i> Home
                         </a>
                     </li>
-                    <li>
+
+                    <!-- About Dropdown -->
+                    <li class="nav-dropdown">
+                        <a href="#" class="nav-link flex items-center gap-1.5 px-4 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all duration-300">
+                            <i class="ri-information-line"></i> About <i class="bi bi-chevron-down text-xs ml-0.5"></i>
+                        </a>
+                        <ul class="nav-dropdown-menu">
+                            <li><a href="{{ route('landing') }}#about">About Us</a></li>
+                            <li><a href="{{ route('landing') }}#mission">Mission and Vision</a></li>
+                            <li><a href="{{ route('landing') }}#core-values">Core Values</a></li>
+                            <li><a href="{{ route('landing') }}#roles">Roles</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Exam Types Dropdown -->
+                    <li class="nav-dropdown">
+                        <a href="#" class="nav-link flex items-center gap-1.5 px-4 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all duration-300">
+                            <i class="ri-file-list-3-line"></i> Exam Types <i class="bi bi-chevron-down text-xs ml-0.5"></i>
+                        </a>
+                        <ul class="nav-dropdown-menu">
+                            @foreach($resultTypes ?? [] as $type)
+                                <li><a href="{{ route('results.index') }}">{{ $type->name }}</a></li>
+                            @endforeach
+                            @if(empty($resultTypes) || count($resultTypes) === 0)
+                                <li><a href="{{ route('results.index') }}">All Exam Types</a></li>
+                            @endif
+                        </ul>
+                    </li>
+
+                    <!-- Results Dropdown -->
+                    <li class="nav-dropdown">
                         <a href="{{ route('results.index') }}" class="nav-link flex items-center gap-1.5 px-4 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('results.*') ? 'bg-white/10 border-b-2 border-yellow-400' : '' }}">
-                            <i class="ri-file-list-3-line"></i> Exam Types
+                            <i class="ri-bar-chart-box-line"></i> Results <i class="bi bi-chevron-down text-xs ml-0.5"></i>
+                        </a>
+                        <ul class="nav-dropdown-menu">
+                            @foreach($years ?? [] as $y)
+                                <li><a href="{{ route('results.year', $y->year) }}">Results {{ $y->year }}</a></li>
+                            @endforeach
+                            @if(empty($years) || count($years) === 0)
+                                <li><a href="{{ route('results.index') }}">All Results</a></li>
+                            @endif
+                        </ul>
+                    </li>
+
+                    <!-- Services -->
+                    <li>
+                        <a href="{{ route('landing') }}#services" class="nav-link flex items-center gap-1.5 px-4 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all duration-300">
+                            <i class="ri-customer-service-2-line"></i> Services
                         </a>
                     </li>
+
+                    <!-- FAQ -->
                     <li>
-                        <a href="{{ route('results.index') }}" class="nav-link flex items-center gap-1.5 px-4 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('results.*') ? 'bg-white/10 border-b-2 border-yellow-400' : '' }}">
-                            <i class="ri-bar-chart-box-line"></i> Results
+                        <a href="{{ route('landing') }}#faq" class="nav-link flex items-center gap-1.5 px-4 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all duration-300">
+                            <i class="ri-question-line"></i> FAQ
                         </a>
                     </li>
+
+                    <!-- Contacts -->
                     <li>
                         <a href="{{ route('landing') }}#contacts" class="nav-link flex items-center gap-1.5 px-4 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all duration-300">
                             <i class="ri-contacts-book-line"></i> Contacts
@@ -74,14 +123,57 @@
                     <i class="ri-home-4-line"></i> Home
                 </a>
             </li>
+            <!-- About Dropdown (Mobile) -->
             <li>
-                <a href="{{ route('results.index') }}" class="flex items-center gap-2 px-6 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all">
-                    <i class="ri-file-list-3-line"></i> Exam Types
+                <a href="javascript:void(0)" onclick="toggleMobileDropdown('aboutDropdown')" class="flex items-center justify-between gap-2 px-6 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all">
+                    <span class="flex items-center gap-2"><i class="ri-information-line"></i> About</span>
+                    <i class="bi bi-chevron-down text-xs"></i>
+                </a>
+                <div id="aboutDropdown" class="mobile-dropdown-content">
+                    <a href="{{ route('landing') }}#about" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">About Us</a>
+                    <a href="{{ route('landing') }}#mission" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">Mission and Vision</a>
+                    <a href="{{ route('landing') }}#core-values" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">Core Values</a>
+                    <a href="{{ route('landing') }}#roles" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">Roles</a>
+                </div>
+            </li>
+            <!-- Exam Types Dropdown (Mobile) -->
+            <li>
+                <a href="javascript:void(0)" onclick="toggleMobileDropdown('examTypesDropdown')" class="flex items-center justify-between gap-2 px-6 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all">
+                    <span class="flex items-center gap-2"><i class="ri-file-list-3-line"></i> Exam Types</span>
+                    <i class="bi bi-chevron-down text-xs"></i>
+                </a>
+                <div id="examTypesDropdown" class="mobile-dropdown-content">
+                    @foreach($resultTypes ?? [] as $type)
+                        <a href="{{ route('results.index') }}" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">{{ $type->name }}</a>
+                    @endforeach
+                    @if(empty($resultTypes) || count($resultTypes) === 0)
+                        <a href="{{ route('results.index') }}" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">All Exam Types</a>
+                    @endif
+                </div>
+            </li>
+            <!-- Results Dropdown (Mobile) -->
+            <li>
+                <a href="javascript:void(0)" onclick="toggleMobileDropdown('resultsDropdown')" class="flex items-center justify-between gap-2 px-6 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all">
+                    <span class="flex items-center gap-2"><i class="ri-bar-chart-box-line"></i> Results</span>
+                    <i class="bi bi-chevron-down text-xs"></i>
+                </a>
+                <div id="resultsDropdown" class="mobile-dropdown-content">
+                    @foreach($years ?? [] as $y)
+                        <a href="{{ route('results.year', $y->year) }}" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">Results {{ $y->year }}</a>
+                    @endforeach
+                    @if(empty($years) || count($years) === 0)
+                        <a href="{{ route('results.index') }}" class="block px-10 py-2 text-white/80 text-sm hover:text-yellow-400 transition-all">All Results</a>
+                    @endif
+                </div>
+            </li>
+            <li>
+                <a href="{{ route('landing') }}#services" class="flex items-center gap-2 px-6 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all">
+                    <i class="ri-customer-service-2-line"></i> Services
                 </a>
             </li>
             <li>
-                <a href="{{ route('results.index') }}" class="flex items-center gap-2 px-6 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all">
-                    <i class="ri-bar-chart-box-line"></i> Results
+                <a href="{{ route('landing') }}#faq" class="flex items-center gap-2 px-6 py-3 text-white text-sm font-bold hover:bg-white/10 transition-all">
+                    <i class="ri-question-line"></i> FAQ
                 </a>
             </li>
             <li>
@@ -102,5 +194,10 @@
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
     menu.classList.toggle('hidden');
+}
+
+function toggleMobileDropdown(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
 }
 </script>
