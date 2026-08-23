@@ -140,7 +140,20 @@ class ResultsController extends Controller
             ->where('year_id', $yearData->id)
             ->firstOrFail();
 
-        $query = Result::where('result_title_id', $resultTitle->id)
+        $resultTitleIds = ResultTitle::where('name', $resultTitle->name)
+            ->where('year_id', $yearData->id)
+            ->where('region_id', $region->id)
+            ->where(function ($q) use ($district) {
+                $q->where('district_id', $district->id)
+                  ->orWhereNull('district_id');
+            })
+            ->pluck('id');
+
+        if ($resultTitleIds->isEmpty()) {
+            $resultTitleIds = [$resultTitle->id];
+        }
+
+        $query = Result::whereIn('result_title_id', $resultTitleIds)
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {
@@ -160,7 +173,7 @@ class ResultsController extends Controller
 
         $results = $query->get();
 
-        $summaries = ResultSummary::where('result_title_id', $resultTitle->id)->get();
+        $summaries = ResultSummary::whereIn('result_title_id', $resultTitleIds)->get();
 
         return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries'));
     }
@@ -258,26 +271,35 @@ class ResultsController extends Controller
             ->where('region_id', $region->id)
             ->firstOrFail();
 
-        $resultTitle = ResultTitle::where('name', $examName)
+        $resultTitleIds = ResultTitle::where('name', $examName)
             ->where('year_id', $yearData->id)
-            ->where(function ($q) use ($region, $district) {
-                $q->where('region_id', $region->id)
-                  ->where(function ($sq) use ($district) {
-                      $sq->where('district_id', $district->id)
-                        ->orWhereNull('district_id');
-                  });
+            ->where('region_id', $region->id)
+            ->where(function ($q) use ($district) {
+                $q->where('district_id', $district->id)
+                  ->orWhereNull('district_id');
             })
+            ->pluck('id');
+
+        if ($resultTitleIds->isEmpty()) {
+            $resultTitleIds = ResultTitle::where('name', $examName)
+                ->where('year_id', $yearData->id)
+                ->pluck('id');
+        }
+
+        if ($resultTitleIds->isEmpty()) {
+            abort(404);
+        }
+
+        $resultTitle = ResultTitle::whereIn('id', $resultTitleIds)
+            ->whereHas('results')
             ->latest()
             ->first();
 
         if (!$resultTitle) {
-            $resultTitle = ResultTitle::where('name', $examName)
-                ->where('year_id', $yearData->id)
-                ->latest()
-                ->firstOrFail();
+            $resultTitle = ResultTitle::whereIn('id', $resultTitleIds)->latest()->first();
         }
 
-        $query = Result::where('result_title_id', $resultTitle->id)
+        $query = Result::whereIn('result_title_id', $resultTitleIds)
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {
@@ -296,7 +318,7 @@ class ResultsController extends Controller
         }
 
         $results = $query->get();
-        $summaries = ResultSummary::where('result_title_id', $resultTitle->id)->get();
+        $summaries = ResultSummary::whereIn('result_title_id', $resultTitleIds)->get();
 
         return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries'));
     }
