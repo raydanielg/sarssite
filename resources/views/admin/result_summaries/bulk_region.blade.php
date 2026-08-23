@@ -17,7 +17,7 @@
     </div>
     <div class="card-body">
         <div class="alert alert-info">
-            <i class="fas fa-info-circle mr-1"></i> Chagua mtihani wowote - mfumo utatengeneza <strong>category ya Mkoa</strong> otomatiki kama haipo. Kwa summary za Wilaya tumia <a href="{{ route('admin.district-summaries.bulk-form') }}" class="alert-link">page ya Wilaya</a>.
+            <i class="fas fa-info-circle mr-1"></i> Hii sehemu ni kwa ajili ya <strong>Summary za Mikoa</strong> tu. Kwa summary za Wilaya tumia <a href="{{ route('admin.district-summaries.bulk-form') }}" class="alert-link">page ya Wilaya</a>.
         </div>
 
         <form id="bulkUploadForm">
@@ -25,16 +25,21 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="result_title_id">Chagua Mtihani</label>
+                        <label for="result_title_id">Target Examination Category (Mkoa)</label>
                         <select name="result_title_id" id="result_title_id" class="form-control select2 shadow-sm" required>
-                            <option value="">-- Chagua Mtihani --</option>
+                            <option value="">-- Chagua Mtihani (Mkoa) --</option>
                             @foreach($resultTitles as $title)
                                 <option value="{{ $title->id }}">
-                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}{{ $title->district ? ' [Wilaya: ' . $title->district->name . ']' : '' }}
+                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}
                                 </option>
                             @endforeach
                         </select>
-                        <small class="text-muted">Unaweza kuchagua mtihani wa mkoa au wilaya - summary itaunganishwa otomatiki kwenye category ya Mkoa.</small>
+                        <small class="text-muted">Summary zitapakiwa chini ya category hii ya Mkoa.</small>
+                        @if($resultTitles->isEmpty())
+                            <small class="text-danger d-block mt-2">
+                                <i class="fas fa-exclamation-triangle"></i> Hakuna examination category ya Mkoa iliyowekwa.
+                            </small>
+                        @endif
                     </div>
                 </div>
             </div>

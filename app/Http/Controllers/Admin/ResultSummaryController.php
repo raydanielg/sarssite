@@ -178,62 +178,14 @@ class ResultSummaryController extends Controller
         }
     }
 
-    // Region-level summaries
+    // Region-level summaries (district_id is null)
     public function createRegion()
     {
         $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
-            ->latest()
-            ->get()
-            ->groupBy('region_id')
-            ->map(function ($group) {
-                return $group->unique('name');
-            })
-            ->flatten();
-        return view('admin.result_summaries.create_region', compact('resultTitles'));
-    }
-
-    public function getTitlesByRegion($regionId)
-    {
-        $titles = ResultTitle::with(['year', 'level', 'region', 'district'])
-            ->where('region_id', $regionId)
-            ->orderByDesc('year_id')
-            ->get()
-            ->unique('name');
-
-        return response()->json($titles->map(function ($t) {
-            return [
-                'id' => $t->id,
-                'text' => $t->year->year . ' - ' . $t->level->name . ' - ' . $t->name . ($t->district ? ' [Wilaya: ' . $t->district->name . ']' : ' [Mkoa]'),
-            ];
-        }));
-    }
-
-    protected function resolveRegionTitle(ResultTitle $title)
-    {
-        if ($title->district_id === null) {
-            return $title;
-        }
-
-        $regionTitle = ResultTitle::where('name', $title->name)
-            ->where('year_id', $title->year_id)
-            ->where('level_id', $title->level_id)
-            ->where('region_id', $title->region_id)
             ->whereNull('district_id')
-            ->first();
-
-        if ($regionTitle) {
-            return $regionTitle;
-        }
-
-        return ResultTitle::create([
-            'name' => $title->name,
-            'year_id' => $title->year_id,
-            'level_id' => $title->level_id,
-            'region_id' => $title->region_id,
-            'district_id' => null,
-            'result_type_id' => $title->result_type_id,
-            'slug' => Str::slug($title->name . '-' . $title->region_id . '-' . time() . '-' . rand(100, 999)),
-        ]);
+            ->latest()
+            ->get();
+        return view('admin.result_summaries.create_region', compact('resultTitles'));
     }
 
     public function storeRegion(Request $request)
@@ -245,12 +197,14 @@ class ResultSummaryController extends Controller
         ]);
 
         $title = ResultTitle::findOrFail($request->result_title_id);
-        $regionTitle = $this->resolveRegionTitle($title);
+        if ($title->district_id !== null) {
+            return back()->withErrors(['result_title_id' => 'Tafadhali chagua category ya Mkoa, sio Wilaya.'])->withInput();
+        }
 
         $path = $request->file('file')->store('summaries', 'public');
 
         ResultSummary::create([
-            'result_title_id' => $regionTitle->id,
+            'result_title_id' => $request->result_title_id,
             'name' => $request->name,
             'file_path' => $path,
             'status' => 'Published',
@@ -262,13 +216,9 @@ class ResultSummaryController extends Controller
     public function bulkRegionForm()
     {
         $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+            ->whereNull('district_id')
             ->latest()
-            ->get()
-            ->groupBy('region_id')
-            ->map(function ($group) {
-                return $group->unique('name');
-            })
-            ->flatten();
+            ->get();
         return view('admin.result_summaries.bulk_region', compact('resultTitles'));
     }
 
@@ -281,7 +231,9 @@ class ResultSummaryController extends Controller
         ]);
 
         $title = ResultTitle::findOrFail($request->result_title_id);
-        $regionTitle = $this->resolveRegionTitle($title);
+        if ($title->district_id !== null) {
+            return response()->json(['success' => false, 'message' => 'Tafadhali chagua category ya Mkoa, sio Wilaya.'], 400);
+        }
 
         $count = 0;
         DB::beginTransaction();
@@ -292,7 +244,7 @@ class ResultSummaryController extends Controller
                 $path = $file->store('summaries', 'public');
 
                 ResultSummary::create([
-                    'result_title_id' => $regionTitle->id,
+                    'result_title_id' => $request->result_title_id,
                     'name' => $name,
                     'file_path' => $path,
                     'status' => 'Published',

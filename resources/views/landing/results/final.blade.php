@@ -124,20 +124,13 @@
         
         <!-- Filter & Tabs Section -->
         <div class="text-center mb-6">
-            <div class="flex justify-center gap-2 mb-6 flex-wrap">
+            <div class="flex justify-center gap-2 mb-6">
                 <button onclick="switchTab('schools')" id="schools-tab-btn" class="tab-btn active px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
                     <i class="ri-school-line mr-1"></i> School List
                 </button>
-                @if($districtSummaries->isNotEmpty())
-                <button onclick="switchTab('districtSummaries')" id="districtSummaries-tab-btn" class="tab-btn px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
-                    <i class="ri-file-list-3-line mr-1"></i> Summary za Wilaya
+                <button onclick="switchTab('summaries')" id="summaries-tab-btn" class="tab-btn px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
+                    <i class="ri-file-list-3-line mr-1"></i> Result Summary
                 </button>
-                @endif
-                @if($regionSummaries->isNotEmpty())
-                <button onclick="switchTab('regionSummaries')" id="regionSummaries-tab-btn" class="tab-btn px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
-                    <i class="ri-map-line mr-1"></i> Summary za Mkoa
-                </button>
-                @endif
             </div>
             
             <div id="schools-filters">
@@ -204,16 +197,15 @@
             @endif
         </div>
 
-        <!-- District Summaries Tab -->
-        <div id="districtSummaries-content" class="hidden">
+        <div id="summaries-content" class="hidden">
             <div class="max-w-3xl mx-auto bg-white border border-gray-300 shadow-sm animate__animated animate__fadeIn">
                 <div class="bg-gray-50 p-4 border-b border-gray-200">
                     <h4 class="text-sm font-black text-[#1e293b] uppercase tracking-wider flex items-center gap-2">
-                        <i class="ri-file-info-line text-blue-600"></i> Summary za Wilaya ya {{ $district->name }}
+                        <i class="ri-file-info-line text-blue-600"></i> Posted Result Summaries
                     </h4>
                 </div>
                 <div class="divide-y divide-gray-100">
-                    @forelse($districtSummaries as $summary)
+                    @forelse($summaries as $summary)
                         <div class="summary-item bg-white">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2">
@@ -229,39 +221,7 @@
                     @empty
                         <div class="p-12 text-center">
                             <i class="ri-file-list-off-line text-4xl text-gray-300 mb-2"></i>
-                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Hakuna muhtasari wa Wilaya uliowekwa.</p>
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-        </div>
-
-        <!-- Region Summaries Tab -->
-        <div id="regionSummaries-content" class="hidden">
-            <div class="max-w-3xl mx-auto bg-white border border-gray-300 shadow-sm animate__animated animate__fadeIn">
-                <div class="bg-gray-50 p-4 border-b border-gray-200">
-                    <h4 class="text-sm font-black text-[#1e293b] uppercase tracking-wider flex items-center gap-2">
-                        <i class="ri-map-line text-green-600"></i> Summary za Mkoa wa {{ $region->name }}
-                    </h4>
-                </div>
-                <div class="divide-y divide-gray-100">
-                    @forelse($regionSummaries as $summary)
-                        <div class="summary-item bg-white">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
-                                    <span>{{ strtoupper($summary->name) }}</span>
-                                </div>
-                                <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}"
-                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition-all duration-300 shadow-sm hover:shadow-md">
-                                    <i class="ri-eye-line"></i> View
-                                </a>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="p-12 text-center">
-                            <i class="ri-file-list-off-line text-4xl text-gray-300 mb-2"></i>
-                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Hakuna muhtasari wa Mkoa uliowekwa.</p>
+                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Hakuna muhtasari wa matokeo uliowekwa.</p>
                         </div>
                     @endforelse
                 </div>
@@ -273,29 +233,24 @@
 
 <script>
     function switchTab(tab) {
-        const tabs = ['schools', 'districtSummaries', 'regionSummaries'];
-        const filters = document.getElementById('schools-filters');
+        const schoolsBtn = document.getElementById('schools-tab-btn');
+        const summariesBtn = document.getElementById('summaries-tab-btn');
+        const schoolsFilters = document.getElementById('schools-filters');
+        const schoolsContent = document.getElementById('schools-content');
+        const summariesContent = document.getElementById('summaries-content');
 
-        tabs.forEach(t => {
-            const btn = document.getElementById(t + '-tab-btn');
-            const content = document.getElementById(t + '-content');
-            if (btn && content) {
-                if (t === tab) {
-                    btn.classList.add('active');
-                    content.classList.remove('hidden');
-                } else {
-                    btn.classList.remove('active');
-                    content.classList.add('hidden');
-                }
-            }
-        });
-
-        if (filters) {
-            if (tab === 'schools') {
-                filters.classList.remove('hidden');
-            } else {
-                filters.classList.add('hidden');
-            }
+        if (tab === 'schools') {
+            schoolsBtn.classList.add('active');
+            summariesBtn.classList.remove('active');
+            schoolsFilters.classList.remove('hidden');
+            schoolsContent.classList.remove('hidden');
+            summariesContent.classList.add('hidden');
+        } else {
+            summariesBtn.classList.add('active');
+            schoolsBtn.classList.remove('active');
+            schoolsFilters.classList.add('hidden');
+            schoolsContent.classList.add('hidden');
+            summariesContent.classList.remove('hidden');
         }
     }
 
