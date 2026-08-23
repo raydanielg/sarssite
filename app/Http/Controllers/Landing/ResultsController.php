@@ -160,9 +160,19 @@ class ResultsController extends Controller
 
         $results = $query->get();
 
-        $summaries = ResultSummary::where('result_title_id', $resultTitle->id)->get();
+        $districtSummaries = ResultSummary::where('result_title_id', $resultTitle->id)
+            ->whereHas('resultTitle', function ($q) {
+                $q->whereNotNull('district_id');
+            })->get();
 
-        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries'));
+        $regionSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region, $resultTitle) {
+            $q->where('name', $resultTitle->name)
+              ->where('year_id', $yearData->id)
+              ->where('region_id', $region->id)
+              ->whereNull('district_id');
+        })->get();
+
+        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'districtSummaries', 'regionSummaries'));
     }
 
     public function viewPdf(Request $request)
@@ -303,9 +313,20 @@ class ResultsController extends Controller
         }
 
         $results = $query->get();
-        $summaries = ResultSummary::where('result_title_id', $resultTitle->id)->get();
 
-        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries'));
+        $districtSummaries = ResultSummary::where('result_title_id', $resultTitle->id)
+            ->whereHas('resultTitle', function ($q) {
+                $q->whereNotNull('district_id');
+            })->get();
+
+        $regionSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($examName, $yearData, $region) {
+            $q->where('name', $examName)
+              ->where('year_id', $yearData->id)
+              ->where('region_id', $region->id)
+              ->whereNull('district_id');
+        })->get();
+
+        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'districtSummaries', 'regionSummaries'));
     }
 
     private function resolveExamName($examSlug)
