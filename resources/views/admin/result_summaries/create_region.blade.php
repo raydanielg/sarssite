@@ -21,27 +21,23 @@
                 @csrf
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle mr-1"></i> Hii sehemu ni kwa ajili ya <strong>Summary za Mkoa</strong> tu. Kwa summary za Wilaya tumia <a href="{{ route('admin.district-summaries.create') }}" class="alert-link">page ya Wilaya</a>.
+                        <i class="fas fa-info-circle mr-1"></i> Chagua mtihani wowote - mfumo utatengeneza <strong>category ya Mkoa</strong> otomatiki kama haipo. Kwa summary za Wilaya tumia <a href="{{ route('admin.district-summaries.create') }}" class="alert-link">page ya Wilaya</a>.
                     </div>
 
                     <div class="form-group">
-                        <label for="result_title_id">Examination Category (Mkoa)</label>
+                        <label for="result_title_id">Chagua Mtihani</label>
                         <select name="result_title_id" id="result_title_id" class="form-control select2 @error('result_title_id') is-invalid @enderror" required>
-                            <option value="">-- Chagua Mtihani (Mkoa) --</option>
+                            <option value="">-- Chagua Mtihani --</option>
                             @foreach($resultTitles as $title)
                                 <option value="{{ $title->id }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
-                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}
+                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}{{ $title->district ? ' [Wilaya: ' . $title->district->name . ']' : '' }}
                                 </option>
                             @endforeach
                         </select>
                         @error('result_title_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
-                        @if($resultTitles->isEmpty())
-                            <small class="text-danger d-block mt-2">
-                                <i class="fas fa-exclamation-triangle"></i> Hakuna examination category ya Mkoa iliyowekwa. Tafadhali ongeza Result Title na district iwe empty.
-                            </small>
-                        @endif
+                        <small class="text-muted d-block mt-2">Unaweza kuchagua mtihani wa mkoa au wilaya - summary itaunganishwa otomatiki kwenye category ya Mkoa.</small>
                     </div>
 
                     <div class="form-group">
