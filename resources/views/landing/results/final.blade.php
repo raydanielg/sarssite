@@ -87,6 +87,70 @@
         color: #fff;
         border-bottom-color: #145524;
     }
+    .summary-card {
+        max-width: 42rem;
+        margin-left: auto;
+        margin-right: auto;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    }
+    .summary-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .summary-header-district { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
+    .summary-header-regional { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
+    .summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid #f3f4f6;
+        transition: all 0.3s;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row:hover {
+        background: #f8fafc;
+        transform: translateX(4px);
+    }
+    .summary-row-name {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+    .summary-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.125rem 0.5rem;
+        font-size: 0.625rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-radius: 0.25rem;
+    }
+    .badge-district { background: #dbeafe; color: #1e40af; }
+    .badge-regional { background: #fef3c7; color: #92400e; }
+    .view-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #fff;
+        border-radius: 0.5rem;
+        transition: all 0.3s;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    }
+    .view-btn-green { background: #16a34a; }
+    .view-btn-green:hover { background: #15803d; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    .view-btn-amber { background: #d97706; }
+    .view-btn-amber:hover { background: #b45309; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
 
     @media (max-width: 768px) {
         .schools-container {
@@ -129,7 +193,10 @@
                     <i class="ri-school-line mr-1"></i> School List
                 </button>
                 <button onclick="switchTab('summaries')" id="summaries-tab-btn" class="tab-btn px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
-                    <i class="ri-file-list-3-line mr-1"></i> Result Summary
+                    <i class="ri-file-list-3-line mr-1"></i> District Summary
+                </button>
+                <button onclick="switchTab('regional')" id="regional-tab-btn" class="tab-btn px-6 py-2 bg-white border border-gray-300 font-black text-[13px] uppercase shadow-sm">
+                    <i class="ri-government-line mr-1"></i> Regional Summary
                 </button>
             </div>
             
@@ -198,30 +265,59 @@
         </div>
 
         <div id="summaries-content" class="hidden">
-            <div class="max-w-3xl mx-auto bg-white border border-gray-300 shadow-sm animate__animated animate__fadeIn">
-                <div class="bg-gray-50 p-4 border-b border-gray-200">
+            <div class="summary-card animate__animated animate__fadeIn">
+                <div class="summary-header summary-header-district">
                     <h4 class="text-sm font-black text-[#1e293b] uppercase tracking-wider flex items-center gap-2">
-                        <i class="ri-file-info-line text-blue-600"></i> Posted Result Summaries
+                        <i class="ri-file-info-line text-blue-600"></i> District Summaries
+                        <span class="summary-badge badge-district">{{ $district->name }}</span>
                     </h4>
                 </div>
-                <div class="divide-y divide-gray-100">
+                <div>
                     @forelse($summaries as $summary)
-                        <div class="summary-item bg-white">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
-                                    <span>{{ strtoupper($summary->name) }}</span>
-                                </div>
-                                <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}"
-                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition-all duration-300 shadow-sm hover:shadow-md">
-                                    <i class="ri-eye-line"></i> View
-                                </a>
+                        <div class="summary-row">
+                            <div class="summary-row-name">
+                                <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
+                                <span>{{ strtoupper($summary->name) }}</span>
                             </div>
+                            <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}"
+                               class="view-btn view-btn-green">
+                                <i class="ri-eye-line"></i> View
+                            </a>
                         </div>
                     @empty
                         <div class="p-12 text-center">
                             <i class="ri-file-list-off-line text-4xl text-gray-300 mb-2"></i>
-                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Hakuna muhtasari wa matokeo uliowekwa.</p>
+                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Hakuna muhtasari wa matokeo ya wilaya uliowekwa.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <div id="regional-content" class="hidden">
+            <div class="summary-card animate__animated animate__fadeIn">
+                <div class="summary-header summary-header-regional">
+                    <h4 class="text-sm font-black text-[#1e293b] uppercase tracking-wider flex items-center gap-2">
+                        <i class="ri-government-line text-amber-600"></i> Regional Summaries
+                        <span class="summary-badge badge-regional">{{ $region->name }}</span>
+                    </h4>
+                </div>
+                <div>
+                    @forelse($regionalSummaries as $summary)
+                        <div class="summary-row">
+                            <div class="summary-row-name">
+                                <i class="ri-file-pdf-fill text-red-600 text-xl"></i>
+                                <span>{{ strtoupper($summary->name) }}</span>
+                            </div>
+                            <a href="{{ route('results.view_pdf', ['file' => $summary->file_path, 'name' => $summary->name]) }}"
+                               class="view-btn view-btn-amber">
+                                <i class="ri-eye-line"></i> View
+                            </a>
+                        </div>
+                    @empty
+                        <div class="p-12 text-center">
+                            <i class="ri-file-list-off-line text-4xl text-gray-300 mb-2"></i>
+                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Hakuna muhtasari wa matokeo ya mkoa uliowekwa.</p>
                         </div>
                     @endforelse
                 </div>
@@ -233,24 +329,25 @@
 
 <script>
     function switchTab(tab) {
-        const schoolsBtn = document.getElementById('schools-tab-btn');
-        const summariesBtn = document.getElementById('summaries-tab-btn');
+        const tabs = ['schools', 'summaries', 'regional'];
+        tabs.forEach(t => {
+            const btn = document.getElementById(t + '-tab-btn');
+            const content = document.getElementById(t + '-content');
+            if (btn) btn.classList.remove('active');
+            if (content) content.classList.add('hidden');
+        });
+
         const schoolsFilters = document.getElementById('schools-filters');
-        const schoolsContent = document.getElementById('schools-content');
-        const summariesContent = document.getElementById('summaries-content');
+        const activeBtn = document.getElementById(tab + '-tab-btn');
+        const activeContent = document.getElementById(tab + '-content');
+
+        if (activeBtn) activeBtn.classList.add('active');
+        if (activeContent) activeContent.classList.remove('hidden');
 
         if (tab === 'schools') {
-            schoolsBtn.classList.add('active');
-            summariesBtn.classList.remove('active');
-            schoolsFilters.classList.remove('hidden');
-            schoolsContent.classList.remove('hidden');
-            summariesContent.classList.add('hidden');
+            if (schoolsFilters) schoolsFilters.classList.remove('hidden');
         } else {
-            summariesBtn.classList.add('active');
-            schoolsBtn.classList.remove('active');
-            schoolsFilters.classList.add('hidden');
-            schoolsContent.classList.add('hidden');
-            summariesContent.classList.remove('hidden');
+            if (schoolsFilters) schoolsFilters.classList.add('hidden');
         }
     }
 

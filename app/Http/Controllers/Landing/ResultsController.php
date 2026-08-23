@@ -173,9 +173,22 @@ class ResultsController extends Controller
 
         $results = $query->get();
 
-        $summaries = ResultSummary::whereIn('result_title_id', $resultTitleIds)->get();
+        $districtTitleIds = ResultTitle::where('name', $resultTitle->name)
+            ->where('year_id', $yearData->id)
+            ->where('region_id', $region->id)
+            ->where('district_id', $district->id)
+            ->pluck('id');
 
-        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries'));
+        $regionalTitleIds = ResultTitle::where('name', $resultTitle->name)
+            ->where('year_id', $yearData->id)
+            ->where('region_id', $region->id)
+            ->whereNull('district_id')
+            ->pluck('id');
+
+        $summaries = ResultSummary::whereIn('result_title_id', $districtTitleIds)->get();
+        $regionalSummaries = ResultSummary::whereIn('result_title_id', $regionalTitleIds)->get();
+
+        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries', 'regionalSummaries'));
     }
 
     public function viewPdf(Request $request)
@@ -318,9 +331,19 @@ class ResultsController extends Controller
         }
 
         $results = $query->get();
-        $summaries = ResultSummary::whereIn('result_title_id', $resultTitleIds)->get();
 
-        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries'));
+        $districtTitleIds = ResultTitle::whereIn('id', $resultTitleIds)
+            ->where('district_id', $district->id)
+            ->pluck('id');
+
+        $regionalTitleIds = ResultTitle::whereIn('id', $resultTitleIds)
+            ->whereNull('district_id')
+            ->pluck('id');
+
+        $summaries = ResultSummary::whereIn('result_title_id', $districtTitleIds)->get();
+        $regionalSummaries = ResultSummary::whereIn('result_title_id', $regionalTitleIds)->get();
+
+        return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries', 'regionalSummaries'));
     }
 
     private function resolveExamName($examSlug)
