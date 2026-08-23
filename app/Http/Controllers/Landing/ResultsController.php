@@ -242,14 +242,7 @@ class ResultsController extends Controller
             }
         }
 
-        $regionSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($examName, $yearData, $region) {
-            $q->where('name', $examName)
-              ->where('year_id', $yearData->id)
-              ->where('region_id', $region->id)
-              ->whereNull('district_id');
-        })->get();
-
-        return view('landing.results.exam_districts', compact('examName', 'examSlug', 'yearData', 'region', 'districts', 'regionSummaries'));
+        return view('landing.results.exam_districts', compact('examName', 'examSlug', 'yearData', 'region', 'districts'));
     }
 
     public function showExamFinal(Request $request, $examSlug, $year, $region_slug, $district_slug)
