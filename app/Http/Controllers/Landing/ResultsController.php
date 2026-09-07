@@ -27,7 +27,7 @@ class ResultsController extends Controller
                 $level = Level::find($item->level_id);
                 $title = ResultTitle::where('name', $item->name)->latest()->first();
                 $yearsCount = ResultTitle::where('name', $item->name)->select('year_id')->distinct()->count('year_id');
-                $resultsCount = Result::where('status', 'Published')->whereHas('resultTitle', function ($q) use ($item) {
+                $resultsCount = Result::where('status', 'Published')->whereHas('school', function ($q) { $q->where('is_pc', false); })->whereHas('resultTitle', function ($q) use ($item) {
                     $q->where('name', $item->name);
                 })->count();
                 return (object) [
@@ -58,7 +58,7 @@ class ResultsController extends Controller
         $regions = Region::whereHas('resultTitles', function ($q) use ($yearData) {
             $q->where('year_id', $yearData->id)
               ->whereHas('results', function ($sq) {
-                  $sq->where('status', 'Published');
+                  $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
               });
         })->orderBy('name')->get();
 
@@ -121,10 +121,10 @@ class ResultsController extends Controller
                   ->orWhereNull('district_id');
             })
             ->whereHas('results', function ($q) {
-                $q->where('status', 'Published');
+                $q->where('status', 'Published')->whereHas('school', function ($sq) { $sq->where('is_pc', false); });
             })
             ->withCount(['results' => function ($q) {
-                $q->where('status', 'Published');
+                $q->where('status', 'Published')->whereHas('school', function ($sq) { $sq->where('is_pc', false); });
             }])
             ->with('resultType')
             ->orderByDesc('id')
@@ -168,6 +168,7 @@ class ResultsController extends Controller
 
         $query = Result::whereIn('result_title_id', $resultTitleIds)
             ->where('status', 'Published')
+            ->whereHas('school', function ($q) { $q->where('is_pc', false); })
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {

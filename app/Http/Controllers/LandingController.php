@@ -19,7 +19,7 @@ class LandingController extends Controller
         $levels = Level::orderBy('name')->get();
         $regions = Region::orderBy('name')->get();
         $announcements = Announcement::where('is_active', true)->latest()->take(6)->get();
-        $latestResults = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->where('status', 'Published')->latest()->take(6)->get();
+        $latestResults = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->where('status', 'Published')->whereHas('school', function ($q) { $q->where('is_pc', false); })->latest()->take(6)->get();
         $resultTypes = ResultType::where('is_active', true)->orderBy('name')->get();
 
         $resultTitles = ResultTitle::select('name', 'id')->orderByDesc('id')->get()
@@ -79,7 +79,7 @@ class LandingController extends Controller
         }
 
         foreach (ResultTitle::with(['year', 'region', 'district'])->whereHas('results', function ($q) {
-            $q->where('status', 'Published');
+            $q->where('status', 'Published')->whereHas('school', function ($sq) { $sq->where('is_pc', false); });
         })->get() as $title) {
             if (!$title->year || !$title->region) {
                 continue;
