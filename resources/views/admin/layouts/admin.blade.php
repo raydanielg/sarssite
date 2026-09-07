@@ -15,6 +15,44 @@
   <link rel="stylesheet" href="{{ asset('vendor/toastr/toastr.min.css') }}">
   <!-- SweetAlert2 -->
   <link rel="stylesheet" href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}">
+  <style>
+    .pagination { justify-content: center; flex-wrap: wrap; gap: 4px; }
+    .pagination .page-item .page-link {
+        border: none;
+        border-radius: 50px !important;
+        min-width: 38px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        padding: 0 10px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #6c757d;
+        background: #f8f9fa;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .pagination .page-item .page-link:hover {
+        background: #e9ecef;
+        color: #007bff;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+    }
+    .pagination .page-item.disabled .page-link {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 50px !important;
+    }
+    .pagination-row td { border-top: 2px solid #e9ecef !important; }
+  </style>
   @stack('css')
 </head>
 <body class="hold-transition sidebar-mini">

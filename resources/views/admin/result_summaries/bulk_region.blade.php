@@ -25,23 +25,40 @@
 
         <form id="bulkUploadForm">
             @csrf
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="result_title_id">Target Examination Category (Mkoa)</label>
-                        <select name="result_title_id" id="result_title_id" class="form-control select2 shadow-sm" required>
+            <!-- Exam Selection Card -->
+            <div class="exam-selector-card rounded-lg border shadow-sm mb-4 overflow-hidden">
+                <div class="exam-selector-header px-4 py-3 text-white d-flex align-items-center" style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);">
+                    <i class="fas fa-clipboard-list fa-lg mr-3"></i>
+                    <div>
+                        <h5 class="font-weight-bold mb-0">Chagua Mtihani</h5>
+                        <small class="text-white-50">Chagua category ya mtihani ambapo summaries zitapakiwa</small>
+                    </div>
+                </div>
+                <div class="p-4 bg-white">
+                    <div class="form-group mb-0">
+                        <label for="result_title_id" class="font-weight-bold text-muted small text-uppercase mb-2">
+                            <i class="fas fa-tag mr-1 text-primary"></i> Examination Category (Mkoa)
+                        </label>
+                        <select name="result_title_id" id="result_title_id" class="form-control form-control-lg select2 shadow-sm" required>
                             <option value="">-- Chagua Mtihani (Mkoa) --</option>
                             @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}">
-                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}
+                                <option value="{{ $title->id }}" data-year="{{ $title->year->year ?? '' }}" data-level="{{ $title->level->name ?? '' }}" data-region="{{ $title->region->name ?? '' }}">
+                                    {{ $title->name }}
                                 </option>
                             @endforeach
                         </select>
-                        <small class="text-muted">Summary zitapakiwa chini ya category hii ya Mkoa.</small>
+                        <div id="examInfoBox" class="mt-3 d-none">
+                            <div class="d-flex flex-wrap gap-3">
+                                <span class="badge badge-info badge-pill px-3 py-2"><i class="fas fa-calendar mr-1"></i> <span id="examInfoYear"></span></span>
+                                <span class="badge badge-success badge-pill px-3 py-2"><i class="fas fa-graduation-cap mr-1"></i> <span id="examInfoLevel"></span></span>
+                                <span class="badge badge-primary badge-pill px-3 py-2"><i class="fas fa-map-marked-alt mr-1"></i> <span id="examInfoRegion"></span></span>
+                            </div>
+                        </div>
                         @if($resultTitles->isEmpty())
-                            <small class="text-danger d-block mt-2">
-                                <i class="fas fa-exclamation-triangle"></i> Hakuna examination category ya Mkoa iliyowekwa.
-                            </small>
+                            <div class="alert alert-danger border-0 rounded-lg mt-3 mb-0 d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle fa-lg mr-3"></i>
+                                <div>Hakuna examination category ya Mkoa iliyowekwa. Tafadhali ongeza Result Title na district iwe empty.</div>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -130,6 +147,22 @@
     .dropzone-area:hover, .dropzone-area.dragover { border-color: #38a169; background-color: #f0fff4; transform: scale(1.01); }
     .dropzone-area i { transition: transform 0.3s; }
     .dropzone-area:hover i { transform: translateY(-4px); }
+
+    .exam-selector-card { transition: box-shadow 0.3s; }
+    .exam-selector-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important; }
+    .exam-selector-header { transition: filter 0.3s; }
+    .exam-selector-card:hover .exam-selector-header { filter: brightness(1.05); }
+
+    .select2-container--bootstrap4 .select2-selection--single {
+        height: calc(1.5em + 1rem + 2px) !important;
+        padding: 0.5rem 0.75rem !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+    }
+    .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5 !important;
+    }
 </style>
 
 @push('js')
@@ -141,6 +174,19 @@ $(document).ready(function() {
     const previewBody = $('#filePreviewBody');
     const dropzone = $('#dropzone');
     const bulkUploadForm = $('#bulkUploadForm');
+
+    // Exam selector info display
+    $('#result_title_id').on('change', function() {
+        const $opt = $(this).find('option:selected');
+        if ($opt.val()) {
+            $('#examInfoYear').text($opt.data('year') || '-');
+            $('#examInfoLevel').text($opt.data('level') || '-');
+            $('#examInfoRegion').text($opt.data('region') || '-');
+            $('#examInfoBox').removeClass('d-none').hide().fadeIn(300);
+        } else {
+            $('#examInfoBox').fadeOut(200).addClass('d-none');
+        }
+    });
 
     const progressModal = $('#summaryUploadProgressModal');
     const queueBody = $('#summaryUploadQueueTableBody');
