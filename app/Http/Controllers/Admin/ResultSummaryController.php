@@ -181,11 +181,8 @@ class ResultSummaryController extends Controller
     // Region-level summaries (district_id is null)
     public function createRegion()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
-            ->whereNull('district_id')
-            ->latest()
-            ->get();
-        return view('admin.result_summaries.create_region', compact('resultTitles'));
+        $regions = \App\Models\Region::orderBy('name')->get();
+        return view('admin.result_summaries.create_region', compact('regions'));
     }
 
     public function storeRegion(Request $request)
@@ -215,11 +212,8 @@ class ResultSummaryController extends Controller
 
     public function bulkRegionForm()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
-            ->whereNull('district_id')
-            ->latest()
-            ->get();
-        return view('admin.result_summaries.bulk_region', compact('resultTitles'));
+        $regions = \App\Models\Region::orderBy('name')->get();
+        return view('admin.result_summaries.bulk_region', compact('regions'));
     }
 
     public function bulkRegionUpload(Request $request)
