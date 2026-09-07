@@ -27,24 +27,46 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="result_title_id"><i class="fas fa-clipboard-list text-muted mr-1"></i> Examination Category (Mkoa) <span class="text-danger">*</span></label>
-                        <select name="result_title_id" id="result_title_id" class="form-control select2 shadow-sm @error('result_title_id') is-invalid @enderror" required>
-                            <option value="">-- Chagua Mtihani (Mkoa) --</option>
-                            @foreach($resultTitles as $title)
-                                <option value="{{ $title->id }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
-                                    {{ $title->year->year }} - {{ $title->level->name }} - [Mkoa: {{ $title->region->name }}] - {{ $title->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('result_title_id')
-                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                        @enderror
-                        @if($resultTitles->isEmpty())
-                            <small class="text-danger d-block mt-2">
-                                <i class="fas fa-exclamation-triangle"></i> Hakuna examination category ya Mkoa iliyowekwa. Tafadhali ongeza Result Title na district iwe empty.
-                            </small>
-                        @endif
+                    <!-- Exam Selection Card -->
+                    <div class="exam-selector-card rounded-lg border shadow-sm mb-4 overflow-hidden">
+                        <div class="exam-selector-header px-4 py-3 text-white d-flex align-items-center" style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);">
+                            <i class="fas fa-clipboard-list fa-lg mr-3"></i>
+                            <div>
+                                <h5 class="font-weight-bold mb-0">Chagua Mtihani</h5>
+                                <small class="text-white-50">Chagua category ya mtihani ambapo summary itapakiwa</small>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white">
+                            <div class="form-group mb-0">
+                                <label for="result_title_id" class="font-weight-bold text-muted small text-uppercase mb-2">
+                                    <i class="fas fa-tag mr-1 text-primary"></i> Examination Category (Mkoa) <span class="text-danger">*</span>
+                                </label>
+                                <select name="result_title_id" id="result_title_id" class="form-control form-control-lg select2 shadow-sm @error('result_title_id') is-invalid @enderror" required>
+                                    <option value="">-- Chagua Mtihani (Mkoa) --</option>
+                                    @foreach($resultTitles as $title)
+                                        <option value="{{ $title->id }}" data-year="{{ $title->year->year ?? '' }}" data-level="{{ $title->level->name ?? '' }}" data-region="{{ $title->region->name ?? '' }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
+                                            {{ $title->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div id="examInfoBox" class="mt-3 d-none">
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <span class="badge badge-info badge-pill px-3 py-2"><i class="fas fa-calendar mr-1"></i> <span id="examInfoYear"></span></span>
+                                        <span class="badge badge-success badge-pill px-3 py-2"><i class="fas fa-graduation-cap mr-1"></i> <span id="examInfoLevel"></span></span>
+                                        <span class="badge badge-primary badge-pill px-3 py-2"><i class="fas fa-map-marked-alt mr-1"></i> <span id="examInfoRegion"></span></span>
+                                    </div>
+                                </div>
+                                @error('result_title_id')
+                                    <span class="invalid-feedback d-block">{{ $message }}</span>
+                                @enderror
+                                @if($resultTitles->isEmpty())
+                                    <div class="alert alert-danger border-0 rounded-lg mt-3 mb-0 d-flex align-items-center">
+                                        <i class="fas fa-exclamation-triangle fa-lg mr-3"></i>
+                                        <div>Hakuna examination category ya Mkoa iliyowekwa. Tafadhali ongeza Result Title na district iwe empty.</div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -79,12 +101,41 @@
     </div>
 </div>
 
+<style>
+    .exam-selector-card { transition: box-shadow 0.3s; }
+    .exam-selector-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important; }
+    .exam-selector-header { transition: filter 0.3s; }
+    .exam-selector-card:hover .exam-selector-header { filter: brightness(1.05); }
+    .select2-container--bootstrap4 .select2-selection--single {
+        height: calc(1.5em + 1rem + 2px) !important;
+        padding: 0.5rem 0.75rem !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+    }
+    .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5 !important;
+    }
+</style>
+
 @push('js')
 <script>
 $(document).ready(function() {
     $('.custom-file-input').on('change', function() {
         let fileName = $(this).val().split('\\').pop();
         $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
+    $('#result_title_id').on('change', function() {
+        const $opt = $(this).find('option:selected');
+        if ($opt.val()) {
+            $('#examInfoYear').text($opt.data('year') || '-');
+            $('#examInfoLevel').text($opt.data('level') || '-');
+            $('#examInfoRegion').text($opt.data('region') || '-');
+            $('#examInfoBox').removeClass('d-none').hide().fadeIn(300);
+        } else {
+            $('#examInfoBox').fadeOut(200).addClass('d-none');
+        }
     });
 });
 </script>
