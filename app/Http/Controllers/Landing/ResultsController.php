@@ -39,6 +39,8 @@ class ResultsController extends Controller
                     'results_count' => $resultsCount,
                     'created_at' => $item->latest,
                 ];
+            })->filter(function ($exam) {
+                return $exam->results_count > 0;
             });
 
         return view('landing.results.index', compact('exams'));
@@ -54,7 +56,10 @@ class ResultsController extends Controller
         $yearData = Year::where('year', $year)->firstOrFail();
 
         $regions = Region::whereHas('resultTitles', function ($q) use ($yearData) {
-            $q->where('year_id', $yearData->id);
+            $q->where('year_id', $yearData->id)
+              ->whereHas('results', function ($sq) {
+                  $sq->where('status', 'Published');
+              });
         })->orderBy('name')->get();
 
         if ($regions->isEmpty()) {
@@ -79,7 +84,10 @@ class ResultsController extends Controller
         } else {
             $districts = District::where('region_id', $region->id)
                 ->whereHas('resultTitles', function ($q) use ($yearData) {
-                    $q->where('year_id', $yearData->id);
+                    $q->where('year_id', $yearData->id)
+                      ->whereHas('results', function ($sq) {
+                          $sq->where('status', 'Published');
+                      });
                 })
                 ->orderBy('name')
                 ->get();
@@ -215,7 +223,10 @@ class ResultsController extends Controller
         }
 
         $years = Year::whereHas('resultTitles', function ($q) use ($examName) {
-            $q->where('name', $examName);
+            $q->where('name', $examName)
+              ->whereHas('results', function ($sq) {
+                  $sq->where('status', 'Published');
+              });
         })->orderBy('year', 'desc')->get();
 
         $level = ResultTitle::where('name', $examName)->with('level')->first()->level ?? null;
@@ -233,7 +244,10 @@ class ResultsController extends Controller
         $yearData = Year::where('year', $year)->firstOrFail();
 
         $regions = Region::whereHas('resultTitles', function ($q) use ($examName, $yearData) {
-            $q->where('name', $examName)->where('year_id', $yearData->id);
+            $q->where('name', $examName)->where('year_id', $yearData->id)
+              ->whereHas('results', function ($sq) {
+                  $sq->where('status', 'Published');
+              });
         })->orderBy('name')->get();
 
         if ($regions->isEmpty()) {
@@ -264,7 +278,10 @@ class ResultsController extends Controller
         } else {
             $districts = District::where('region_id', $region->id)
                 ->whereHas('resultTitles', function ($q) use ($examName, $yearData) {
-                    $q->where('name', $examName)->where('year_id', $yearData->id);
+                    $q->where('name', $examName)->where('year_id', $yearData->id)
+                      ->whereHas('results', function ($sq) {
+                          $sq->where('status', 'Published');
+                      });
                 })
                 ->orderBy('name')
                 ->get();

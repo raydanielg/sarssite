@@ -78,7 +78,9 @@ class LandingController extends Controller
             ];
         }
 
-        foreach (ResultTitle::with(['year', 'region', 'district'])->get() as $title) {
+        foreach (ResultTitle::with(['year', 'region', 'district'])->whereHas('results', function ($q) {
+            $q->where('status', 'Published');
+        })->get() as $title) {
             if (!$title->year || !$title->region) {
                 continue;
             }
