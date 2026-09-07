@@ -86,7 +86,7 @@ class ResultsController extends Controller
                 ->whereHas('resultTitles', function ($q) use ($yearData) {
                     $q->where('year_id', $yearData->id)
                       ->whereHas('results', function ($sq) {
-                          $sq->where('status', 'Published');
+                          $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
                       });
                 })
                 ->orderBy('name')
@@ -226,7 +226,7 @@ class ResultsController extends Controller
         $years = Year::whereHas('resultTitles', function ($q) use ($examName) {
             $q->where('name', $examName)
               ->whereHas('results', function ($sq) {
-                  $sq->where('status', 'Published');
+                  $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
               });
         })->orderBy('year', 'desc')->get();
 
@@ -247,7 +247,7 @@ class ResultsController extends Controller
         $regions = Region::whereHas('resultTitles', function ($q) use ($examName, $yearData) {
             $q->where('name', $examName)->where('year_id', $yearData->id)
               ->whereHas('results', function ($sq) {
-                  $sq->where('status', 'Published');
+                  $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
               });
         })->orderBy('name')->get();
 
@@ -281,7 +281,7 @@ class ResultsController extends Controller
                 ->whereHas('resultTitles', function ($q) use ($examName, $yearData) {
                     $q->where('name', $examName)->where('year_id', $yearData->id)
                       ->whereHas('results', function ($sq) {
-                          $sq->where('status', 'Published');
+                          $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
                       });
                 })
                 ->orderBy('name')
@@ -329,7 +329,7 @@ class ResultsController extends Controller
 
         $resultTitle = ResultTitle::whereIn('id', $resultTitleIds)
             ->whereHas('results', function ($q) {
-                $q->where('status', 'Published');
+                $q->where('status', 'Published')->whereHas('school', function ($sq) { $sq->where('is_pc', false); });
             })
             ->latest()
             ->first();
@@ -340,6 +340,7 @@ class ResultsController extends Controller
 
         $query = Result::whereIn('result_title_id', $resultTitleIds)
             ->where('status', 'Published')
+            ->whereHas('school', function ($q) { $q->where('is_pc', false); })
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {
