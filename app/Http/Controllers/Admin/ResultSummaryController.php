@@ -270,15 +270,23 @@ class ResultSummaryController extends Controller
             ->orderByDesc('year_id')
             ->get();
 
-        return response()->json($titles->map(function ($t) {
+        $grouped = $titles->groupBy(function ($t) {
+            $baseName = preg_replace('/\s*-\s*.+$/', '', $t->name);
+            return $baseName . '|' . $t->year_id . '|' . $t->level_id;
+        })->map(function ($group) {
+            $regionLevel = $group->firstWhere('district_id', null);
+            $first = $regionLevel ?? $group->first();
+            $baseName = preg_replace('/\s*-\s*.+$/', '', $first->name);
             return [
-                'id' => $t->id,
-                'name' => $t->name . ($t->district ? ' - ' . $t->district->name : ''),
-                'year' => $t->year->year ?? '',
-                'level' => $t->level->name ?? '',
-                'region' => $t->region->name ?? '',
+                'id' => $first->id,
+                'name' => $baseName,
+                'year' => $first->year->year ?? '',
+                'level' => $first->level->name ?? '',
+                'region' => $first->region->name ?? '',
             ];
-        }));
+        })->values();
+
+        return response()->json($grouped);
     }
 
     public function getDistrictsByRegion($regionId)
