@@ -104,6 +104,25 @@
     </div>
 
     <div class="card-body p-0">
+        <div class="px-4 pt-3 pb-2 border-bottom bg-light">
+            <ul class="nav nav-pills nav-sm" id="resultTypeTabs">
+                <li class="nav-item">
+                    <a class="nav-link py-1 px-3 {{ !request()->has('type') ? 'active' : '' }}" href="{{ route('admin.results.index') }}">
+                        <i class="fas fa-th-list mr-1"></i> Zote
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link py-1 px-3 {{ request('type') === 'school' ? 'active' : '' }}" href="{{ route('admin.results.index', ['type' => 'school']) }}">
+                        <i class="fas fa-school mr-1"></i> Shule
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link py-1 px-3 {{ request('type') === 'pc' ? 'active' : '' }}" href="{{ route('admin.results.index', ['type' => 'pc']) }}">
+                        <i class="fas fa-user-graduate mr-1"></i> Private Candidates
+                    </a>
+                </li>
+            </ul>
+        </div>
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="resultsTable">
                 <thead class="bg-light text-muted small text-uppercase font-weight-bold">
