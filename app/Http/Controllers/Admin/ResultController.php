@@ -26,6 +26,16 @@ class ResultController extends Controller
         $limit = $request->get('limit', 10);
         $query = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest();
 
+        if ($request->has('type') && $request->type === 'pc') {
+            $query->whereHas('school', function ($q) {
+                $q->where('is_pc', true);
+            });
+        } elseif ($request->has('type') && $request->type === 'school') {
+            $query->whereHas('school', function ($q) {
+                $q->where('is_pc', false);
+            });
+        }
+
         if ($request->ajax()) {
             if ($request->has('search') && $request->search != '') {
                 $search = $request->search;

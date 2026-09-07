@@ -393,7 +393,7 @@ class ResultsController extends Controller
         }
 
         $result = Result::where('file_path', $filePath)->first();
-        if ($result && $result->status !== 'Published') {
+        if ($result && ($result->status !== 'Published' || ($result->school && $result->school->is_pc))) {
             abort(404);
         }
 
@@ -426,7 +426,7 @@ class ResultsController extends Controller
         }
 
         $result = Result::where('file_path', $filePath)->first();
-        if ($result && $result->status !== 'Published') {
+        if ($result && ($result->status !== 'Published' || ($result->school && $result->school->is_pc))) {
             abort(404);
         }
 
