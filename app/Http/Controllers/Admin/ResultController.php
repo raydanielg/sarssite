@@ -55,7 +55,8 @@ class ResultController extends Controller
         }
 
         $results = $query->paginate($limit);
-        return view('admin.results.index', compact('results', 'limit'));
+        $examTitles = ResultTitle::with(['year', 'level', 'region', 'district'])->latest()->get();
+        return view('admin.results.index', compact('results', 'limit', 'examTitles'));
     }
 
     public function bulkUploadForm()
@@ -308,5 +309,22 @@ class ResultController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function bulkStatusByExam(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'status' => 'required|in:Published,Draft',
+        ]);
+
+        $count = Result::where('result_title_id', $request->result_title_id)->update(['status' => $request->status]);
+        $label = $request->status === 'Published' ? 'yamechapishwa' : 'yamefanywa Draft';
+
+        return response()->json([
+            'success' => true,
+            'message' => "Matokeo {$count} ya mtihani huo {$label} kikamilifu.",
+            'count' => $count,
+        ]);
     }
 }

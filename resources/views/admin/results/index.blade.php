@@ -36,6 +36,36 @@
     </div>
 </div>
 
+<!-- Exam Status Control Bar -->
+<div class="card border-0 shadow-sm rounded mb-3 overflow-hidden">
+    <div class="card-body py-3 px-4">
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <label class="font-weight-bold text-muted small text-uppercase mb-1"><i class="fas fa-clipboard-list mr-1"></i> Chagua Mtihani</label>
+                <select id="examStatusSelect" class="form-control form-control-sm shadow-sm">
+                    <option value="">-- Chagua Mtihani --</option>
+                    @foreach($examTitles as $title)
+                        <option value="{{ $title->id }}">
+                            {{ $title->name }} ({{ $title->year->year ?? '' }} - {{ $title->level->name ?? '' }} - {{ $title->region->name ?? '' }}{{ $title->district ? ' - ' . $title->district->name : '' }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-7 mt-2 mt-md-0 text-md-right">
+                <label class="font-weight-bold text-muted small text-uppercase mb-1 d-none d-md-block">&nbsp;</label>
+                <div class="d-flex flex-column flex-sm-row justify-content-md-end gap-2">
+                    <button type="button" id="examDraftBtn" class="btn btn-warning btn-sm px-4 rounded-pill shadow-sm" disabled>
+                        <i class="fas fa-lock mr-1"></i> Fanya Zote Draft
+                    </button>
+                    <button type="button" id="examPublishBtn" class="btn btn-success btn-sm px-4 rounded-pill shadow-sm" disabled>
+                        <i class="fas fa-globe mr-1"></i> Chapisha Zote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="card border-0 shadow-sm rounded overflow-hidden">
     <div class="card-header bg-white py-3 border-bottom">
         <div class="row align-items-center">
@@ -175,6 +205,19 @@
     .dropdown-item:hover {
         background: #f0f4ff;
     }
+    .nav-pills.nav-sm .nav-link {
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 50px;
+        color: #6c757d;
+    }
+    .nav-pills.nav-sm .nav-link.active {
+        background-color: #007bff;
+        color: #fff;
+    }
+    .nav-pills.nav-sm .nav-link:not(.active):hover {
+        background-color: #e9ecef;
+    }
     
     /* Responsive Adjustments */
     @media (max-width: 767.98px) {
@@ -195,6 +238,7 @@ $(document).ready(function() {
         const query = searchInput.val();
         const limit = limitSelect.val();
         const url = "{{ route('admin.results.index') }}";
+        const typeParam = new URLSearchParams(window.location.search).get('type') || '';
 
         tableBody.css('opacity', '0.5');
 
@@ -203,7 +247,8 @@ $(document).ready(function() {
             data: {
                 search: query,
                 limit: limit,
-                page: page
+                page: page,
+                type: typeParam
             },
             success: function(html) {
                 tableBody.html(html);
@@ -343,6 +388,70 @@ $(document).ready(function() {
 
     $('#bulkPublishBtn').on('click', function() { bulkStatusChange('Published'); });
     $('#bulkDraftBtn').on('click', function() { bulkStatusChange('Draft'); });
+
+    // Exam Status Control
+    const examSelect = $('#examStatusSelect');
+    const examDraftBtn = $('#examDraftBtn');
+    const examPublishBtn = $('#examPublishBtn');
+
+    examSelect.on('change', function() {
+        const hasSelection = $(this).val() !== '';
+        examDraftBtn.prop('disabled', !hasSelection);
+        examPublishBtn.prop('disabled', !hasSelection);
+    });
+
+    function examStatusChange(status) {
+        const titleId = examSelect.val();
+        if (!titleId) return;
+        const examName = examSelect.find('option:selected').text();
+        const label = status === 'Published' ? 'kupublish' : 'kufanya Draft';
+
+        Swal.fire({
+            title: 'Una uhakika?',
+            text: `Unataka ${label} matokeo YOTE ya mtihani: "${examName}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ndio, endelea',
+            cancelButtonText: 'Hapana',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.results.bulk-status-by-exam') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        result_title_id: titleId,
+                        status: status
+                    },
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Inabadilisha status...',
+                            allowOutsideClick: false,
+                            didOpen: () => { Swal.showLoading(); }
+                        });
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Imefanyika!', response.message, 'success').then(() => {
+                                fetchResults(1);
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Hitilafu imetokea.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    examDraftBtn.on('click', function() { examStatusChange('Draft'); });
+    examPublishBtn.on('click', function() { examStatusChange('Published'); });
 
     // Bulk Delete
     $('#bulkDeleteBtn').on('click', function() {

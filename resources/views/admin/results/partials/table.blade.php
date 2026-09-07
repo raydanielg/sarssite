@@ -29,7 +29,12 @@
         </td>
         <td class="py-3 px-4">
             <div class="font-weight-bold">{{ $result->school->name }}</div>
-            <code class="small bg-light px-1 rounded text-primary font-weight-bold">{{ $result->school->code }}</code>
+            <div>
+                <code class="small bg-light px-1 rounded text-primary font-weight-bold">{{ $result->school->code }}</code>
+                @if($result->school->is_pc)
+                    <span class="badge badge-warning ml-1" style="font-size: 10px;">PC</span>
+                @endif
+            </div>
         </td>
         <td class="py-3">
             @if($result->status == 'Published')
