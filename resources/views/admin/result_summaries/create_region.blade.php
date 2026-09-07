@@ -27,10 +27,40 @@
                         </div>
                     </div>
 
-                    <!-- Exam Selection Card -->
+                    <!-- Step 1: Region Selection Card -->
                     <div class="exam-selector-card rounded-lg border shadow-sm mb-4 overflow-hidden">
+                        <div class="exam-selector-header px-4 py-3 text-white d-flex align-items-center" style="background: linear-gradient(135deg, #6c5ce7 0%, #4834d4 100%);">
+                            <div class="step-number mr-3 d-flex align-items-center justify-content-center rounded-circle bg-white text-dark font-weight-bold" style="width: 32px; height: 32px; font-size: 1rem;">1</div>
+                            <div>
+                                <h5 class="font-weight-bold mb-0">Chagua Mkoa</h5>
+                                <small class="text-white-50">Chagua mkoa ambao summary itapakiwa</small>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white">
+                            <div class="form-group mb-0">
+                                <label for="region_id" class="font-weight-bold text-muted small text-uppercase mb-2">
+                                    <i class="fas fa-globe-africa mr-1 text-primary"></i> Mkoa <span class="text-danger">*</span>
+                                </label>
+                                <select name="region_id" id="region_id" class="form-control form-control-lg select2 shadow-sm" required>
+                                    <option value="">-- Chagua Mkoa --</option>
+                                    @foreach($regions as $region)
+                                        <option value="{{ $region->id }}">{{ $region->name }}</option>
+                                    @endforeach
+                                </select>
+                                @if($regions->isEmpty())
+                                    <div class="alert alert-danger border-0 rounded-lg mt-3 mb-0 d-flex align-items-center">
+                                        <i class="fas fa-exclamation-triangle fa-lg mr-3"></i>
+                                        <div>Hakuna mkoa uliowekwa. Tafadhali ongeza mikoa kwanza.</div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Exam Selection Card -->
+                    <div class="exam-selector-card rounded-lg border shadow-sm mb-4 overflow-hidden" id="examSelectionCard" style="opacity: 0.5; pointer-events: none;">
                         <div class="exam-selector-header px-4 py-3 text-white d-flex align-items-center" style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);">
-                            <i class="fas fa-clipboard-list fa-lg mr-3"></i>
+                            <div class="step-number mr-3 d-flex align-items-center justify-content-center rounded-circle bg-white text-dark font-weight-bold" style="width: 32px; height: 32px; font-size: 1rem;">2</div>
                             <div>
                                 <h5 class="font-weight-bold mb-0">Chagua Mtihani</h5>
                                 <small class="text-white-50">Chagua category ya mtihani ambapo summary itapakiwa</small>
@@ -39,15 +69,10 @@
                         <div class="p-4 bg-white">
                             <div class="form-group mb-0">
                                 <label for="result_title_id" class="font-weight-bold text-muted small text-uppercase mb-2">
-                                    <i class="fas fa-tag mr-1 text-primary"></i> Examination Category (Mkoa) <span class="text-danger">*</span>
+                                    <i class="fas fa-tag mr-1 text-primary"></i> Examination Category <span class="text-danger">*</span>
                                 </label>
-                                <select name="result_title_id" id="result_title_id" class="form-control form-control-lg select2 shadow-sm @error('result_title_id') is-invalid @enderror" required>
-                                    <option value="">-- Chagua Mtihani (Mkoa) --</option>
-                                    @foreach($resultTitles as $title)
-                                        <option value="{{ $title->id }}" data-year="{{ $title->year->year ?? '' }}" data-level="{{ $title->level->name ?? '' }}" data-region="{{ $title->region->name ?? '' }}" data-region-id="{{ $title->region_id ?? '' }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
-                                            {{ $title->name }}
-                                        </option>
-                                    @endforeach
+                                <select name="result_title_id" id="result_title_id" class="form-control form-control-lg select2 shadow-sm @error('result_title_id') is-invalid @enderror" required disabled>
+                                    <option value="">-- Chagua Mkoa kwanza --</option>
                                 </select>
                                 <div id="examInfoBox" class="mt-3 d-none">
                                     <div class="d-flex flex-wrap gap-3 mb-3">
@@ -68,12 +93,6 @@
                                 @error('result_title_id')
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
                                 @enderror
-                                @if($resultTitles->isEmpty())
-                                    <div class="alert alert-danger border-0 rounded-lg mt-3 mb-0 d-flex align-items-center">
-                                        <i class="fas fa-exclamation-triangle fa-lg mr-3"></i>
-                                        <div>Hakuna examination category ya Mkoa iliyowekwa. Tafadhali ongeza Result Title na district iwe empty.</div>
-                                    </div>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -135,6 +154,51 @@ $(document).ready(function() {
         $(this).next('.custom-file-label').addClass("selected").html(fileName);
     });
 
+    // Step 1: Region selection -> load exam titles
+    $('#region_id').on('change', function() {
+        const regionId = $(this).val();
+        const titleSelect = $('#result_title_id');
+        const examCard = $('#examSelectionCard');
+
+        if (!regionId) {
+            titleSelect.empty().append('<option value="">-- Chagua Mkoa kwanza --</option>').prop('disabled', true);
+            examCard.css({ opacity: 0.5, pointerEvents: 'none' });
+            $('#examInfoBox').fadeOut(200).addClass('d-none');
+            $('#districtsCoverageBox').addClass('d-none');
+            return;
+        }
+
+        titleSelect.prop('disabled', true).empty().append('<option value="">Inatafuta...</option>');
+        examCard.css({ opacity: 0.5, pointerEvents: 'none' });
+
+        $.ajax({
+            url: '{{ route("admin.region-summaries.titles-by-region", ":id") }}'.replace(':id', regionId),
+            type: 'GET',
+            success: function(data) {
+                titleSelect.empty();
+                if (data.length > 0) {
+                    titleSelect.append('<option value="">-- Chagua Mtihani --</option>');
+                    data.forEach(function(item) {
+                        var parts = item.text.split(' - ');
+                        var name = parts[0] || item.text;
+                        var year = parts[1] || '';
+                        var level = parts[2] || '';
+                        var region = (parts[3] || '').replace('\\[Mkoa: ', '').replace('\\]', '');
+                        titleSelect.append('<option value="' + item.id + '" data-year="' + year + '" data-level="' + level + '" data-region="' + region + '" data-region-id="' + regionId + '">' + name + '</option>');
+                    });
+                    titleSelect.prop('disabled', false);
+                    examCard.css({ opacity: 1, pointerEvents: 'auto' });
+                } else {
+                    titleSelect.append('<option value="">Hakuna mtihani wa mkoa huu</option>').prop('disabled', true);
+                }
+            },
+            error: function() {
+                titleSelect.empty().append('<option value="">Hitilafu imetokea. Jaribu tena.</option>').prop('disabled', true);
+            }
+        });
+    });
+
+    // Step 2: Exam selection -> show info badges + districts
     $('#result_title_id').on('change', function() {
         const $opt = $(this).find('option:selected');
         const districtsCoverageBox = $('#districtsCoverageBox');
