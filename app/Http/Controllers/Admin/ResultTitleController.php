@@ -87,11 +87,16 @@ class ResultTitleController extends Controller
 
     public function edit($id)
     {
-        $resultTitle = ResultTitle::findOrFail($id);
+        $resultTitle = ResultTitle::with(['district', 'resultType'])->findOrFail($id);
         $years = Year::orderByDesc('year')->get();
         $levels = Level::orderBy('name')->get();
         $regions = Region::orderBy('name')->get();
-        return view('admin.result-titles.edit', compact('resultTitle', 'years', 'levels', 'regions'));
+        $resultTypes = \App\Models\ResultType::orderBy('name')->get();
+        $districts = collect();
+        if ($resultTitle->region_id) {
+            $districts = \App\Models\District::where('region_id', $resultTitle->region_id)->orderBy('name')->get();
+        }
+        return view('admin.result-titles.edit', compact('resultTitle', 'years', 'levels', 'regions', 'resultTypes', 'districts'));
     }
 
     public function update(Request $request, $id)
@@ -103,6 +108,8 @@ class ResultTitleController extends Controller
             'year_id' => 'required|exists:years,id',
             'level_id' => 'required|exists:levels,id',
             'region_id' => 'required|exists:regions,id',
+            'district_id' => 'nullable|exists:districts,id',
+            'result_type_id' => 'nullable|exists:result_types,id',
         ]);
 
         $resultTitle->update([
@@ -110,6 +117,8 @@ class ResultTitleController extends Controller
             'year_id' => $request->year_id,
             'level_id' => $request->level_id,
             'region_id' => $request->region_id,
+            'district_id' => $request->district_id ?: null,
+            'result_type_id' => $request->result_type_id ?: null,
             'slug' => Str::slug($request->name . '-' . time()),
         ]);
 
