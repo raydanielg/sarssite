@@ -10,6 +10,9 @@
             <i class="fas fa-clipboard-list mr-2"></i> Examination Categories
         </h3>
         <div class="card-tools">
+            <a href="{{ route('admin.result-types.index') }}" class="btn btn-sm btn-light text-info font-weight-bold rounded-pill px-3 mr-2">
+                <i class="fas fa-layer-group"></i> Manage Aina
+            </a>
             <button id="bulk-delete-btn" class="btn btn-sm btn-light text-danger font-weight-bold mr-2" style="display:none;">
                 <i class="fas fa-trash"></i> Delete (<span id="selected-count">0</span>)
             </button>
