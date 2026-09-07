@@ -19,7 +19,7 @@ class LandingController extends Controller
         $levels = Level::orderBy('name')->get();
         $regions = Region::orderBy('name')->get();
         $announcements = Announcement::where('is_active', true)->latest()->take(6)->get();
-        $latestResults = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest()->take(6)->get();
+        $latestResults = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->where('status', 'Published')->latest()->take(6)->get();
         $resultTypes = ResultType::where('is_active', true)->orderBy('name')->get();
 
         $resultTitles = ResultTitle::select('name', 'id')->orderByDesc('id')->get()

@@ -27,7 +27,7 @@ class ResultsController extends Controller
                 $level = Level::find($item->level_id);
                 $title = ResultTitle::where('name', $item->name)->latest()->first();
                 $yearsCount = ResultTitle::where('name', $item->name)->select('year_id')->distinct()->count('year_id');
-                $resultsCount = Result::whereHas('resultTitle', function ($q) use ($item) {
+                $resultsCount = Result::where('status', 'Published')->whereHas('resultTitle', function ($q) use ($item) {
                     $q->where('name', $item->name);
                 })->count();
                 return (object) [
@@ -112,7 +112,12 @@ class ResultsController extends Controller
                 $q->where('district_id', $district->id)
                   ->orWhereNull('district_id');
             })
-            ->withCount('results')
+            ->whereHas('results', function ($q) {
+                $q->where('status', 'Published');
+            })
+            ->withCount(['results' => function ($q) {
+                $q->where('status', 'Published');
+            }])
             ->with('resultType')
             ->orderByDesc('id')
             ->get();
@@ -154,6 +159,7 @@ class ResultsController extends Controller
         }
 
         $query = Result::whereIn('result_title_id', $resultTitleIds)
+            ->where('status', 'Published')
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {
@@ -304,7 +310,9 @@ class ResultsController extends Controller
         }
 
         $resultTitle = ResultTitle::whereIn('id', $resultTitleIds)
-            ->whereHas('results')
+            ->whereHas('results', function ($q) {
+                $q->where('status', 'Published');
+            })
             ->latest()
             ->first();
 
@@ -313,6 +321,7 @@ class ResultsController extends Controller
         }
 
         $query = Result::whereIn('result_title_id', $resultTitleIds)
+            ->where('status', 'Published')
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {
@@ -364,6 +373,11 @@ class ResultsController extends Controller
             abort(404);
         }
 
+        $result = Result::where('file_path', $filePath)->first();
+        if ($result && $result->status !== 'Published') {
+            abort(404);
+        }
+
         if (!Storage::disk('public')->exists($filePath)) {
             abort(404);
         }
@@ -384,6 +398,11 @@ class ResultsController extends Controller
         $name = $request->query('name');
 
         if (!$filePath) {
+            abort(404);
+        }
+
+        $result = Result::where('file_path', $filePath)->first();
+        if ($result && $result->status !== 'Published') {
             abort(404);
         }
 
