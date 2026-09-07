@@ -233,12 +233,9 @@ class ResultController extends Controller
 
     public function createPc()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
-            ->whereNull('district_id')
-            ->latest()
-            ->get();
+        $regions = \App\Models\Region::orderBy('name')->get();
         $schools = School::where('is_pc', true)->orderBy('name')->get();
-        return view('admin.results.create_pc', compact('resultTitles', 'schools'));
+        return view('admin.results.create_pc', compact('regions', 'schools'));
     }
 
     public function storePc(Request $request)
