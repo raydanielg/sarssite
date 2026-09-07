@@ -21,7 +21,10 @@ class ResultTitleController extends Controller
 
     public function index()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region'])->latest()->paginate(10);
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district', 'resultType'])
+            ->withCount('results')
+            ->latest()
+            ->paginate(10);
         return view('admin.result-titles.index', compact('resultTitles'));
     }
 
