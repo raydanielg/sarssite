@@ -265,16 +265,15 @@ class ResultSummaryController extends Controller
 
     public function getTitlesByRegion($regionId)
     {
-        $titles = ResultTitle::with(['year', 'level', 'region'])
+        $titles = ResultTitle::with(['year', 'level', 'region', 'district'])
             ->where('region_id', $regionId)
-            ->whereNull('district_id')
             ->orderByDesc('year_id')
             ->get();
 
         return response()->json($titles->map(function ($t) {
             return [
                 'id' => $t->id,
-                'name' => $t->name,
+                'name' => $t->name . ($t->district ? ' - ' . $t->district->name : ''),
                 'year' => $t->year->year ?? '',
                 'level' => $t->level->name ?? '',
                 'region' => $t->region->name ?? '',
