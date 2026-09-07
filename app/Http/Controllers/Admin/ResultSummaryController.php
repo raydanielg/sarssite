@@ -274,7 +274,10 @@ class ResultSummaryController extends Controller
         return response()->json($titles->map(function ($t) {
             return [
                 'id' => $t->id,
-                'text' => $t->year->year . ' - ' . $t->level->name . ' - [Mkoa: ' . $t->region->name . '] - ' . $t->name,
+                'name' => $t->name,
+                'year' => $t->year->year ?? '',
+                'level' => $t->level->name ?? '',
+                'region' => $t->region->name ?? '',
             ];
         }));
     }
@@ -298,7 +301,10 @@ class ResultSummaryController extends Controller
         return response()->json($titles->map(function ($t) {
             return [
                 'id' => $t->id,
-                'text' => $t->year->year . ' - ' . $t->level->name . ' - [Wilaya: ' . $t->district->name . '] - ' . $t->name,
+                'name' => $t->name,
+                'year' => $t->year->year ?? '',
+                'level' => $t->level->name ?? '',
+                'region' => $t->region->name ?? '',
             ];
         }));
     }

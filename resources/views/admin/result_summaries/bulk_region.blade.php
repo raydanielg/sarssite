@@ -228,12 +228,7 @@ $(document).ready(function() {
                 if (data.length > 0) {
                     titleSelect.append('<option value="">-- Chagua Mtihani --</option>');
                     data.forEach(function(item) {
-                        var parts = item.text.split(' - ');
-                        var name = parts[0] || item.text;
-                        var year = parts[1] || '';
-                        var level = parts[2] || '';
-                        var region = (parts[3] || '').replace('\\[Mkoa: ', '').replace('\\]', '');
-                        titleSelect.append('<option value="' + item.id + '" data-year="' + year + '" data-level="' + level + '" data-region="' + region + '" data-region-id="' + regionId + '">' + name + '</option>');
+                        titleSelect.append('<option value="' + item.id + '" data-year="' + item.year + '" data-level="' + item.level + '" data-region="' + item.region + '" data-region-id="' + regionId + '">' + item.name + '</option>');
                     });
                     titleSelect.prop('disabled', false);
                     examCard.css({ opacity: 1, pointerEvents: 'auto' });
