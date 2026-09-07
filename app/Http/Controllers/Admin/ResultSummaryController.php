@@ -285,6 +285,14 @@ class ResultSummaryController extends Controller
         }));
     }
 
+    public function getDistrictsByRegion($regionId)
+    {
+        $districts = \App\Models\District::where('region_id', $regionId)->orderBy('name')->get();
+        return response()->json($districts->map(function ($d) {
+            return ['id' => $d->id, 'name' => $d->name];
+        }));
+    }
+
     public function getTitlesByDistrict($districtId)
     {
         $titles = ResultTitle::with(['year', 'level', 'region', 'district'])

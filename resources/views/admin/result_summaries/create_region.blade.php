@@ -44,16 +44,25 @@
                                 <select name="result_title_id" id="result_title_id" class="form-control form-control-lg select2 shadow-sm @error('result_title_id') is-invalid @enderror" required>
                                     <option value="">-- Chagua Mtihani (Mkoa) --</option>
                                     @foreach($resultTitles as $title)
-                                        <option value="{{ $title->id }}" data-year="{{ $title->year->year ?? '' }}" data-level="{{ $title->level->name ?? '' }}" data-region="{{ $title->region->name ?? '' }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
+                                        <option value="{{ $title->id }}" data-year="{{ $title->year->year ?? '' }}" data-level="{{ $title->level->name ?? '' }}" data-region="{{ $title->region->name ?? '' }}" data-region-id="{{ $title->region_id ?? '' }}" {{ old('result_title_id') == $title->id ? 'selected' : '' }}>
                                             {{ $title->name }}
                                         </option>
                                     @endforeach
                                 </select>
                                 <div id="examInfoBox" class="mt-3 d-none">
-                                    <div class="d-flex flex-wrap gap-3">
+                                    <div class="d-flex flex-wrap gap-3 mb-3">
                                         <span class="badge badge-info badge-pill px-3 py-2"><i class="fas fa-calendar mr-1"></i> <span id="examInfoYear"></span></span>
                                         <span class="badge badge-success badge-pill px-3 py-2"><i class="fas fa-graduation-cap mr-1"></i> <span id="examInfoLevel"></span></span>
                                         <span class="badge badge-primary badge-pill px-3 py-2"><i class="fas fa-map-marked-alt mr-1"></i> <span id="examInfoRegion"></span></span>
+                                    </div>
+                                    <div id="districtsCoverageBox" class="d-none">
+                                        <div class="alert alert-light border rounded-lg p-3 mb-0">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="fas fa-info-circle text-primary mr-2"></i>
+                                                <span class="font-weight-bold small text-muted text-uppercase">Wilaya zote zitakazopata summary hii:</span>
+                                            </div>
+                                            <div id="districtsList" class="d-flex flex-wrap gap-2"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 @error('result_title_id')
@@ -128,13 +137,40 @@ $(document).ready(function() {
 
     $('#result_title_id').on('change', function() {
         const $opt = $(this).find('option:selected');
+        const districtsCoverageBox = $('#districtsCoverageBox');
+        const districtsList = $('#districtsList');
+
         if ($opt.val()) {
             $('#examInfoYear').text($opt.data('year') || '-');
             $('#examInfoLevel').text($opt.data('level') || '-');
             $('#examInfoRegion').text($opt.data('region') || '-');
             $('#examInfoBox').removeClass('d-none').hide().fadeIn(300);
+
+            const regionId = $opt.data('region-id');
+            if (regionId) {
+                districtsList.html('<span class="text-muted small"><i class="fas fa-spinner fa-spin mr-1"></i> Inatafuta wilaya...</span>');
+                districtsCoverageBox.removeClass('d-none').hide().fadeIn(300);
+                $.ajax({
+                    url: '{{ route("admin.region-summaries.districts-by-region", ":id") }}'.replace(':id', regionId),
+                    type: 'GET',
+                    success: function(data) {
+                        districtsList.empty();
+                        if (data.length > 0) {
+                            data.forEach(function(d) {
+                                districtsList.append('<span class="badge badge-light badge-pill px-3 py-2 border"><i class="fas fa-map-pin text-primary mr-1"></i> ' + d.name + '</span>');
+                            });
+                        } else {
+                            districtsList.html('<span class="text-muted small">Hakuna wilaya chini ya mkoa huu.</span>');
+                        }
+                    },
+                    error: function() {
+                        districtsList.html('<span class="text-danger small"><i class="fas fa-exclamation-circle mr-1"></i> Hitilafu imetokea. Jaribu tena.</span>');
+                    }
+                });
+            }
         } else {
             $('#examInfoBox').fadeOut(200).addClass('d-none');
+            districtsCoverageBox.addClass('d-none');
         }
     });
 });
