@@ -21,10 +21,41 @@ class ResultTitleController extends Controller
 
     public function index()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district', 'resultType'])
+        $allTitles = ResultTitle::with(['year', 'level', 'region', 'district', 'resultType'])
             ->withCount('results')
             ->latest()
-            ->paginate(10);
+            ->get();
+
+        $grouped = $allTitles->groupBy(function ($t) {
+            return $t->name . '|' . $t->year_id . '|' . $t->level_id . '|' . $t->region_id;
+        })->map(function ($group) {
+            $first = $group->first();
+            $hasRegionLevel = $group->contains(fn ($t) => is_null($t->district_id));
+            $districts = $group->filter(fn ($t) => !is_null($t->district_id))->pluck('district');
+            return (object) [
+                'name' => $first->name,
+                'year' => $first->year,
+                'level' => $first->level,
+                'region' => $first->region,
+                'resultType' => $first->resultType,
+                'districts' => $districts,
+                'has_region_level' => $hasRegionLevel,
+                'results_count' => $group->sum('results_count'),
+                'title_ids' => $group->pluck('id'),
+                'primary_id' => $first->id,
+            ];
+        })->values();
+
+        $page = request()->get('page', 1);
+        $perPage = 10;
+        $resultTitles = new \Illuminate\Pagination\LengthAwarePaginator(
+            $grouped->forPage($page, $perPage),
+            $grouped->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('admin.result-titles.index', compact('resultTitles'));
     }
 

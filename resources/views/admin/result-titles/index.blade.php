@@ -41,47 +41,54 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($resultTitles as $title)
+                @forelse($resultTitles as $group)
                     <tr>
                         <td>
                             <div class="custom-control custom-checkbox">
-                                <input class="custom-control-input item-checkbox" type="checkbox" id="check-{{ $title->id }}" value="{{ $title->id }}">
-                                <label for="check-{{ $title->id }}" class="custom-control-label"></label>
+                                <input class="custom-control-input item-checkbox" type="checkbox" id="check-{{ $group->primary_id }}" value="{{ $group->primary_id }}" data-title-ids="{{ implode(',', $group->title_ids->toArray()) }}">
+                                <label for="check-{{ $group->primary_id }}" class="custom-control-label"></label>
                             </div>
                         </td>
                         <td>
-                            <div class="font-weight-bold text-dark">{{ $title->name }}</div>
-                            @if($title->resultType)
-                                <span class="badge badge-secondary badge-pill mt-1"><i class="fas fa-tag mr-1"></i>{{ $title->resultType->name }}</span>
+                            <div class="font-weight-bold text-dark">{{ $group->name }}</div>
+                            @if($group->resultType)
+                                <span class="badge badge-secondary badge-pill mt-1"><i class="fas fa-tag mr-1"></i>{{ $group->resultType->name }}</span>
                             @endif
                         </td>
-                        <td><span class="badge badge-info badge-pill px-2 py-1"><i class="fas fa-calendar mr-1"></i>{{ $title->year->year }}</span></td>
-                        <td><span class="badge badge-success badge-pill px-2 py-1"><i class="fas fa-graduation-cap mr-1"></i>{{ $title->level->name }}</span></td>
+                        <td><span class="badge badge-info badge-pill px-2 py-1"><i class="fas fa-calendar mr-1"></i>{{ $group->year->year }}</span></td>
+                        <td><span class="badge badge-success badge-pill px-2 py-1"><i class="fas fa-graduation-cap mr-1"></i>{{ $group->level->name }}</span></td>
                         <td>
-                            @if($title->region)
-                                <span class="badge badge-primary badge-pill px-2 py-1"><i class="fas fa-globe-africa mr-1"></i>{{ $title->region->name }}</span>
+                            @if($group->region)
+                                <span class="badge badge-primary badge-pill px-2 py-1"><i class="fas fa-globe-africa mr-1"></i>{{ $group->region->name }}</span>
                             @else
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
-                            @if($title->district)
-                                <span class="badge badge-warning badge-pill px-2 py-1"><i class="fas fa-map-pin mr-1"></i>{{ $title->district->name }}</span>
-                            @else
+                            @if($group->has_region_level && $group->districts->isEmpty())
                                 <span class="text-muted small font-italic">Mkoa mzima</span>
+                            @else
+                                <div class="d-flex flex-wrap" style="max-width: 250px; gap: 4px;">
+                                    @if($group->has_region_level)
+                                        <span class="badge badge-light badge-pill px-2 py-1 border font-italic"><i class="fas fa-globe text-primary mr-1"></i>Mkoa mzima</span>
+                                    @endif
+                                    @foreach($group->districts as $district)
+                                        <span class="badge badge-warning badge-pill px-2 py-1"><i class="fas fa-map-pin mr-1"></i>{{ $district->name }}</span>
+                                    @endforeach
+                                </div>
                             @endif
                         </td>
                         <td class="text-center">
-                            <span class="badge badge-light border px-2 py-1 font-weight-bold {{ $title->results_count > 0 ? 'text-primary' : 'text-muted' }}">{{ $title->results_count }}</span>
+                            <span class="badge badge-light border px-2 py-1 font-weight-bold {{ $group->results_count > 0 ? 'text-primary' : 'text-muted' }}">{{ $group->results_count }}</span>
                         </td>
                         <td class="text-right">
-                            <a href="{{ route('admin.result-titles.edit', $title) }}" class="btn btn-xs btn-outline-primary rounded-pill">
+                            <a href="{{ route('admin.result-titles.edit', $group->primary_id) }}" class="btn btn-xs btn-outline-primary rounded-pill" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('admin.result-titles.destroy', $title) }}" method="POST" class="d-inline">
+                            <form action="{{ route('admin.result-titles.destroy', $group->primary_id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-xs btn-outline-danger rounded-pill" data-confirm-delete data-confirm-title="Delete Category?" data-confirm-text="Deleting this category will also delete ALL results uploaded under it!">
+                                <button type="submit" class="btn btn-xs btn-outline-danger rounded-pill" data-confirm-delete data-confirm-title="Delete Category?" data-confirm-text="Deleting this will remove this exam title and ALL results under it! (@count($group->title_ids) titles total)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
