@@ -68,6 +68,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('results', App\Http\Controllers\Admin\ResultController::class);
     Route::get('results-bulk-upload', [App\Http\Controllers\Admin\ResultController::class, 'bulkUploadForm'])->name('results.bulk-upload-form');
     Route::post('results/bulk-upload', [App\Http\Controllers\Admin\ResultController::class, 'bulkUpload'])->name('results.bulk-upload');
+    Route::get('results-pc/create', [App\Http\Controllers\Admin\ResultController::class, 'createPc'])->name('results.pc-create');
+    Route::post('results-pc/store', [App\Http\Controllers\Admin\ResultController::class, 'storePc'])->name('results.pc-store');
     Route::resource('announcements', App\Http\Controllers\Admin\AnnouncementController::class);
     Route::resource('admins', App\Http\Controllers\Admin\AdminManagementController::class);
 });

@@ -4,24 +4,27 @@
 @section('page_title', 'Upload Summary ya Wilaya')
 
 @section('content')
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card card-outline card-primary shadow-sm border-0">
-            <div class="card-header bg-white py-3">
-                <h3 class="card-title font-weight-bold">
-                    <i class="fas fa-map-pin mr-2 text-primary"></i> Upload Summary ya Wilaya
+        <div class="card card-outline card-primary shadow border-0 rounded-lg overflow-hidden">
+            <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+                <h3 class="card-title font-weight-bold mb-0">
+                    <i class="fas fa-map-pin mr-2"></i> Upload Summary ya Wilaya
                 </h3>
                 <div class="card-tools">
-                    <a href="{{ route('admin.result-summaries.index', ['type' => 'district']) }}" class="btn btn-default btn-sm">
+                    <a href="{{ route('admin.result-summaries.index', ['type' => 'district']) }}" class="btn btn-light btn-sm rounded-pill shadow-sm">
                         <i class="fas fa-arrow-left mr-1"></i> Back
                     </a>
                 </div>
             </div>
             <form action="{{ route('admin.district-summaries.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle mr-1"></i> Hii sehemu ni kwa ajili ya <strong>Summary za Wilaya</strong> tu. Kwa summary za Mkoa tumia <a href="{{ route('admin.region-summaries.create') }}" class="alert-link">page ya Mkoa</a>.
+                <div class="card-body p-4">
+                    <div class="alert alert-info border-0 rounded-lg d-flex align-items-center">
+                        <i class="fas fa-info-circle fa-lg mr-3 text-info"></i>
+                        <div>
+                            Hii sehemu ni kwa ajili ya <strong>Summary za Wilaya</strong> tu. Kwa summary za Mkoa tumia <a href="{{ route('admin.region-summaries.create') }}" class="alert-link font-weight-bold">page ya Mkoa</a>.
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -68,8 +71,11 @@
                         @enderror
                     </div>
                 </div>
-                <div class="card-footer bg-white text-right">
-                    <button type="submit" class="btn btn-primary px-4 rounded-pill">
+                <div class="card-footer bg-light text-right py-3 border-top">
+                    <a href="{{ route('admin.result-summaries.index', ['type' => 'district']) }}" class="btn btn-default rounded-pill px-4 mr-2">
+                        <i class="fas fa-times mr-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow-sm">
                         <i class="fas fa-save mr-1"></i> Save Summary ya Wilaya
                     </button>
                 </div>

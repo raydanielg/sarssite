@@ -220,6 +220,49 @@ class ResultController extends Controller
         return redirect()->route('admin.results.index')->with('success', $message);
     }
 
+    public function createPc()
+    {
+        $resultTitles = ResultTitle::with(['year', 'level', 'region', 'district'])
+            ->whereNull('district_id')
+            ->latest()
+            ->get();
+        $schools = School::where('is_pc', true)->orderBy('name')->get();
+        return view('admin.results.create_pc', compact('resultTitles', 'schools'));
+    }
+
+    public function storePc(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'school_id' => 'required|exists:schools,id',
+            'description' => 'nullable|string',
+            'file' => 'required|mimes:pdf|max:20480',
+            'status' => 'required|in:Published,Draft',
+        ]);
+
+        $school = School::findOrFail($request->school_id);
+        if (!$school->is_pc) {
+            return back()->withErrors(['school_id' => 'Shule iliyochaguliwa si ya Private Candidates (PC).'])->withInput();
+        }
+
+        $title = ResultTitle::findOrFail($request->result_title_id);
+        if ($title->district_id !== null) {
+            return back()->withErrors(['result_title_id' => 'Tafadhali chagua category ya Mkoa (bila Wilaya) kwa watahiniwa wa PC.'])->withInput();
+        }
+
+        $path = $request->file('file')->store('results/pdfs', 'public');
+
+        Result::create([
+            'result_title_id' => $request->result_title_id,
+            'school_id' => $request->school_id,
+            'description' => $request->description,
+            'file_path' => $path,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('admin.results.index')->with('success', 'Matokeo ya Private Candidate yamepakiwa kikamilifu.');
+    }
+
     public function bulkDelete(Request $request)
     {
         $ids = $request->ids;

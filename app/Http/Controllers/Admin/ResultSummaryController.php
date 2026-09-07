@@ -269,6 +269,22 @@ class ResultSummaryController extends Controller
         return view('admin.result_summaries.create_district', compact('districts'));
     }
 
+    public function getTitlesByRegion($regionId)
+    {
+        $titles = ResultTitle::with(['year', 'level', 'region'])
+            ->where('region_id', $regionId)
+            ->whereNull('district_id')
+            ->orderByDesc('year_id')
+            ->get();
+
+        return response()->json($titles->map(function ($t) {
+            return [
+                'id' => $t->id,
+                'text' => $t->year->year . ' - ' . $t->level->name . ' - [Mkoa: ' . $t->region->name . '] - ' . $t->name,
+            ];
+        }));
+    }
+
     public function getTitlesByDistrict($districtId)
     {
         $titles = ResultTitle::with(['year', 'level', 'region', 'district'])

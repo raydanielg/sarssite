@@ -83,9 +83,21 @@
                     <a href="{{ route('admin.results.bulk-upload-form') }}" class="btn btn-primary btn-sm px-4 shadow-sm mb-2 mb-sm-0 mr-sm-2">
                         <i class="fas fa-layer-group mr-1 small"></i> Bulk Upload
                     </a>
-                    <a href="{{ route('admin.results.create') }}" class="btn btn-success btn-sm px-4 shadow-sm">
-                        <i class="fas fa-plus-circle mr-1 small"></i> Upload Single
-                    </a>
+                    <!-- Upload Single Dropdown -->
+                    <div class="dropdown mb-2 mb-sm-0">
+                        <button class="btn btn-success btn-sm px-4 shadow-sm dropdown-toggle" type="button" id="singleUploadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-plus-circle mr-1 small"></i> Upload Single
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0 rounded-lg" aria-labelledby="singleUploadDropdown">
+                            <a class="dropdown-item py-2" href="{{ route('admin.results.create') }}">
+                                <i class="fas fa-school text-success mr-2"></i> Shule ya Kawaida
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item py-2" href="{{ route('admin.results.pc-create') }}">
+                                <i class="fas fa-user-graduate text-warning mr-2"></i> Private Candidate (PC)
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -135,6 +147,15 @@
     
     .gap-2 { gap: 0.5rem; }
     .font-weight-black { font-weight: 900 !important; }
+    
+    .dropdown-item {
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.15s;
+    }
+    .dropdown-item:hover {
+        background: #f0f4ff;
+    }
     
     /* Responsive Adjustments */
     @media (max-width: 767.98px) {

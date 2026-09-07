@@ -4,20 +4,23 @@
 @section('page_title', 'Bulk Upload Summaries za Wilaya')
 
 @section('content')
-<div class="card card-outline card-primary shadow-sm border-0">
-    <div class="card-header bg-white py-3">
-        <h3 class="card-title font-weight-bold">
-            <i class="fas fa-layer-group mr-2 text-primary"></i> Bulk Upload Summaries za Wilaya
+<div class="card card-outline card-primary shadow border-0 rounded-lg overflow-hidden">
+    <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+        <h3 class="card-title font-weight-bold mb-0">
+            <i class="fas fa-layer-group mr-2"></i> Bulk Upload Summaries za Wilaya
         </h3>
         <div class="card-tools">
-            <a href="{{ route('admin.result-summaries.index', ['type' => 'district']) }}" class="btn btn-default btn-sm">
+            <a href="{{ route('admin.result-summaries.index', ['type' => 'district']) }}" class="btn btn-light btn-sm rounded-pill shadow-sm">
                 <i class="fas fa-arrow-left mr-1"></i> Back to List
             </a>
         </div>
     </div>
-    <div class="card-body">
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle mr-1"></i> Hii sehemu ni kwa ajili ya <strong>Summary za Wilaya</strong> tu. Kwa summary za Mkoa tumia <a href="{{ route('admin.region-summaries.bulk-form') }}" class="alert-link">page ya Mkoa</a>.
+    <div class="card-body p-4">
+        <div class="alert alert-info border-0 rounded-lg d-flex align-items-center">
+            <i class="fas fa-info-circle fa-lg mr-3 text-info"></i>
+            <div>
+                Hii sehemu ni kwa ajili ya <strong>Summary za Wilaya</strong> tu. Kwa summary za Mkoa tumia <a href="{{ route('admin.region-summaries.bulk-form') }}" class="alert-link font-weight-bold">page ya Mkoa</a>.
+            </div>
         </div>
 
         <form id="bulkUploadForm">
@@ -52,12 +55,12 @@
 
             <div class="mt-4">
                 <div id="dropzone" class="dropzone-area border-dashed rounded-lg p-5 text-center bg-light">
-                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                    <h5>Drag and drop PDF files here</h5>
+                    <i class="fas fa-cloud-upload-alt fa-4x text-primary mb-3"></i>
+                    <h5 class="font-weight-bold">Drag and drop PDF files here</h5>
                     <p class="text-muted small text-uppercase font-weight-bold">OR</p>
                     <input type="file" id="fileInput" name="files[]" multiple accept=".pdf" class="d-none">
-                    <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" onclick="document.getElementById('fileInput').click()">
-                        Select PDF Files
+                    <button type="button" class="btn btn-primary px-5 rounded-pill shadow-sm" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-folder-open mr-1"></i> Select PDF Files
                     </button>
                     <div class="mt-3 text-muted small">Max file size: 50MB per PDF</div>
                 </div>
@@ -130,7 +133,9 @@
 
 <style>
     .dropzone-area { border: 2px dashed #cbd5e0; transition: all 0.3s; cursor: pointer; }
-    .dropzone-area:hover, .dropzone-area.dragover { border-color: #3182ce; background-color: #ebf8ff; }
+    .dropzone-area:hover, .dropzone-area.dragover { border-color: #3182ce; background-color: #ebf8ff; transform: scale(1.01); }
+    .dropzone-area i { transition: transform 0.3s; }
+    .dropzone-area:hover i { transform: translateY(-4px); }
 </style>
 
 @push('js')

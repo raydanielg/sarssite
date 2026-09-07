@@ -97,7 +97,7 @@ class ResultsController extends Controller
             }
         }
 
-        $regionSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region) {
+        $regionSummaries = ResultSummary::where('status', 'Published')->whereHas('resultTitle', function ($q) use ($yearData, $region) {
             $q->where('year_id', $yearData->id)
               ->where('region_id', $region->id)
               ->whereNull('district_id');
@@ -130,7 +130,7 @@ class ResultsController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        $districtSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region, $district) {
+        $districtSummaries = ResultSummary::where('status', 'Published')->whereHas('resultTitle', function ($q) use ($yearData, $region, $district) {
             $q->where('year_id', $yearData->id)
               ->where('region_id', $region->id)
               ->where(function ($sq) use ($district) {
@@ -199,8 +199,8 @@ class ResultsController extends Controller
             ->whereNull('district_id')
             ->pluck('id');
 
-        $summaries = ResultSummary::whereIn('result_title_id', $districtTitleIds)->get();
-        $regionalSummaries = ResultSummary::whereIn('result_title_id', $regionalTitleIds)->get();
+        $summaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $districtTitleIds)->get();
+        $regionalSummaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $regionalTitleIds)->get();
 
         return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries', 'regionalSummaries'));
     }
@@ -366,8 +366,8 @@ class ResultsController extends Controller
             ->whereNull('district_id')
             ->pluck('id');
 
-        $summaries = ResultSummary::whereIn('result_title_id', $districtTitleIds)->get();
-        $regionalSummaries = ResultSummary::whereIn('result_title_id', $regionalTitleIds)->get();
+        $summaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $districtTitleIds)->get();
+        $regionalSummaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $regionalTitleIds)->get();
 
         return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries', 'regionalSummaries'));
     }
@@ -392,6 +392,11 @@ class ResultsController extends Controller
 
         $result = Result::where('file_path', $filePath)->first();
         if ($result && $result->status !== 'Published') {
+            abort(404);
+        }
+
+        $summary = ResultSummary::where('file_path', $filePath)->first();
+        if ($summary && $summary->status !== 'Published') {
             abort(404);
         }
 
@@ -420,6 +425,11 @@ class ResultsController extends Controller
 
         $result = Result::where('file_path', $filePath)->first();
         if ($result && $result->status !== 'Published') {
+            abort(404);
+        }
+
+        $summary = ResultSummary::where('file_path', $filePath)->first();
+        if ($summary && $summary->status !== 'Published') {
             abort(404);
         }
 
