@@ -255,13 +255,26 @@ class ResultController extends Controller
 
         $title = ResultTitle::findOrFail($request->result_title_id);
         if ($title->district_id !== null) {
-            return back()->withErrors(['result_title_id' => 'Tafadhali chagua category ya Mkoa (bila Wilaya) kwa watahiniwa wa PC.'])->withInput();
+            $baseName = preg_replace('/\s*-\s*.+$/', '', $title->name);
+            $title = ResultTitle::firstOrCreate(
+                [
+                    'name' => $baseName,
+                    'year_id' => $title->year_id,
+                    'level_id' => $title->level_id,
+                    'region_id' => $title->region_id,
+                    'district_id' => null,
+                ],
+                [
+                    'result_type_id' => $title->result_type_id,
+                    'slug' => \Illuminate\Support\Str::slug($baseName . '-' . $title->region_id . '-' . time() . '-' . rand(100, 999)),
+                ]
+            );
         }
 
         $path = $request->file('file')->store('results/pdfs', 'public');
 
         Result::create([
-            'result_title_id' => $request->result_title_id,
+            'result_title_id' => $title->id,
             'school_id' => $request->school_id,
             'description' => $request->description,
             'file_path' => $path,

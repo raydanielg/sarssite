@@ -195,13 +195,26 @@ class ResultSummaryController extends Controller
 
         $title = ResultTitle::findOrFail($request->result_title_id);
         if ($title->district_id !== null) {
-            return back()->withErrors(['result_title_id' => 'Tafadhali chagua category ya Mkoa, sio Wilaya.'])->withInput();
+            $baseName = preg_replace('/\s*-\s*.+$/', '', $title->name);
+            $title = ResultTitle::firstOrCreate(
+                [
+                    'name' => $baseName,
+                    'year_id' => $title->year_id,
+                    'level_id' => $title->level_id,
+                    'region_id' => $title->region_id,
+                    'district_id' => null,
+                ],
+                [
+                    'result_type_id' => $title->result_type_id,
+                    'slug' => \Illuminate\Support\Str::slug($baseName . '-' . $title->region_id . '-' . time() . '-' . rand(100, 999)),
+                ]
+            );
         }
 
         $path = $request->file('file')->store('summaries', 'public');
 
         ResultSummary::create([
-            'result_title_id' => $request->result_title_id,
+            'result_title_id' => $title->id,
             'name' => $request->name,
             'file_path' => $path,
             'status' => 'Published',
@@ -226,7 +239,20 @@ class ResultSummaryController extends Controller
 
         $title = ResultTitle::findOrFail($request->result_title_id);
         if ($title->district_id !== null) {
-            return response()->json(['success' => false, 'message' => 'Tafadhali chagua category ya Mkoa, sio Wilaya.'], 400);
+            $baseName = preg_replace('/\s*-\s*.+$/', '', $title->name);
+            $title = ResultTitle::firstOrCreate(
+                [
+                    'name' => $baseName,
+                    'year_id' => $title->year_id,
+                    'level_id' => $title->level_id,
+                    'region_id' => $title->region_id,
+                    'district_id' => null,
+                ],
+                [
+                    'result_type_id' => $title->result_type_id,
+                    'slug' => \Illuminate\Support\Str::slug($baseName . '-' . $title->region_id . '-' . time() . '-' . rand(100, 999)),
+                ]
+            );
         }
 
         $count = 0;
@@ -238,7 +264,7 @@ class ResultSummaryController extends Controller
                 $path = $file->store('summaries', 'public');
 
                 ResultSummary::create([
-                    'result_title_id' => $request->result_title_id,
+                    'result_title_id' => $title->id,
                     'name' => $name,
                     'file_path' => $path,
                     'status' => 'Published',
@@ -273,16 +299,32 @@ class ResultSummaryController extends Controller
         $grouped = $titles->groupBy(function ($t) {
             $baseName = preg_replace('/\s*-\s*.+$/', '', $t->name);
             return $baseName . '|' . $t->year_id . '|' . $t->level_id;
-        })->map(function ($group) {
+        })->map(function ($group) use ($regionId) {
             $regionLevel = $group->firstWhere('district_id', null);
-            $first = $regionLevel ?? $group->first();
-            $baseName = preg_replace('/\s*-\s*.+$/', '', $first->name);
+            if (!$regionLevel) {
+                $first = $group->first();
+                $baseName = preg_replace('/\s*-\s*.+$/', '', $first->name);
+                $regionLevel = ResultTitle::firstOrCreate(
+                    [
+                        'name' => $baseName,
+                        'year_id' => $first->year_id,
+                        'level_id' => $first->level_id,
+                        'region_id' => $regionId,
+                        'district_id' => null,
+                    ],
+                    [
+                        'result_type_id' => $first->result_type_id,
+                        'slug' => \Illuminate\Support\Str::slug($baseName . '-' . $regionId . '-' . time() . '-' . rand(100, 999)),
+                    ]
+                );
+            }
+            $baseName = preg_replace('/\s*-\s*.+$/', '', $regionLevel->name);
             return [
-                'id' => $first->id,
+                'id' => $regionLevel->id,
                 'name' => $baseName,
-                'year' => $first->year->year ?? '',
-                'level' => $first->level->name ?? '',
-                'region' => $first->region->name ?? '',
+                'year' => $regionLevel->year->year ?? '',
+                'level' => $regionLevel->level->name ?? '',
+                'region' => $regionLevel->region->name ?? '',
             ];
         })->values();
 
