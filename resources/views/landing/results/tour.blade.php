@@ -1,6 +1,6 @@
 @extends('landing.layouts.results_layout')
 
-@section('title', 'System Tour - Karibu SARS')
+@section('title', 'System Tour - Mwanza Region Examination System')
 
 @section('content')
 <style>
@@ -37,7 +37,7 @@
     <div class="p-6 flex justify-between items-center z-50">
         <div class="flex items-center gap-2">
             <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
-            <span class="font-black text-gray-900 tracking-tighter">SARS TOUR</span>
+            <span class="font-black text-gray-900 tracking-tighter">MRES TOUR</span>
         </div>
         <a href="{{ route('results.index') }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-xs font-bold uppercase tracking-widest transition-all">
             Skip to Portal
@@ -146,7 +146,7 @@
 
     <!-- Bottom Text -->
     <div class="p-10 text-center z-50">
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.3em]">SARS Digital Ecosystem • 2026</p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.3em]">Mwanza Region Examination System • 2026</p>
     </div>
 </div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield('title', 'Admin Dashboard') | EMAS</title>
+  <title>@yield('title', 'Admin Dashboard') | MWANZA REGION EXAMINATION SYSTEM</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -91,8 +91,8 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-success elevation-4">
     <a href="#" class="brand-link">
-      <img src="{{ asset('emblem.png') }}" alt="EMAS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">EMAS ADMIN</span>
+      <img src="{{ asset('emblem.png') }}" alt="Mwanza Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">MWANZA EXAMS</span>
     </a>
 
     <div class="sidebar">
@@ -488,7 +488,7 @@
   </div>
 
   <footer class="main-footer">
-    <strong>Copyright &copy; {{ date('Y') }} <a href="#">EMAS</a>.</strong>
+    <strong>Copyright &copy; {{ date('Y') }} <a href="#">Mwanza Region Examination System</a>.</strong>
     All rights reserved.
   </footer>
 </div>

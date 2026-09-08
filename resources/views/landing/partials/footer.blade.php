@@ -8,7 +8,7 @@
                 <div>
                     <h3 class="text-yellow-400 font-black text-lg uppercase mb-4">SARS</h3>
                     <p class="text-sm text-white/60 leading-relaxed">
-                        The Regional Examination System<br>
+                        Mwanza Region Examination System<br>
                         Student Academic Results System<br><br>
                         <strong class="text-white/80">Phone:</strong> +255 763 074 657<br>
                         <strong class="text-white/80">Email:</strong> nnonimusa85@gmail.com<br>
@@ -73,10 +73,10 @@
             <div class="flex items-center gap-3">
                 <img src="{{ asset('emblem.png') }}" alt="Emblem" class="h-8 w-auto object-contain opacity-60">
                 <p class="text-xs text-white/40 uppercase tracking-widest font-bold">
-                    &copy; {{ date('Y') }} SARS. All Rights Reserved.
+                    &copy; {{ date('Y') }} Mwanza Region Examination System. All Rights Reserved.
                 </p>
             </div>
-            <p class="text-xs text-white/30">Student Academic Results System</p>
+            <p class="text-xs text-white/30">Student Academic Results System (SARS)</p>
         </div>
     </div>
 </footer>

@@ -1,6 +1,6 @@
 @extends('landing.layouts.results_layout')
 
-@section('title', 'SARS - Matokeo ya Mtihani')
+@section('title', 'Mwanza Region Examination System - Matokeo ya Mtihani')
 
 @section('content')
 <!-- Top Bar -->
