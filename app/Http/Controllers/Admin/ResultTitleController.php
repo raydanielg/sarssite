@@ -21,7 +21,41 @@ class ResultTitleController extends Controller
 
     public function index()
     {
-        $resultTitles = ResultTitle::with(['year', 'level', 'region'])->latest()->paginate(10);
+        $allTitles = ResultTitle::with(['year', 'level', 'region', 'district', 'resultType'])
+            ->withCount('results')
+            ->latest()
+            ->get();
+
+        $grouped = $allTitles->groupBy(function ($t) {
+            return $t->name . '|' . $t->year_id . '|' . $t->level_id . '|' . $t->region_id;
+        })->map(function ($group) {
+            $first = $group->first();
+            $hasRegionLevel = $group->contains(fn ($t) => is_null($t->district_id));
+            $districts = $group->filter(fn ($t) => !is_null($t->district_id))->pluck('district');
+            return (object) [
+                'name' => $first->name,
+                'year' => $first->year,
+                'level' => $first->level,
+                'region' => $first->region,
+                'resultType' => $first->resultType,
+                'districts' => $districts,
+                'has_region_level' => $hasRegionLevel,
+                'results_count' => $group->sum('results_count'),
+                'title_ids' => $group->pluck('id'),
+                'primary_id' => $first->id,
+            ];
+        })->values();
+
+        $page = request()->get('page', 1);
+        $perPage = 10;
+        $resultTitles = new \Illuminate\Pagination\LengthAwarePaginator(
+            $grouped->forPage($page, $perPage),
+            $grouped->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('admin.result-titles.index', compact('resultTitles'));
     }
 
@@ -84,11 +118,16 @@ class ResultTitleController extends Controller
 
     public function edit($id)
     {
-        $resultTitle = ResultTitle::findOrFail($id);
+        $resultTitle = ResultTitle::with(['district', 'resultType'])->findOrFail($id);
         $years = Year::orderByDesc('year')->get();
         $levels = Level::orderBy('name')->get();
         $regions = Region::orderBy('name')->get();
-        return view('admin.result-titles.edit', compact('resultTitle', 'years', 'levels', 'regions'));
+        $resultTypes = \App\Models\ResultType::orderBy('name')->get();
+        $districts = collect();
+        if ($resultTitle->region_id) {
+            $districts = \App\Models\District::where('region_id', $resultTitle->region_id)->orderBy('name')->get();
+        }
+        return view('admin.result-titles.edit', compact('resultTitle', 'years', 'levels', 'regions', 'resultTypes', 'districts'));
     }
 
     public function update(Request $request, $id)
@@ -100,6 +139,8 @@ class ResultTitleController extends Controller
             'year_id' => 'required|exists:years,id',
             'level_id' => 'required|exists:levels,id',
             'region_id' => 'required|exists:regions,id',
+            'district_id' => 'nullable|exists:districts,id',
+            'result_type_id' => 'nullable|exists:result_types,id',
         ]);
 
         $resultTitle->update([
@@ -107,6 +148,8 @@ class ResultTitleController extends Controller
             'year_id' => $request->year_id,
             'level_id' => $request->level_id,
             'region_id' => $request->region_id,
+            'district_id' => $request->district_id ?: null,
+            'result_type_id' => $request->result_type_id ?: null,
             'slug' => Str::slug($request->name . '-' . time()),
         ]);
 

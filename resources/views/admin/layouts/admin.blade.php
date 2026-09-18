@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield('title', 'Admin Dashboard') | EMAS</title>
+  <title>@yield('title', 'Admin Dashboard') | MWANZA REGION EXAMINATION SYSTEM</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -15,6 +15,44 @@
   <link rel="stylesheet" href="{{ asset('vendor/toastr/toastr.min.css') }}">
   <!-- SweetAlert2 -->
   <link rel="stylesheet" href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}">
+  <style>
+    .pagination { justify-content: center; flex-wrap: wrap; gap: 4px; }
+    .pagination .page-item .page-link {
+        border: none;
+        border-radius: 50px !important;
+        min-width: 38px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        padding: 0 10px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #6c757d;
+        background: #f8f9fa;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .pagination .page-item .page-link:hover {
+        background: #e9ecef;
+        color: #007bff;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+    }
+    .pagination .page-item.disabled .page-link {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 50px !important;
+    }
+    .pagination-row td { border-top: 2px solid #e9ecef !important; }
+  </style>
   @stack('css')
 </head>
 <body class="hold-transition sidebar-mini">
@@ -53,8 +91,8 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-success elevation-4">
     <a href="#" class="brand-link">
-      <img src="{{ asset('emblem.png') }}" alt="EMAS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">EMAS ADMIN</span>
+      <img src="{{ asset('emblem.png') }}" alt="Mwanza Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">MWANZA EXAMS</span>
     </a>
 
     <div class="sidebar">
@@ -450,7 +488,7 @@
   </div>
 
   <footer class="main-footer">
-    <strong>Copyright &copy; {{ date('Y') }} <a href="#">EMAS</a>.</strong>
+    <strong>Copyright &copy; {{ date('Y') }} <a href="#">Mwanza Region Examination System</a>.</strong>
     All rights reserved.
   </footer>
 </div>

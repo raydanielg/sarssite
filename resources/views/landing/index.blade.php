@@ -30,7 +30,7 @@
         @else
             <a href="#" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-white bg-white/10 backdrop-blur rounded-full hover:bg-white/20 transition-all border border-white/20" role="alert">
                 <span class="text-xs bg-yellow-400 text-[#0d3c14] rounded-full px-4 py-1.5 mr-3 tracking-tight font-black">New</span> 
-                <span class="text-sm font-medium tracking-tight text-white/90">SARS v1.0 is now live! Explore the features</span> 
+                <span class="text-sm font-medium tracking-tight text-white/90">Mwanza Region Examination System v1.0 is now live! Explore the features</span> 
                 <i class="ri-arrow-right-s-line ml-2 text-lg"></i>
             </a>
         @endif

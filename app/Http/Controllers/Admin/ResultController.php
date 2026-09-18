@@ -26,6 +26,16 @@ class ResultController extends Controller
         $limit = $request->get('limit', 10);
         $query = Result::with(['school', 'resultTitle.year', 'resultTitle.level', 'resultTitle.region'])->latest();
 
+        if ($request->has('type') && $request->type === 'pc') {
+            $query->whereHas('school', function ($q) {
+                $q->where('is_pc', true);
+            });
+        } elseif ($request->has('type') && $request->type === 'school') {
+            $query->whereHas('school', function ($q) {
+                $q->where('is_pc', false);
+            });
+        }
+
         if ($request->ajax()) {
             if ($request->has('search') && $request->search != '') {
                 $search = $request->search;
@@ -45,7 +55,8 @@ class ResultController extends Controller
         }
 
         $results = $query->paginate($limit);
-        return view('admin.results.index', compact('results', 'limit'));
+        $examTitles = ResultTitle::with(['year', 'level', 'region', 'district'])->latest()->get();
+        return view('admin.results.index', compact('results', 'limit', 'examTitles'));
     }
 
     public function bulkUploadForm()
@@ -220,6 +231,59 @@ class ResultController extends Controller
         return redirect()->route('admin.results.index')->with('success', $message);
     }
 
+    public function createPc()
+    {
+        $regions = \App\Models\Region::orderBy('name')->get();
+        $schools = School::where('is_pc', true)->orderBy('name')->get();
+        return view('admin.results.create_pc', compact('regions', 'schools'));
+    }
+
+    public function storePc(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'school_id' => 'required|exists:schools,id',
+            'description' => 'nullable|string',
+            'file' => 'required|mimes:pdf|max:20480',
+            'status' => 'required|in:Published,Draft',
+        ]);
+
+        $school = School::findOrFail($request->school_id);
+        if (!$school->is_pc) {
+            return back()->withErrors(['school_id' => 'Shule iliyochaguliwa si ya Private Candidates (PC).'])->withInput();
+        }
+
+        $title = ResultTitle::findOrFail($request->result_title_id);
+        if ($title->district_id !== null) {
+            $baseName = preg_replace('/\s*-\s*.+$/', '', $title->name);
+            $title = ResultTitle::firstOrCreate(
+                [
+                    'name' => $baseName,
+                    'year_id' => $title->year_id,
+                    'level_id' => $title->level_id,
+                    'region_id' => $title->region_id,
+                    'district_id' => null,
+                ],
+                [
+                    'result_type_id' => $title->result_type_id,
+                    'slug' => \Illuminate\Support\Str::slug($baseName . '-' . $title->region_id . '-' . time() . '-' . rand(100, 999)),
+                ]
+            );
+        }
+
+        $path = $request->file('file')->store('results/pdfs', 'public');
+
+        Result::create([
+            'result_title_id' => $title->id,
+            'school_id' => $request->school_id,
+            'description' => $request->description,
+            'file_path' => $path,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('admin.results.index')->with('success', 'Matokeo ya Private Candidate yamepakiwa kikamilifu.');
+    }
+
     public function bulkDelete(Request $request)
     {
         $ids = $request->ids;
@@ -255,5 +319,22 @@ class ResultController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function bulkStatusByExam(Request $request)
+    {
+        $request->validate([
+            'result_title_id' => 'required|exists:result_titles,id',
+            'status' => 'required|in:Published,Draft',
+        ]);
+
+        $count = Result::where('result_title_id', $request->result_title_id)->update(['status' => $request->status]);
+        $label = $request->status === 'Published' ? 'yamechapishwa' : 'yamefanywa Draft';
+
+        return response()->json([
+            'success' => true,
+            'message' => "Matokeo {$count} ya mtihani huo {$label} kikamilifu.",
+            'count' => $count,
+        ]);
     }
 }

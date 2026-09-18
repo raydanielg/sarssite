@@ -1,6 +1,6 @@
 @extends('landing.layouts.app')
 
-@section('title', 'SARS - Regional Examination System')
+@section('title', 'Mwanza Region Examination System')
 
 @section('content')
 
@@ -14,7 +14,7 @@
                 <div class="absolute inset-0 flex items-center">
                     <div class="container mx-auto px-4 text-center">
                         <div class="max-w-3xl mx-auto animate__animated animate__fadeInUp">
-                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">Karibu SARS</h2>
+                            <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">Karibu Mwanza Region Examination System</h2>
                             <p class="text-base md:text-lg text-green-50/90 mb-6 leading-relaxed">Mfumo wa Matokeo ya Mtihani wa Mkoa. Pata matokeo ya shule kwa urahisi na kwa uhakika.</p>
                             <a href="{{ route('results.index') }}" class="inline-flex items-center gap-2 px-10 py-4 bg-yellow-400 hover:bg-yellow-300 text-[#0d3c14] font-black rounded-xl transition-all duration-300 hover:shadow-2xl uppercase tracking-wider text-base">
                                 <i class="ri-bar-chart-box-line text-xl"></i> Matokeo

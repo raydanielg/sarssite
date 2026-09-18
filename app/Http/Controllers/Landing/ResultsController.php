@@ -27,7 +27,7 @@ class ResultsController extends Controller
                 $level = Level::find($item->level_id);
                 $title = ResultTitle::where('name', $item->name)->latest()->first();
                 $yearsCount = ResultTitle::where('name', $item->name)->select('year_id')->distinct()->count('year_id');
-                $resultsCount = Result::whereHas('resultTitle', function ($q) use ($item) {
+                $resultsCount = Result::where('status', 'Published')->whereHas('school', function ($q) { $q->where('is_pc', false); })->whereHas('resultTitle', function ($q) use ($item) {
                     $q->where('name', $item->name);
                 })->count();
                 return (object) [
@@ -39,6 +39,8 @@ class ResultsController extends Controller
                     'results_count' => $resultsCount,
                     'created_at' => $item->latest,
                 ];
+            })->filter(function ($exam) {
+                return $exam->results_count > 0;
             });
 
         return view('landing.results.index', compact('exams'));
@@ -54,7 +56,10 @@ class ResultsController extends Controller
         $yearData = Year::where('year', $year)->firstOrFail();
 
         $regions = Region::whereHas('resultTitles', function ($q) use ($yearData) {
-            $q->where('year_id', $yearData->id);
+            $q->where('year_id', $yearData->id)
+              ->whereHas('results', function ($sq) {
+                  $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
+              });
         })->orderBy('name')->get();
 
         if ($regions->isEmpty()) {
@@ -79,7 +84,10 @@ class ResultsController extends Controller
         } else {
             $districts = District::where('region_id', $region->id)
                 ->whereHas('resultTitles', function ($q) use ($yearData) {
-                    $q->where('year_id', $yearData->id);
+                    $q->where('year_id', $yearData->id)
+                      ->whereHas('results', function ($sq) {
+                          $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
+                      });
                 })
                 ->orderBy('name')
                 ->get();
@@ -89,7 +97,7 @@ class ResultsController extends Controller
             }
         }
 
-        $regionSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region) {
+        $regionSummaries = ResultSummary::where('status', 'Published')->whereHas('resultTitle', function ($q) use ($yearData, $region) {
             $q->where('year_id', $yearData->id)
               ->where('region_id', $region->id)
               ->whereNull('district_id');
@@ -112,12 +120,17 @@ class ResultsController extends Controller
                 $q->where('district_id', $district->id)
                   ->orWhereNull('district_id');
             })
-            ->withCount('results')
+            ->whereHas('results', function ($q) {
+                $q->where('status', 'Published')->whereHas('school', function ($sq) { $sq->where('is_pc', false); });
+            })
+            ->withCount(['results' => function ($q) {
+                $q->where('status', 'Published')->whereHas('school', function ($sq) { $sq->where('is_pc', false); });
+            }])
             ->with('resultType')
             ->orderByDesc('id')
             ->get();
 
-        $districtSummaries = ResultSummary::whereHas('resultTitle', function ($q) use ($yearData, $region, $district) {
+        $districtSummaries = ResultSummary::where('status', 'Published')->whereHas('resultTitle', function ($q) use ($yearData, $region, $district) {
             $q->where('year_id', $yearData->id)
               ->where('region_id', $region->id)
               ->where(function ($sq) use ($district) {
@@ -154,6 +167,8 @@ class ResultsController extends Controller
         }
 
         $query = Result::whereIn('result_title_id', $resultTitleIds)
+            ->where('status', 'Published')
+            ->whereHas('school', function ($q) { $q->where('is_pc', false); })
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {
@@ -185,8 +200,8 @@ class ResultsController extends Controller
             ->whereNull('district_id')
             ->pluck('id');
 
-        $summaries = ResultSummary::whereIn('result_title_id', $districtTitleIds)->get();
-        $regionalSummaries = ResultSummary::whereIn('result_title_id', $regionalTitleIds)->get();
+        $summaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $districtTitleIds)->get();
+        $regionalSummaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $regionalTitleIds)->get();
 
         return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries', 'regionalSummaries'));
     }
@@ -209,7 +224,10 @@ class ResultsController extends Controller
         }
 
         $years = Year::whereHas('resultTitles', function ($q) use ($examName) {
-            $q->where('name', $examName);
+            $q->where('name', $examName)
+              ->whereHas('results', function ($sq) {
+                  $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
+              });
         })->orderBy('year', 'desc')->get();
 
         $level = ResultTitle::where('name', $examName)->with('level')->first()->level ?? null;
@@ -227,7 +245,10 @@ class ResultsController extends Controller
         $yearData = Year::where('year', $year)->firstOrFail();
 
         $regions = Region::whereHas('resultTitles', function ($q) use ($examName, $yearData) {
-            $q->where('name', $examName)->where('year_id', $yearData->id);
+            $q->where('name', $examName)->where('year_id', $yearData->id)
+              ->whereHas('results', function ($sq) {
+                  $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
+              });
         })->orderBy('name')->get();
 
         if ($regions->isEmpty()) {
@@ -258,7 +279,10 @@ class ResultsController extends Controller
         } else {
             $districts = District::where('region_id', $region->id)
                 ->whereHas('resultTitles', function ($q) use ($examName, $yearData) {
-                    $q->where('name', $examName)->where('year_id', $yearData->id);
+                    $q->where('name', $examName)->where('year_id', $yearData->id)
+                      ->whereHas('results', function ($sq) {
+                          $sq->where('status', 'Published')->whereHas('school', function ($sq2) { $sq2->where('is_pc', false); });
+                      });
                 })
                 ->orderBy('name')
                 ->get();
@@ -304,7 +328,9 @@ class ResultsController extends Controller
         }
 
         $resultTitle = ResultTitle::whereIn('id', $resultTitleIds)
-            ->whereHas('results')
+            ->whereHas('results', function ($q) {
+                $q->where('status', 'Published')->whereHas('school', function ($sq) { $sq->where('is_pc', false); });
+            })
             ->latest()
             ->first();
 
@@ -313,6 +339,8 @@ class ResultsController extends Controller
         }
 
         $query = Result::whereIn('result_title_id', $resultTitleIds)
+            ->where('status', 'Published')
+            ->whereHas('school', function ($q) { $q->where('is_pc', false); })
             ->with('school');
 
         if ($request->has('search') && $request->search != '') {
@@ -340,8 +368,8 @@ class ResultsController extends Controller
             ->whereNull('district_id')
             ->pluck('id');
 
-        $summaries = ResultSummary::whereIn('result_title_id', $districtTitleIds)->get();
-        $regionalSummaries = ResultSummary::whereIn('result_title_id', $regionalTitleIds)->get();
+        $summaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $districtTitleIds)->get();
+        $regionalSummaries = ResultSummary::where('status', 'Published')->whereIn('result_title_id', $regionalTitleIds)->get();
 
         return view('landing.results.final', compact('yearData', 'region', 'district', 'resultTitle', 'results', 'summaries', 'regionalSummaries'));
     }
@@ -361,6 +389,16 @@ class ResultsController extends Controller
     {
         $filePath = $request->query('file');
         if (!$filePath) {
+            abort(404);
+        }
+
+        $result = Result::where('file_path', $filePath)->first();
+        if ($result && ($result->status !== 'Published' || ($result->school && $result->school->is_pc))) {
+            abort(404);
+        }
+
+        $summary = ResultSummary::where('file_path', $filePath)->first();
+        if ($summary && $summary->status !== 'Published') {
             abort(404);
         }
 
@@ -384,6 +422,16 @@ class ResultsController extends Controller
         $name = $request->query('name');
 
         if (!$filePath) {
+            abort(404);
+        }
+
+        $result = Result::where('file_path', $filePath)->first();
+        if ($result && ($result->status !== 'Published' || ($result->school && $result->school->is_pc))) {
+            abort(404);
+        }
+
+        $summary = ResultSummary::where('file_path', $filePath)->first();
+        if ($summary && $summary->status !== 'Published') {
             abort(404);
         }
 

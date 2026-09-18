@@ -37,26 +37,80 @@
                         <i class="fas fa-trash-alt mr-1"></i> Delete Selected (<span id="selectedCount">0</span>)
                     </button>
 
-                    <div class="input-group input-group-sm mr-sm-3 mb-2 mb-sm-0" style="max-width: 250px;">
+                    <div class="input-group input-group-sm mr-sm-2 mb-2 mb-sm-0" style="max-width: 220px;">
                         <input type="text" id="summarySearch" class="form-control" placeholder="Search summaries...">
                         <div class="input-group-append">
                             <span class="input-group-text bg-light border-left-0"><i class="fas fa-search text-muted"></i></span>
                         </div>
                     </div>
                     
-                    <select id="summaryLimit" class="form-control form-control-sm mr-sm-3 mb-2 mb-sm-0 shadow-sm" style="width: auto;">
-                        <option value="10" {{ $limit == 10 ? 'selected' : '' }}>Show 10</option>
-                        <option value="50" {{ $limit == 50 ? 'selected' : '' }}>Show 50</option>
-                        <option value="all" {{ $limit == 'all' ? 'selected' : '' }}>Show All</option>
+                    <select id="summaryLimit" class="form-control form-control-sm mr-sm-2 mb-2 mb-sm-0 shadow-sm" style="width: auto;">
+                        <option value="10" {{ $limit == 10 ? 'selected' : '' }}>10</option>
+                        <option value="50" {{ $limit == 50 ? 'selected' : '' }}>50</option>
+                        <option value="all" {{ $limit == 'all' ? 'selected' : '' }}>All</option>
                     </select>
 
-                    <a href="{{ route('admin.result-summaries.bulk-upload-form') }}" class="btn btn-primary btn-sm px-4 shadow-sm mb-2 mb-sm-0 mr-sm-2">
-                        <i class="fas fa-layer-group mr-1 small"></i> Bulk Upload
-                    </a>
-                    <a href="{{ route('admin.result-summaries.create') }}" class="btn btn-success btn-sm px-4 shadow-sm">
-                        <i class="fas fa-upload mr-1 small"></i> Upload Single
-                    </a>
+                    <!-- Bulk Upload Dropdown -->
+                    <div class="dropdown mr-sm-2 mb-2 mb-sm-0">
+                        <button class="btn btn-primary btn-sm px-4 shadow-sm dropdown-toggle" type="button" id="bulkUploadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-layer-group mr-1 small"></i> Bulk Upload
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0 rounded-lg" aria-labelledby="bulkUploadDropdown">
+                            <a class="dropdown-item py-2" href="{{ route('admin.result-summaries.bulk-upload-form') }}">
+                                <i class="fas fa-layer-group text-primary mr-2"></i> General Bulk Upload
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item py-2" href="{{ route('admin.region-summaries.bulk-form') }}">
+                                <i class="fas fa-map-marked-alt text-success mr-2"></i> Bulk Upload za Mkoa
+                            </a>
+                            <a class="dropdown-item py-2" href="{{ route('admin.district-summaries.bulk-form') }}">
+                                <i class="fas fa-map-pin text-info mr-2"></i> Bulk Upload za Wilaya
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Upload Single Dropdown -->
+                    <div class="dropdown mb-2 mb-sm-0">
+                        <button class="btn btn-success btn-sm px-4 shadow-sm dropdown-toggle" type="button" id="singleUploadDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-upload mr-1 small"></i> Upload Single
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0 rounded-lg" aria-labelledby="singleUploadDropdown">
+                            <a class="dropdown-item py-2" href="{{ route('admin.result-summaries.create') }}">
+                                <i class="fas fa-upload text-success mr-2"></i> General Upload
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item py-2" href="{{ route('admin.region-summaries.create') }}">
+                                <i class="fas fa-map-marked-alt text-success mr-2"></i> Upload Summary ya Mkoa
+                            </a>
+                            <a class="dropdown-item py-2" href="{{ route('admin.district-summaries.create') }}">
+                                <i class="fas fa-map-pin text-info mr-2"></i> Upload Summary ya Wilaya
+                            </a>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Type Filter Tabs -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <ul class="nav nav-pills nav-sm" id="summaryTypeTabs">
+                    <li class="nav-item">
+                        <a class="nav-link py-1 px-3 {{ !request()->has('type') ? 'active' : '' }}" href="{{ route('admin.result-summaries.index') }}">
+                            <i class="fas fa-th-list mr-1"></i> Zote
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link py-1 px-3 {{ request('type') === 'region' ? 'active' : '' }}" href="{{ route('admin.result-summaries.index', ['type' => 'region']) }}">
+                            <i class="fas fa-globe mr-1"></i> Mikoa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link py-1 px-3 {{ request('type') === 'district' ? 'active' : '' }}" href="{{ route('admin.result-summaries.index', ['type' => 'district']) }}">
+                            <i class="fas fa-map-marker-alt mr-1"></i> Wilaya
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -104,9 +158,39 @@
     
     .gap-2 { gap: 0.5rem; }
     
+    .nav-pills.nav-sm .nav-link {
+        font-size: 0.75rem;
+        font-weight: 700;
+        border-radius: 50px;
+        color: #6c757d;
+        background: #f8f9fa;
+        margin-right: 4px;
+        transition: all 0.2s;
+    }
+    .nav-pills.nav-sm .nav-link:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+    .nav-pills.nav-sm .nav-link.active {
+        background: #007bff;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    }
+    
+    .dropdown-item {
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.15s;
+    }
+    .dropdown-item:hover {
+        background: #f0f4ff;
+    }
+    
     @media (max-width: 767.98px) {
         .card-header .btn, .card-header select { width: 100%; }
         .input-group { width: 100% !important; max-width: none !important; }
+        .dropdown { width: 100%; }
+        .dropdown .btn { width: 100%; text-align: center; }
     }
 </style>
 

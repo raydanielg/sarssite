@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Mwanza Region Examination System',
     'title_prefix' => '',
     'title_postfix' => '',
 
