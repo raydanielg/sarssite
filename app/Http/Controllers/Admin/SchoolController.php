@@ -108,4 +108,50 @@ class SchoolController extends Controller
 
         return redirect()->route('admin.schools.index')->with('success', 'School deleted successfully.');
     }
+
+    public function bulkPc(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:schools,id',
+            'is_pc' => 'required|in:0,1',
+        ]);
+
+        try {
+            $count = School::whereIn('id', $request->ids)->update(['is_pc' => $request->is_pc]);
+            $label = $request->is_pc ? 'PC' : 'Normal';
+            return response()->json(['success' => true, 'message' => "Shule {$count} zimehifadhiwa kama {$label} kikamilifu."]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'Tafadhali chagua angalau shule moja.'], 400);
+        }
+
+        try {
+            $schools = School::whereIn('id', $ids)->get();
+            foreach ($schools as $school) {
+                $school->levels()->detach();
+                $school->delete();
+            }
+            return response()->json(['success' => true, 'message' => 'Shule zilizochaguliwa zimefutwa kikamilifu.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function resetAllPc()
+    {
+        try {
+            $count = School::where('is_pc', 1)->update(['is_pc' => 0]);
+            return response()->json(['success' => true, 'message' => "Shule {$count} zimebadilishwa kuwa Normal kikamilifu."]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
 }

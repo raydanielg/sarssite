@@ -1,5 +1,6 @@
 @forelse($schools as $school)
     <tr>
+        <td><input type="checkbox" class="school-checkbox" value="{{ $school->id }}"></td>
         <td><code>{{ $school->code }}</code></td>
         <td>
             {{ $school->name }}
@@ -29,6 +30,6 @@
     </tr>
 @empty
     <tr>
-        <td colspan="5" class="text-center text-muted p-4">No schools found.</td>
+        <td colspan="6" class="text-center text-muted p-4">No schools found.</td>
     </tr>
 @endforelse

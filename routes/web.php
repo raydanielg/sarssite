@@ -42,6 +42,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('levels', App\Http\Controllers\Admin\LevelController::class);
     Route::resource('regions', App\Http\Controllers\Admin\RegionController::class);
     Route::resource('schools', App\Http\Controllers\Admin\SchoolController::class);
+    Route::post('schools/bulk-pc', [App\Http\Controllers\Admin\SchoolController::class, 'bulkPc'])->name('schools.bulk-pc');
+    Route::post('schools/bulk-delete', [App\Http\Controllers\Admin\SchoolController::class, 'bulkDelete'])->name('schools.bulk-delete');
+    Route::post('schools/reset-all-pc', [App\Http\Controllers\Admin\SchoolController::class, 'resetAllPc'])->name('schools.reset-all-pc');
     Route::resource('districts', App\Http\Controllers\Admin\DistrictController::class);
     Route::get('districts-by-region/{id}', [App\Http\Controllers\Admin\DistrictController::class, 'getByRegion'])->name('districts.by-region');
     Route::get('districts-bulk-create', [App\Http\Controllers\Admin\DistrictController::class, 'bulkCreateForm'])->name('districts.bulk-create-form');

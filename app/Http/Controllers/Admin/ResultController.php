@@ -170,7 +170,7 @@ class ResultController extends Controller
                             'name' => $schoolName,
                             'region_id' => $resultTitle->region_id,
                             'slug' => Str::slug($schoolName . '-' . $schoolCode),
-                            'is_pc' => str_starts_with(strtoupper($schoolCode), 'P') ? 1 : 0
+                            'is_pc' => 0
                         ]
                     );
 
