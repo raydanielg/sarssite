@@ -114,6 +114,7 @@
                     <select id="resultLimit" class="form-control form-control-sm mr-sm-3 mb-2 mb-sm-0 shadow-sm" style="width: auto;">
                         <option value="10" {{ $limit == 10 ? 'selected' : '' }}>Show 10</option>
                         <option value="50" {{ $limit == 50 ? 'selected' : '' }}>Show 50</option>
+                        <option value="100" {{ $limit == 100 ? 'selected' : '' }}>Show 100</option>
                         <option value="all" {{ $limit == 'all' ? 'selected' : '' }}>Show All</option>
                     </select>
 

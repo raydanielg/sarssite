@@ -46,7 +46,7 @@ class ResultController extends Controller
             }
 
             if ($limit === 'all') {
-                $results = $query->get();
+                $results = $query->simplePaginate(500);
             } else {
                 $results = $query->paginate($limit);
             }

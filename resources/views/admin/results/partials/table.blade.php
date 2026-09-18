@@ -65,7 +65,11 @@
     <tr class="pagination-row">
         <td colspan="6" class="px-4 py-3 bg-light border-top">
             <div class="d-flex justify-content-center align-items-center flex-wrap">
-                {{ $results->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
+                @if($results instanceof \Illuminate\Pagination\Paginator)
+                    {{ $results->appends(request()->except('page'))->links('pagination::simple-bootstrap-4') }}
+                @else
+                    {{ $results->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
+                @endif
             </div>
         </td>
     </tr>
