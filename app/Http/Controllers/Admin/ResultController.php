@@ -337,4 +337,27 @@ class ResultController extends Controller
             'count' => $count,
         ]);
     }
+
+    public function bulkSchoolPc(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:results,id',
+            'is_pc' => 'required|in:0,1',
+        ]);
+
+        try {
+            $schoolIds = Result::whereIn('id', $request->ids)->pluck('school_id')->unique()->filter()->values();
+            $count = School::whereIn('id', $schoolIds)->update(['is_pc' => $request->is_pc]);
+            $label = $request->is_pc ? 'PC' : 'Normal';
+
+            return response()->json([
+                'success' => true,
+                'message' => "Shule {$count} zimebadilishwa kuwa {$label}.",
+                'count' => $count,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hitilafu imetokea: ' . $e->getMessage()], 500);
+        }
+    }
 }

@@ -89,6 +89,13 @@
                                 <i class="fas fa-lock mr-2"></i> Make Draft (Private)
                             </button>
                             <div class="dropdown-divider"></div>
+                            <button class="dropdown-item text-info font-weight-bold" id="bulkSchoolNormalBtn">
+                                <i class="fas fa-user-check mr-2"></i> Mark Schools as Normal
+                            </button>
+                            <button class="dropdown-item text-warning font-weight-bold" id="bulkSchoolPcBtn">
+                                <i class="fas fa-user-secret mr-2"></i> Mark Schools as PC
+                            </button>
+                            <div class="dropdown-divider"></div>
                             <button class="dropdown-item text-danger font-weight-bold" id="bulkDeleteBtn">
                                 <i class="fas fa-trash-alt mr-2"></i> Delete Selected
                             </button>
@@ -388,6 +395,61 @@ $(document).ready(function() {
 
     $('#bulkPublishBtn').on('click', function() { bulkStatusChange('Published'); });
     $('#bulkDraftBtn').on('click', function() { bulkStatusChange('Draft'); });
+
+    // Bulk School PC Toggle
+    function bulkSchoolPcChange(is_pc) {
+        const ids = getSelectedIds();
+        if (ids.length === 0) return;
+        const label = is_pc ? 'PC' : 'Normal';
+
+        Swal.fire({
+            title: 'Una uhakika?',
+            text: `Unataka kuweka shule za matokeo ${ids.length} kuwa ${label}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ndio, endelea',
+            cancelButtonText: 'Hapana',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.results.bulk-school-pc') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        ids: ids,
+                        is_pc: is_pc
+                    },
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Inabadilisha...',
+                            allowOutsideClick: false,
+                            didOpen: () => { Swal.showLoading(); }
+                        });
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Imefanyika!', response.message, 'success').then(() => {
+                                fetchResults(1);
+                                $('#checkAll').prop('checked', false);
+                                bulkActionsGroup.fadeOut();
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Hitilafu imetokea.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    $('#bulkSchoolNormalBtn').on('click', function() { bulkSchoolPcChange(0); });
+    $('#bulkSchoolPcBtn').on('click', function() { bulkSchoolPcChange(1); });
 
     // Exam Status Control
     const examSelect = $('#examStatusSelect');
