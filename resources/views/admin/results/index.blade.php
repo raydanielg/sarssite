@@ -225,7 +225,31 @@
     .nav-pills.nav-sm .nav-link:not(.active):hover {
         background-color: #e9ecef;
     }
-    
+
+    /* Pagination inside results table */
+    .pagination-row .pagination {
+        margin-bottom: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .pagination-row .page-item {
+        margin: 2px;
+    }
+    .pagination-row .page-link {
+        border-radius: 0.35rem;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .pagination-row .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .pagination-row .page-item.disabled .page-link {
+        color: #6c757d;
+        background-color: #e9ecef;
+    }
+
     /* Responsive Adjustments */
     @media (max-width: 767.98px) {
         .card-header .btn, .card-header select { width: 100%; }
@@ -285,8 +309,8 @@ $(document).ready(function() {
     $(document).on('click', '.pagination a', function(e) {
         e.preventDefault();
         const url = $(this).attr('href');
-        const page = new URL(url).searchParams.get('page');
-        fetchResults(page);
+        const page = new URL(url, window.location.href).searchParams.get('page');
+        fetchResults(page ? parseInt(page) : 1);
     });
 
     // SweetAlert for Delete

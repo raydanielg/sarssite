@@ -63,9 +63,9 @@
 
 @if(isset($results) && method_exists($results, 'links') && $results->hasPages())
     <tr class="pagination-row">
-        <td colspan="6" class="px-4 py-3 bg-light">
-            <div class="d-flex justify-content-center">
-                {{ $results->appends(request()->except('page'))->links() }}
+        <td colspan="6" class="px-4 py-3 bg-light border-top">
+            <div class="d-flex justify-content-center align-items-center flex-wrap">
+                {{ $results->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
             </div>
         </td>
     </tr>
